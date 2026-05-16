@@ -112,6 +112,9 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('today-page')).toHaveClass(/today-page/);
   await expect(page.getByTestId('compact-mode')).toBeVisible();
   await expect(page.getByTestId('compact-mode')).toHaveClass(/status-chip/);
+  const appShellBox = await page.getByTestId('app-shell').boundingBox();
+  expect(appShellBox).not.toBeNull();
+  expect(appShellBox!.width).toBeGreaterThanOrEqual(380);
   await expect(page.getByTestId('quick-action-dock')).toBeVisible();
   const shellBox = await page.getByTestId('mobile-shell').boundingBox();
   expect(shellBox).not.toBeNull();

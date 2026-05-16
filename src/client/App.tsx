@@ -9,7 +9,7 @@ export function App() {
     <ThemeProvider>
       <I18nProvider>
         <QueryClientProvider client={queryClient}>
-          <main className="surface panel-stack" data-testid="app-shell">
+          <main className="app-shell panel-stack" data-testid="app-shell">
             <header className="timeline-card">
               <p className="section-label">BabyFlow</p>
               <h1 className="today-title">Calm journaling for 2am caregiving</h1>

@@ -11,7 +11,7 @@ COMPLETE
 | `docs/spec/ui-design-language-2026.md` | EXISTS | 2026 UI design language is checked into the repo spec. |
 | Design language application on Today and Profile surfaces | VERIFIED | `tests/app-shell.test.tsx`, `tests/baby-select-page.test.tsx`, `tests/today-page.test.tsx`, and `tests/e2e/today-mobile.spec.ts` passed with surface class and runtime style assertions. |
 | Machine-following theme behavior | VERIFIED | `tests/theme-provider.test.tsx` and `tests/e2e/boot.spec.ts` passed with `prefers-color-scheme`-driven assertions. |
-| Mobile shell full-width behavior | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed with a zero-padding shell and full-width shell-box measurement. |
+| Mobile shell full-width behavior | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed with a zero-padding shell, full-width app-shell measurement, and full-width shell-box measurement. |
 | `src/domain/feed/feed.types.ts` | EXISTS | Feed session and segment types exist. |
 | `src/infrastructure/repositories/feed-repository.ts` | WIRED | File-backed feed session store is wired into the API. |
 | `src/infrastructure/api/routes/feed-sessions.ts` | WIRED | `/feed-sessions` and `/feed-sessions/:id/segments` are routed in the worker. |

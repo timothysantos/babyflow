@@ -39,6 +39,7 @@ body,
 #root {
   margin: 0;
   min-height: 100%;
+  width: 100%;
   background: var(--bg);
   color: var(--text);
 }
@@ -55,10 +56,18 @@ body {
   min-height: 100vh;
 }
 
+.app-shell {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
 .today-page {
   display: grid;
   gap: 12px;
-  max-width: 100%;
+  width: 100%;
+  max-width: none;
   padding: 12px;
   box-sizing: border-box;
 }
@@ -74,6 +83,8 @@ body {
 }
 
 .timeline-card {
+  width: 100%;
+  box-sizing: border-box;
   background: var(--bg-soft);
   border: 1px solid var(--border);
   border-radius: 24px;
@@ -160,6 +171,8 @@ button[aria-pressed='true'],
 }
 
 .quick-action-dock {
+  width: 100%;
+  box-sizing: border-box;
   position: sticky;
   bottom: 0;
   display: grid;
@@ -196,6 +209,8 @@ button[aria-pressed='true'],
 }
 
 .sheet {
+  width: 100%;
+  box-sizing: border-box;
   border-radius: 24px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
