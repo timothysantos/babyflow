@@ -32,6 +32,14 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 12. Slice completion requires adversarial verification, not intent or partial wiring.
 13. Every slice must also produce a downloadable Markdown audit artifact in the repo, under `docs/audits/`, using a filename that matches the slice being audited.
 14. The audit report, including the downloadable Markdown artifact, must include GitHub links for every commit created in that slice.
+15. Optimize audits for preventing false-positive slice completion, not optimistic reporting.
+16. Every audit item must use one of: `EXISTS`, `WIRED`, or `VERIFIED`.
+17. `EXISTS` only means the file/component/function exists.
+18. `WIRED` only means the item is connected into runtime flow.
+19. `VERIFIED` only means runtime behavior is proven with a passing test, DOM assertion, browser validation, command output, API response, screenshot proof, or rendered behavior verification.
+20. Do not treat `EXISTS` or `WIRED` as `VERIFIED`.
+21. For UI acceptance criteria involving flashes, layout, themes, rendering, responsiveness, hydration, or transitions, browser-level verification is mandatory.
+22. Source inspection alone is insufficient for behavior verification.
 
 ## Implementation Sequence
 
@@ -54,3 +62,4 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 - Slice 1 must include `src/client/router.tsx` and prove the router is mounted and tested.
 - Slice 1 must emit `docs/audits/slice-1-audit.md` as the downloadable Markdown report artifact.
 - Slice 1 audit artifacts must include GitHub links for the slice commits.
+- Slice 1 audits must distinguish `EXISTS`, `WIRED`, and `VERIFIED` explicitly.
