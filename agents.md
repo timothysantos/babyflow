@@ -60,6 +60,7 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 40. For temporal behavioral slices, audits must verify chronology integrity across layers. Examples include deterministic segment ordering, chronology preservation through serialization, append continuity after rerender, and stable temporal reconstruction from repository to API to UI.
 41. For UI design-language updates, the current design language must be added to the repo rules and then applied across the existing visible pages and components. Future slice audits must explicitly state whether the implementation matches the current design language, and any deviation must be called out as an audit risk.
 42. For paper-journal parity slices, Today must expose Timeline, Journal, and Compact views, Paper Journal View must mirror the paper columns, quick actions must be treated as timeline stamps, and audits must explicitly verify paper-journal parity.
+43. New visible pages must reuse the shared page scaffold (`PageShell` or its current equivalent) so Today, Profile, and future pages keep the same full-width reading width, hero treatment, and surface rhythm unless the slice explicitly calls for a different layout.
 
 ## 2026 UI Design Language
 

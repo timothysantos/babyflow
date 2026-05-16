@@ -63,12 +63,13 @@ body {
   margin: 0;
 }
 
-.today-page {
+.page-shell {
   display: grid;
   gap: 12px;
   width: 100%;
-  max-width: none;
-  padding: 12px 12px calc(140px + env(safe-area-inset-bottom, 0px));
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 12px 12px calc(184px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
@@ -93,6 +94,58 @@ body {
 
 .today-hero {
   border-radius: 0;
+  display: grid;
+  gap: 12px;
+  background: var(--bg-elevated);
+  border-color: rgba(147, 180, 225, 0.34);
+  box-shadow: var(--shadow);
+  padding: 18px 16px;
+}
+
+.page-hero {
+  border-radius: 0;
+  display: grid;
+  gap: 12px;
+  background: var(--bg-elevated);
+  border-color: rgba(147, 180, 225, 0.34);
+  box-shadow: var(--shadow);
+  padding: 18px 16px;
+}
+
+.page-surface {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-hero-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.page-hero-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.page-shell .page-eyebrow {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.page-title {
+  margin: 0;
+  font-size: clamp(1.7rem, 4.8vw, 2.35rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+.page-subtitle {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 1rem;
 }
 
 .section-label {
@@ -176,17 +229,20 @@ button[aria-pressed='true'],
 }
 
 .quick-action-dock {
-  width: 100%;
+  width: calc(100% + 24px);
   box-sizing: border-box;
   position: sticky;
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  margin-inline: -12px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.98));
+  background:
+    linear-gradient(180deg, rgba(117, 165, 236, 0.18), rgba(255, 255, 255, 0.96)),
+    var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 10px 10px calc(10px + env(safe-area-inset-bottom, 0px));
+  border-radius: 28px 28px 0 0;
+  padding: 12px 14px calc(18px + env(safe-area-inset-bottom, 0px));
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
@@ -400,4 +456,18 @@ button[aria-pressed='true'],
 
 .today-profile-link {
   align-self: start;
+}
+
+.page-row-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.page-row-caption {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.85rem;
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { BabyForm } from '../components/baby/BabyForm';
 import { LanguageToggle } from '../components/i18n/LanguageToggle';
+import { PageShell } from '../layouts/PageShell';
 import { calculateAgeWeek, type BabyDraft, type PreferredLanguage } from '../../domain/baby/baby.types';
 import en from '../../infrastructure/i18n/locales/en.json';
 import zh from '../../infrastructure/i18n/locales/zh-Hans.json';
@@ -28,17 +29,23 @@ export function BabySelectPage() {
   }, [language]);
 
   return (
-    <main className="panel-stack" data-testid="baby-select-page">
-      <section className="timeline-card">
-        <p className="section-label">Profile and language</p>
-        <h1 className="today-title">Baby profile / 宝宝资料</h1>
+    <PageShell
+      title="Baby profile / 宝宝资料"
+      subtitle="Care settings and locale"
+      testId="baby-select-page"
+      className="page-stack panel-stack"
+      actions={
         <Link to="/">Today / 今天</Link>
-      </section>
+      }
+    >
       <section className="timeline-card panel-stack">
+        <div className="page-row-header">
+          <p className="page-row-caption">Language / 语言</p>
+        </div>
         <LanguageToggle value={language} onChange={setLanguage} />
         <section aria-label="labels-preview" className="replay-card">
-        <p>{labelsFor(language)['journal.wake_up_time']}</p>
-        <p>{labelsFor(language)['journal.feed']}</p>
+          <p>{labelsFor(language)['journal.wake_up_time']}</p>
+          <p>{labelsFor(language)['journal.feed']}</p>
         </section>
       </section>
       <section className="timeline-card panel-stack">
@@ -72,6 +79,6 @@ export function BabySelectPage() {
       <p className="status-chip live-chip" data-testid="bilingual-label">
         {labelsFor(language)['journal.wake_up_time']}
       </p>
-    </main>
+    </PageShell>
   );
 }

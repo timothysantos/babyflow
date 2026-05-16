@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MobileShell } from '../layouts/MobileShell';
+import { PageShell } from '../layouts/PageShell';
 import { QuickActionDock } from '../components/actions/QuickActionDock';
 import { EventLog } from '../components/events/EventLog';
 import type { CycleEventDTO, CycleEventKind } from '../../domain/event/event.types';
@@ -111,27 +112,30 @@ export function TodayPage() {
 
   return (
     <MobileShell>
-      <main className="today-page" data-testid="today-page">
-        <section className="timeline-card panel-stack today-hero">
-          <div>
-            <h1 className="today-title">Today / 今天</h1>
-            <p className="today-subtitle">Current cycle</p>
-          </div>
-          <div className="view-mode-switcher" role="group" aria-label="View mode switcher" data-testid="view-mode-switcher">
-            <button type="button" aria-pressed={viewMode === 'timeline'} onClick={() => setViewMode('timeline')}>
-              Timeline / 时间线
-            </button>
-            <button type="button" aria-pressed={viewMode === 'journal'} onClick={() => setViewMode('journal')}>
-              Journal / 记录表
-            </button>
-            <button type="button" aria-pressed={viewMode === 'compact'} onClick={() => setViewMode('compact')}>
-              Compact / 简洁
-            </button>
-          </div>
-          <Link to="/profile" className="today-profile-link">
-            Profile / 资料
-          </Link>
-        </section>
+      <PageShell
+        title="Today / 今天"
+        subtitle="Current cycle"
+        testId="today-page"
+        className="today-page"
+        actions={
+          <>
+            <div className="view-mode-switcher" role="group" aria-label="View mode switcher" data-testid="view-mode-switcher">
+              <button type="button" aria-pressed={viewMode === 'timeline'} onClick={() => setViewMode('timeline')}>
+                Timeline / 时间线
+              </button>
+              <button type="button" aria-pressed={viewMode === 'journal'} onClick={() => setViewMode('journal')}>
+                Journal / 记录表
+              </button>
+              <button type="button" aria-pressed={viewMode === 'compact'} onClick={() => setViewMode('compact')}>
+                Compact / 简洁
+              </button>
+            </div>
+            <Link to="/profile" className="today-profile-link">
+              Profile / 资料
+            </Link>
+          </>
+        }
+      >
         {viewMode === 'journal' ? (
           <PaperJournalView rows={[rowViewModel]} />
         ) : viewMode === 'compact' ? (
@@ -189,7 +193,7 @@ export function TodayPage() {
             ) : null}
           </>
         )}
-      </main>
+      </PageShell>
     </MobileShell>
   );
 }
