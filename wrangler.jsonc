@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "babyflow",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-05-16",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "babyflow",
+      "database_id": "babyflow-local"
+    }
+  ]
+}
