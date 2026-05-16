@@ -109,9 +109,15 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await page.goto('/');
 
   await expect(page.getByTestId('today-page')).toBeVisible();
+  await expect(page.getByTestId('today-page')).toHaveClass(/today-page/);
   await expect(page.getByTestId('compact-mode')).toBeVisible();
+  await expect(page.getByTestId('compact-mode')).toHaveClass(/status-chip/);
   await expect(page.getByTestId('quick-action-dock')).toBeVisible();
+  const shellBg = await page.getByTestId('app-shell').evaluate((node) => getComputedStyle(node).backgroundColor);
+  expect(shellBg).not.toBe('rgb(255, 255, 255)');
   await expect(page.getByTestId('event-log')).toBeVisible();
+  const feedCardRadius = await page.getByTestId('feed-sessions').evaluate((node) => getComputedStyle(node).borderRadius);
+  expect(Number.parseFloat(feedCardRadius)).toBeGreaterThanOrEqual(20);
   await expect(page.getByTestId('feed-sessions')).toBeVisible();
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Compact mode off' })).toBeVisible();

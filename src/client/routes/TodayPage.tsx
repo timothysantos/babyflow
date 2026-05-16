@@ -92,23 +92,30 @@ export function TodayPage() {
   return (
     <MobileShell>
       <main className="today-page" data-testid="today-page">
-        <h1 className="today-title">Today / 今天</h1>
-        <p className="today-subtitle">BabyFlow paper journal</p>
-        <Link to="/profile">Profile / 资料</Link>
-        <button type="button" onClick={() => setCompactMode((value) => !value)}>
+        <section className="timeline-card">
+          <p className="section-label">Timeline first</p>
+          <h1 className="today-title">Today / 今天</h1>
+          <p className="today-subtitle">BabyFlow paper journal</p>
+          <Link to="/profile">Profile / 资料</Link>
+        </section>
+        <section className="timeline-card panel-stack">
+          <button type="button" onClick={() => setCompactMode((value) => !value)}>
           {compactMode ? 'Compact mode on' : 'Compact mode off'}
-        </button>
-        <SingleRowCycleLogger />
-        <div className="compact-mode" data-testid="compact-mode" data-compact-mode={compactMode ? 'on' : 'off'}>
+          </button>
+          <SingleRowCycleLogger />
+          <div className="compact-mode status-chip" data-testid="compact-mode" data-compact-mode={compactMode ? 'on' : 'off'}>
           {compactMode ? <p>Compact mode active.</p> : <p>Compact mode scaffolded.</p>}
-        </div>
-        <EventLog events={events} onRecord={recordEvent} />
-        <FeedSessionsPanel
-          sessions={feedSessions}
-          onStartSession={startFeedSession}
-          onAddSegment={addFeedSegment}
-          onCloseSession={closeFeedSession}
-        />
+          </div>
+        </section>
+        <section className="panel-stack">
+          <EventLog events={events} onRecord={recordEvent} />
+          <FeedSessionsPanel
+            sessions={feedSessions}
+            onStartSession={startFeedSession}
+            onAddSegment={addFeedSegment}
+            onCloseSession={closeFeedSession}
+          />
+        </section>
         <QuickActionDock />
       </main>
     </MobileShell>

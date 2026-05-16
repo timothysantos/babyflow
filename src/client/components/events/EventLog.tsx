@@ -16,7 +16,7 @@ const actions: Array<{ kind: CycleEventKind; label: string }> = [
 
 export function EventLog({ events, onRecord }: Props) {
   return (
-    <section aria-label="Cycle events" data-testid="event-log">
+    <section className="timeline-card" aria-label="Cycle events" data-testid="event-log">
       <div role="group" aria-label="Cycle event actions">
         {actions.map((action) => (
           <button
@@ -29,9 +29,9 @@ export function EventLog({ events, onRecord }: Props) {
           </button>
         ))}
       </div>
-      <ol data-testid="event-log-items">
+      <ol className="timeline-list" data-testid="event-log-items">
         {events.map((event) => (
-          <li key={event.id} data-testid="event-log-item">
+          <li key={event.id} className="timeline-item" data-testid="event-log-item">
             {event.kind}: {event.label}
           </li>
         ))}

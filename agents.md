@@ -58,6 +58,54 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 38. For event-driven slices, audits must verify deterministic ordering across layers when it matters. Examples include repository newest-first ordering, API serialization order, and UI render order after fetch. Ordering in one layer alone is not enough if the user-visible flow depends on multiple layers.
 39. For behavioral-session slices, audits must verify session lifecycle continuity and segment chronology. Examples include session start, ordered segment append behavior, close semantics, and preservation of segment order across repository, API, and UI layers.
 40. For temporal behavioral slices, audits must verify chronology integrity across layers. Examples include deterministic segment ordering, chronology preservation through serialization, append continuity after rerender, and stable temporal reconstruction from repository to API to UI.
+41. For UI design-language updates, the current design language must be added to the repo rules and then applied across the existing visible pages and components. Future slice audits must explicitly state whether the implementation matches the current design language, and any deviation must be called out as an audit risk.
+
+## 2026 UI Design Language
+
+BabyFlow should feel like calm OS-native journaling plus an intelligent caregiver assistant.
+
+### Visual Direction
+
+- soft glassy surfaces without heavy glassmorphism
+- clean full-width mobile layouts
+- subtle depth using borders, blur, and elevation
+- rounded 20-28px cards
+- compact but breathable spacing
+- large thumb-safe controls
+- timeline-first layout
+- quiet AI or insight panels, not chatbot-like UI
+- no childish cartoon styling
+- no saturated baby-app aesthetic
+
+### Theme
+
+- Primary: baby blue
+- Accent: baby pink
+- Supporting: warm white, soft slate, low-glare night navy
+
+### Modern 2026 Feel
+
+Use:
+
+- adaptive surfaces
+- fluid cards
+- sticky contextual controls
+- bottom sheets
+- soft motion
+- live status chips
+- timeline replay cards
+- progressive disclosure
+- responsive compact and row modes
+
+Avoid:
+
+- dashboard-heavy SaaS look
+- childish baby tracker look
+- Bootstrap-style forms
+- dense cards
+- excessive shadows
+- modal-heavy workflows
+- neon gradients
 
 ## Implementation Sequence
 

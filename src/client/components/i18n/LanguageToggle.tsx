@@ -7,7 +7,7 @@ type Props = {
 
 export function LanguageToggle({ value, onChange }: Props) {
   return (
-    <div role="group" aria-label="Language / 语言">
+    <div role="group" aria-label="Language / 语言" className="panel-stack">
       {(['en', 'zh-Hans', 'bilingual'] as const).map((language) => (
         <button
           key={language}

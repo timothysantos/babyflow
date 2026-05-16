@@ -28,39 +28,50 @@ export function BabySelectPage() {
   }, [language]);
 
   return (
-    <main>
-      <h1>Baby profile / 宝宝资料</h1>
-      <Link to="/">Today / 今天</Link>
-      <LanguageToggle value={language} onChange={setLanguage} />
-      <section aria-label="labels-preview">
+    <main className="panel-stack" data-testid="baby-select-page">
+      <section className="timeline-card">
+        <p className="section-label">Profile and language</p>
+        <h1 className="today-title">Baby profile / 宝宝资料</h1>
+        <Link to="/">Today / 今天</Link>
+      </section>
+      <section className="timeline-card panel-stack">
+        <LanguageToggle value={language} onChange={setLanguage} />
+        <section aria-label="labels-preview" className="replay-card">
         <p>{labelsFor(language)['journal.wake_up_time']}</p>
         <p>{labelsFor(language)['journal.feed']}</p>
+        </section>
       </section>
-      <BabyForm
-        preferredLanguage={language}
-        onCreate={async (draft: BabyDraft) => {
-          const nextBaby = { ...draft, preferredLanguage: language };
-          setSelectedBaby(nextBaby);
-        }}
-      />
-      <button
-        onClick={async () => {
-          if (selectedBaby) setSelectedBaby(selectedBaby);
-        }}
-      >
-        Select first baby
-      </button>
+      <section className="timeline-card panel-stack">
+        <BabyForm
+          preferredLanguage={language}
+          onCreate={async (draft: BabyDraft) => {
+            const nextBaby = { ...draft, preferredLanguage: language };
+            setSelectedBaby(nextBaby);
+          }}
+        />
+        <button
+          onClick={async () => {
+            if (selectedBaby) setSelectedBaby(selectedBaby);
+          }}
+        >
+          Select first baby
+        </button>
+      </section>
       {selectedBaby ? (
-        <>
+        <section className="timeline-card">
           <p data-testid="selected-baby">Selected: {selectedBaby.name}</p>
           <p data-testid="age-week">
             Age week: {calculateAgeWeek(selectedBaby.birthDate, '2026-05-16')}
           </p>
-        </>
+        </section>
       ) : (
-        <p data-testid="age-week">Age week: 0</p>
+        <p className="timeline-card" data-testid="age-week">
+          Age week: 0
+        </p>
       )}
-      <p data-testid="bilingual-label">{labelsFor(language)['journal.wake_up_time']}</p>
+      <p className="status-chip live-chip" data-testid="bilingual-label">
+        {labelsFor(language)['journal.wake_up_time']}
+      </p>
     </main>
   );
 }

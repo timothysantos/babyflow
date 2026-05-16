@@ -23,22 +23,22 @@ const segments: Array<{ kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE'; label: strin
 
 export function FeedSessionsPanel({ sessions, onStartSession, onAddSegment, onCloseSession }: Props) {
   return (
-    <section aria-label="Feed sessions" data-testid="feed-sessions">
-      <div role="group" aria-label="Start feed session">
+    <section className="timeline-card panel-stack" aria-label="Feed sessions" data-testid="feed-sessions">
+      <div role="group" aria-label="Start feed session" className="panel-stack">
         {modes.map((entry) => (
           <button key={entry.mode} type="button" onClick={() => onStartSession(entry.mode)}>
             Start {entry.label}
           </button>
         ))}
       </div>
-      <ol data-testid="feed-session-list">
+      <ol className="timeline-list" data-testid="feed-session-list">
         {sessions.map((session) => (
-          <li key={session.id} data-testid="feed-session-item">
+          <li key={session.id} className="timeline-item" data-testid="feed-session-item">
             <p>
               {session.mode} feed for {session.babyId}
             </p>
             <p data-testid="feed-session-status">{session.endedAt ? 'Closed' : 'Open'}</p>
-            <div role="group" aria-label={`Feed segments for ${session.id}`}>
+            <div role="group" aria-label={`Feed segments for ${session.id}`} className="panel-stack">
               {segments.map((segment) => (
                 <button key={segment.kind} type="button" onClick={() => onAddSegment(session.id, segment.kind)}>
                   Add {segment.label}
@@ -48,9 +48,9 @@ export function FeedSessionsPanel({ sessions, onStartSession, onAddSegment, onCl
                 Close feed
               </button>
             </div>
-            <ul>
+            <ul className="stack-list">
               {session.segments.map((segment) => (
-                <li key={segment.id} data-testid="feed-segment-item">
+                <li key={segment.id} className="timeline-item" data-testid="feed-segment-item">
                   {segment.kind}: {segment.label}
                 </li>
               ))}

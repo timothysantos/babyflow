@@ -86,9 +86,12 @@ describe('TodayPage', () => {
 
     expect(screen.getByTestId('mobile-shell')).toBeTruthy();
     expect(screen.getByTestId('today-page')).toBeTruthy();
+    expect(screen.getByTestId('today-page').className).toContain('today-page');
     expect(screen.getByTestId('compact-mode')).toBeTruthy();
+    expect(screen.getByTestId('compact-mode').className).toContain('status-chip');
     expect(screen.getByText('Compact mode scaffolded.')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
+    expect(screen.getByTestId('feed-sessions').className).toContain('timeline-card');
     expect(screen.getByTestId('feed-sessions')).toBeTruthy();
     expect(screen.getByTestId('cycle-row-scroll')).toBeTruthy();
     expect(screen.getByTestId('cycle-row-scroll').scrollWidth).toBeGreaterThanOrEqual(
