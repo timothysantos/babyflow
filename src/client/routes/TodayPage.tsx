@@ -4,15 +4,15 @@ import { MobileShell } from '../layouts/MobileShell';
 import { QuickActionDock } from '../components/actions/QuickActionDock';
 import { SingleRowCycleLogger } from '../components/journal/SingleRowCycleLogger';
 import { EventLog } from '../components/events/EventLog';
-import type { EventDTO, EventKind } from '../../domain/event/event.types';
+import type { CycleEventDTO, CycleEventKind } from '../../domain/event/event.types';
 
 function eventsUrl() {
-  return new URL('/events', window.location.origin);
+  return new URL('/cycle-events', window.location.origin);
 }
 
 export function TodayPage() {
   const [compactMode, setCompactMode] = useState(() => window.localStorage.getItem('babyflow.today.compactMode') === 'true');
-  const [events, setEvents] = useState<EventDTO[]>([]);
+  const [events, setEvents] = useState<CycleEventDTO[]>([]);
 
   useEffect(() => {
     window.localStorage.setItem('babyflow.today.compactMode', String(compactMode));
@@ -21,19 +21,19 @@ export function TodayPage() {
   useEffect(() => {
     void fetch(eventsUrl())
       .then((response) => response.json())
-      .then((payload: { events?: EventDTO[] }) =>
+      .then((payload: { events?: CycleEventDTO[] }) =>
         setEvents((current) => (current.length > 0 ? current : payload.events ?? []))
       )
       .catch(() => setEvents([]));
   }, []);
 
-  async function recordEvent(kind: EventKind) {
+  async function recordEvent(kind: CycleEventKind) {
     const response = await fetch(eventsUrl(), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ kind, label: kind.toLowerCase().replaceAll('_', ' ') })
+      body: JSON.stringify({ kind, label: kind.toLowerCase().replaceAll('_', ' '), babyId: 'current-baby' })
     });
-    const payload = (await response.json()) as { event?: EventDTO };
+    const payload = (await response.json()) as { event?: CycleEventDTO };
     if (payload.event) {
       setEvents((current) => [payload.event!, ...current]);
     }

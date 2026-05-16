@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 test('today page stays mobile-friendly at 390px and keeps the dock visible while scrolling', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const recordedEvents: Array<{ kind: string; label: string }> = [];
-  await page.route('**/events', async (route) => {
+  await page.route('**/cycle-events', async (route) => {
     const request = route.request();
     if (request.method() === 'GET') {
       await route.fulfill({

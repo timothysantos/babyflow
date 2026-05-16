@@ -1,6 +1,6 @@
 import { healthResponse } from './infrastructure/api/routes/health';
 import { babiesRoute } from './infrastructure/api/routes/babies';
-import { eventsRoute } from './infrastructure/api/routes/events';
+import { cycleEventsRoute } from './infrastructure/api/routes/events';
 import { createDbClient } from './infrastructure/db/client';
 
 export interface Env {
@@ -20,8 +20,8 @@ export default {
       return babiesRoute(request);
     }
 
-    if (url.pathname === '/events') {
-      return eventsRoute(request);
+    if (url.pathname === '/cycle-events' || url.pathname === '/events') {
+      return cycleEventsRoute(request);
     }
 
     return new Response('BabyFlow', {

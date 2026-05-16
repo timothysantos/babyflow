@@ -1,11 +1,11 @@
-import type { EventDTO, EventKind } from '../../../domain/event/event.types';
+import type { CycleEventDTO, CycleEventKind } from '../../../domain/event/event.types';
 
 type Props = {
-  events: EventDTO[];
-  onRecord: (kind: EventKind) => void;
+  events: CycleEventDTO[];
+  onRecord: (kind: CycleEventKind) => void;
 };
 
-const actions: Array<{ kind: EventKind; label: string }> = [
+const actions: Array<{ kind: CycleEventKind; label: string }> = [
   { kind: 'WAKE', label: 'Wake' },
   { kind: 'FEED', label: 'Feed' },
   { kind: 'BURP', label: 'Burp' },
@@ -16,8 +16,8 @@ const actions: Array<{ kind: EventKind; label: string }> = [
 
 export function EventLog({ events, onRecord }: Props) {
   return (
-    <section aria-label="Event log" data-testid="event-log">
-      <div role="group" aria-label="Event actions">
+    <section aria-label="Cycle events" data-testid="event-log">
+      <div role="group" aria-label="Cycle event actions">
         {actions.map((action) => (
           <button
             key={action.kind}

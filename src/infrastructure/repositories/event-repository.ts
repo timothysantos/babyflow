@@ -1,8 +1,8 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import type { EventDTO, EventDraft } from '../../domain/event/event.types';
+import type { CycleEventDTO, CycleEventDraft } from '../../domain/event/event.types';
 
-type EventRow = EventDTO;
+type EventRow = CycleEventDTO;
 
 type EventStore = {
   events: EventRow[];
@@ -10,7 +10,7 @@ type EventStore = {
 
 const workerKey = process.env.VITEST_WORKER_ID ?? 'main';
 const dataDir = process.env.BABYFLOW_DATA_DIR ?? join('.babyflow-data', workerKey);
-const storeFile = join(dataDir, 'events.json');
+const storeFile = join(dataDir, 'cycle-events.json');
 
 function nowIso() {
   return new Date().toISOString();
@@ -34,11 +34,12 @@ async function saveStore(store: EventStore) {
   await writeFile(storeFile, JSON.stringify(store, null, 2), 'utf8');
 }
 
-export async function recordEvent(draft: EventDraft): Promise<EventDTO> {
-  const row: EventDTO = {
+export async function recordEvent(draft: CycleEventDraft): Promise<CycleEventDTO> {
+  const row: CycleEventDTO = {
     id: makeId(),
     kind: draft.kind,
     label: draft.label,
+    babyId: draft.babyId,
     recordedAt: nowIso()
   };
   const store = await ensureStore();
@@ -47,7 +48,7 @@ export async function recordEvent(draft: EventDraft): Promise<EventDTO> {
   return row;
 }
 
-export async function listEvents(): Promise<EventDTO[]> {
+export async function listEvents(): Promise<CycleEventDTO[]> {
   const store = await ensureStore();
   return store.events;
 }
