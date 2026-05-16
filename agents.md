@@ -50,6 +50,7 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 30. Repository and persistence tests must use an isolated local data directory per test worker or explicit reset between tests.
 31. Client components must not import Node-only persistence modules; browser bundles should call route-level APIs or use local UI state instead.
 32. If a slice uses transitional infrastructure such as in-memory storage, file-backed storage, or mocks, the audit must explicitly state what is verified, what is not verified, and what future infrastructure is expected.
+33. Do not treat placeholder UI, mounted components, or static mode toggles as fully implemented interaction behavior. Audits must explicitly distinguish `SCAFFOLDED`, `PARTIALLY IMPLEMENTED`, and `BEHAVIORALLY VERIFIED` states where relevant.
 
 ## Implementation Sequence
 
@@ -80,3 +81,4 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 - Slice 1 audit practices must escalate proof strength for any behavior that previously caused a false-positive.
 - Slice 2 and later tests must isolate repository state per worker or reset it explicitly before assertions.
 - Transitional infrastructure must never silently become the canonical architecture in an audit.
+- Scaffolded UI must never be reported as fully implemented interaction behavior without a runtime proof of the interaction itself.
