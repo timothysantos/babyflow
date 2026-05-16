@@ -58,4 +58,4 @@ Verdict: COMPLETE
 - Repository tests use an isolated local data directory per Vitest worker.
 - Client bundle does not import Node-only persistence modules.
 - Slice commits:
-  - [`a4e846e`](https://github.com/timothysantos/babyflow/commit/a4e846e) `feat: implement slice 2 baby profiles and locale`
+  - [`6683c4b`](https://github.com/timothysantos/babyflow/commit/6683c4b) `fix: isolate slice 2 persistence and client bundle`
