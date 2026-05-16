@@ -44,6 +44,9 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 24. Never treat `EXISTS` or `WIRED` as `VERIFIED`.
 25. Use measurable proof wording in audits. Avoid subjective phrases like "small", "looks correct", or "appears mounted".
 26. Prefer runtime proof, test output, DOM assertions, API responses, browser validation, screenshot proof, or rendered-behavior verification over source inspection whenever behavior is being audited.
+27. Use `REVIEWED` or `SOURCE VERIFIED` for source-only checks; reserve `VERIFIED` for repeatable runtime proof.
+28. Manual browser inspection is not enough for `VERIFIED` when a repeatable Playwright smoke test is feasible.
+29. D1 proof must state `mock-env worker test` unless real local D1 was actually exercised.
 
 ## Implementation Sequence
 
@@ -68,3 +71,5 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 - Slice 1 audit artifacts must include GitHub links for the slice commits.
 - Slice 1 audits must distinguish `EXISTS`, `WIRED`, and `VERIFIED` explicitly.
 - Slice 1 audits must use measurable proof wording, not subjective descriptions.
+- Slice 1 audits must use `REVIEWED` or `SOURCE VERIFIED` for source-only checks, and `VERIFIED` only for repeatable runtime proof.
+- Slice 1 audits must name D1 proof accurately as `mock-env worker test` unless local D1 is truly exercised.
