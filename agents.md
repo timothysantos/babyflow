@@ -57,6 +57,7 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 37. For event-driven slices, audits must verify event continuity when user actions are recorded asynchronously. Examples include freshly recorded events surviving delayed GETs, rerenders not erasing recent events, deterministic ordering, and route/API/UI synchronization. Rendering the event list alone is not sufficient proof of event-system reliability.
 38. For event-driven slices, audits must verify deterministic ordering across layers when it matters. Examples include repository newest-first ordering, API serialization order, and UI render order after fetch. Ordering in one layer alone is not enough if the user-visible flow depends on multiple layers.
 39. For behavioral-session slices, audits must verify session lifecycle continuity and segment chronology. Examples include session start, ordered segment append behavior, close semantics, and preservation of segment order across repository, API, and UI layers.
+40. For temporal behavioral slices, audits must verify chronology integrity across layers. Examples include deterministic segment ordering, chronology preservation through serialization, append continuity after rerender, and stable temporal reconstruction from repository to API to UI.
 
 ## Implementation Sequence
 
