@@ -4,9 +4,9 @@ import { QuickActionDock } from '../src/client/components/actions/QuickActionDoc
 
 describe('QuickActionDock', () => {
   it('renders the core actions', () => {
-    render(<QuickActionDock />);
-    expect(screen.getByRole('navigation', { name: 'Quick actions' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Wake note' })).toBeTruthy();
+    render(<QuickActionDock onAction={() => undefined} />);
+    expect(screen.getByRole('navigation', { name: 'Add to timeline' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Wake' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'More' })).toBeTruthy();
   });
 });

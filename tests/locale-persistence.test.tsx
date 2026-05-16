@@ -14,7 +14,7 @@ describe('locale persistence', () => {
     );
     fireEvent.click(screen.getByRole('button', { name: 'bilingual' }));
     expect(window.localStorage.getItem('babyflow.locale')).toBe('bilingual');
-    expect(screen.getByTestId('bilingual-label').textContent).toContain('起床时间');
+    expect(screen.getByTestId('bilingual-label').textContent).toContain('醒来的时间');
 
     rerender(
       <MemoryRouter>

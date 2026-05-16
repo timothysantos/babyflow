@@ -24,6 +24,7 @@ const segments: Array<{ kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE'; label: strin
 export function FeedSessionsPanel({ sessions, onStartSession, onAddSegment, onCloseSession }: Props) {
   return (
     <section className="timeline-card panel-stack" aria-label="Feed sessions" data-testid="feed-sessions">
+      <p className="paper-heading">Feed session details</p>
       <div role="group" aria-label="Start feed session" className="panel-stack">
         {modes.map((entry) => (
           <button key={entry.mode} type="button" onClick={() => onStartSession(entry.mode)}>
@@ -34,10 +35,10 @@ export function FeedSessionsPanel({ sessions, onStartSession, onAddSegment, onCl
       <ol className="timeline-list" data-testid="feed-session-list">
         {sessions.map((session) => (
           <li key={session.id} className="timeline-item" data-testid="feed-session-item">
-            <p>
-              {session.mode} feed for {session.babyId}
+            <p className="paper-heading">
+              {session.mode} feed · {session.babyId}
             </p>
-            <p data-testid="feed-session-status">{session.endedAt ? 'Closed' : 'Open'}</p>
+            <p data-testid="feed-session-status">{session.endedAt ? 'Closed session' : 'Open session'}</p>
             <div role="group" aria-label={`Feed segments for ${session.id}`} className="panel-stack">
               {segments.map((segment) => (
                 <button key={segment.kind} type="button" onClick={() => onAddSegment(session.id, segment.kind)}>
@@ -51,7 +52,8 @@ export function FeedSessionsPanel({ sessions, onStartSession, onAddSegment, onCl
             <ul className="stack-list">
               {session.segments.map((segment) => (
                 <li key={segment.id} className="timeline-item" data-testid="feed-segment-item">
-                  {segment.kind}: {segment.label}
+                  <span className="paper-heading">{segment.kind}</span>
+                  <span className="timeline-item-label">{segment.label}</span>
                 </li>
               ))}
             </ul>

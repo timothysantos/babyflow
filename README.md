@@ -4,7 +4,7 @@ Canonical workspace for the BabyFlow product spec and implementation.
 
 ## Reference spec
 
-The base product doctrine lives in the repo at [`docs/spec/babyflow-canonical-master-spec-v7-full.md`](/Users/tim/22m/ai-projects/babyflow/docs/spec/babyflow-canonical-master-spec-v7-full.md).
+The base product doctrine lives in the repo at [`docs/spec/babyflow-canonical-master-spec-v8-full.md`](/Users/tim/22m/ai-projects/babyflow/docs/spec/babyflow-canonical-master-spec-v8-full.md).
 
 The current UI design language lives in [`docs/spec/ui-design-language-2026.md`](/Users/tim/22m/ai-projects/babyflow/docs/spec/ui-design-language-2026.md).
 
@@ -17,3 +17,4 @@ Current slice trail:
 - Slice 3: paper journal Today UI
 - Slice 4: cycle events foundation
 - Slice 5: feed sessions and feed segments
+- Slice 5B: paper journal view parity

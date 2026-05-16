@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { TodayPage } from '../src/client/routes/TodayPage';
 
 beforeEach(() => {
+  window.localStorage.clear();
   vi.stubGlobal(
     'fetch',
     vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -14,6 +15,16 @@ beforeEach(() => {
       }
       if (method === 'GET' && url.includes('/feed-sessions')) {
         return Response.json({ sessions: [] });
+      }
+      if (method === 'POST' && url.includes('/cycle-events') && init?.body?.toString().includes('"kind":"PLAY"')) {
+        return Response.json({
+          event: {
+            id: 'event_2',
+            kind: 'PLAY',
+            label: 'play',
+            recordedAt: '2026-05-16T00:05:00.000Z'
+          }
+        });
       }
       if (method === 'POST' && url.includes('/cycle-events')) {
         return Response.json({
@@ -77,7 +88,7 @@ afterEach(() => {
 });
 
 describe('TodayPage', () => {
-  it('renders mobile layout, expandable row, event log, and quick action dock', async () => {
+  it('renders mobile layout, journal switcher, event log, and quick action dock', async () => {
     render(
       <MemoryRouter>
         <TodayPage />
@@ -89,33 +100,38 @@ describe('TodayPage', () => {
     expect(screen.getByTestId('today-page').className).toContain('today-page');
     expect(screen.getByTestId('compact-mode')).toBeTruthy();
     expect(screen.getByTestId('compact-mode').className).toContain('status-chip');
-    expect(screen.getByText('Condensed journal available.')).toBeTruthy();
+    expect(screen.getByRole('group', { name: 'View mode switcher' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Timeline / 时间线' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Journal / 记录表' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Compact / 简洁' })).toBeTruthy();
+    expect(screen.getByText('Timeline view active.')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
-    expect(screen.getByTestId('feed-sessions').className).toContain('timeline-card');
-    expect(screen.getByTestId('feed-sessions')).toBeTruthy();
-    expect(screen.getByTestId('cycle-row-scroll')).toBeTruthy();
-    expect(screen.getByTestId('cycle-row-scroll').scrollWidth).toBeGreaterThanOrEqual(
-      screen.getByTestId('cycle-row-scroll').clientWidth
-    );
+    expect(screen.getByTestId('journal-summary')).toBeTruthy();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Condensed journal' }));
-    expect(screen.getByText('Condensed journal active.')).toBeTruthy();
-    expect(window.localStorage.getItem('babyflow.today.compactMode')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
+    expect(screen.getByText('Compact journal active.')).toBeTruthy();
+    expect(window.localStorage.getItem('babyflow.today.viewMode')).toBe('compact');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Mark wake' }));
-    await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('WAKE: wake'));
+    fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    expect(screen.getByTestId('row-details')).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
+    await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));
 
     fireEvent.click(screen.getByRole('button', { name: 'Start Nurse' }));
-    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed for current-baby'));
+    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed · current-baby'));
 
     fireEvent.click(screen.getByRole('button', { name: 'Add Left latch' }));
-    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('LEFT: left'));
+    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('LEFT'));
 
     fireEvent.click(screen.getByRole('button', { name: 'Close session' }));
-    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('Closed'));
+    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('Closed session'));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Show details' }));
-    expect(screen.getByTestId('cycle-row-expanded-details')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Journal / 记录表' }));
+    expect(screen.getByTestId('paper-journal-view')).toBeTruthy();
+    expect(screen.getByTestId('paper-journal-scroll')).toBeTruthy();
+    expect(screen.getByText('Wake Up Time / 醒来的时间')).toBeTruthy();
   });
 
   it('renders cycle events newest-first from the API response', async () => {
@@ -149,12 +165,13 @@ describe('TodayPage', () => {
       </MemoryRouter>
     );
 
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
     await waitFor(() =>
-      expect(screen.getByTestId('event-log-items').textContent).toContain('FEED: feed')
+      expect(screen.getByTestId('event-log-items').textContent).toContain('Feed stamp')
     );
-    expect(screen.getByTestId('event-log-items').textContent).toContain('WAKE: wake');
-    expect(screen.getByTestId('event-log-items').textContent?.indexOf('FEED: feed')).toBeLessThan(
-      screen.getByTestId('event-log-items').textContent?.indexOf('WAKE: wake') ?? 0
+    expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp');
+    expect(screen.getByTestId('event-log-items').textContent?.indexOf('Feed stamp')).toBeLessThan(
+      screen.getByTestId('event-log-items').textContent?.indexOf('Wake stamp') ?? 0
     );
   });
 
@@ -194,10 +211,11 @@ describe('TodayPage', () => {
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('FORMULA feed for baby_1'));
-    expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed for baby_1');
-    expect(screen.getByTestId('feed-session-list').textContent?.indexOf('FORMULA feed for baby_1')).toBeLessThan(
-      screen.getByTestId('feed-session-list').textContent?.indexOf('BREAST feed for baby_1') ?? 0
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('FORMULA feed · baby_1'));
+    expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed · baby_1');
+    expect(screen.getByTestId('feed-session-list').textContent?.indexOf('FORMULA feed · baby_1')).toBeLessThan(
+      screen.getByTestId('feed-session-list').textContent?.indexOf('BREAST feed · baby_1') ?? 0
     );
   });
 });

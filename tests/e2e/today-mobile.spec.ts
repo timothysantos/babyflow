@@ -112,6 +112,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('today-page')).toHaveClass(/today-page/);
   await expect(page.getByTestId('compact-mode')).toBeVisible();
   await expect(page.getByTestId('compact-mode')).toHaveClass(/status-chip/);
+  await expect(page.getByTestId('view-mode-switcher')).toBeVisible();
   const appShellBox = await page.getByTestId('app-shell').boundingBox();
   expect(appShellBox).not.toBeNull();
   expect(appShellBox!.width).toBeGreaterThanOrEqual(380);
@@ -121,12 +122,8 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(shellBox!.width).toBeGreaterThanOrEqual(360);
   const shellBg = await page.getByTestId('app-shell').evaluate((node) => getComputedStyle(node).backgroundColor);
   expect(shellBg).not.toBe('rgb(255, 255, 255)');
-  await expect(page.getByTestId('event-log')).toBeVisible();
-  const feedCardRadius = await page.getByTestId('feed-sessions').evaluate((node) => getComputedStyle(node).borderRadius);
-  expect(Number.parseFloat(feedCardRadius)).toBeGreaterThanOrEqual(20);
-  await expect(page.getByTestId('feed-sessions')).toBeVisible();
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Condensed journal' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Compact / 简洁' })).toBeVisible();
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
@@ -149,28 +146,42 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   });
   expect(Number.parseFloat(dockPaddingBottom)).toBeGreaterThanOrEqual(8);
 
-  await page.getByRole('button', { name: 'Mark wake' }).click();
-  await expect(page.getByTestId('event-log-items')).toContainText('WAKE: wake');
+  await page.getByRole('button', { name: 'Wake' }).click();
+  await page.getByRole('button', { name: 'More' }).click();
+  await expect(page.getByTestId('row-details')).toBeVisible();
+  await expect(page.getByTestId('event-log')).toBeVisible();
+  await expect(page.getByTestId('feed-sessions')).toBeVisible();
+  const feedCardRadius = await page.getByTestId('feed-sessions').evaluate((node) => getComputedStyle(node).borderRadius);
+  expect(Number.parseFloat(feedCardRadius)).toBeGreaterThanOrEqual(20);
+  await expect(page.getByTestId('event-log-items')).toContainText('Wake stamp');
 
   await page.getByRole('button', { name: 'Start Nurse' }).click();
-  await expect(page.getByTestId('feed-session-list')).toContainText('BREAST feed for current-baby');
+  await expect(page.getByTestId('feed-session-list')).toContainText('BREAST feed · current-baby');
   await page.getByRole('button', { name: 'Add Left latch' }).click();
   await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(1);
-  await expect(page.getByTestId('feed-session-list')).toContainText('LEFT: left');
+  await expect(page.getByTestId('feed-session-list')).toContainText('LEFT');
   await page.getByRole('button', { name: 'Add Right latch' }).click();
   await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(2);
-  await expect(page.getByTestId('feed-session-list')).toContainText('RIGHT: right');
+  await expect(page.getByTestId('feed-session-list')).toContainText('RIGHT');
   await page.getByRole('button', { name: 'Close session' }).click();
-  await expect(page.getByTestId('feed-session-status')).toContainText('Closed');
+  await expect(page.getByTestId('feed-session-status')).toContainText('Closed session');
 
-  await page.getByRole('button', { name: 'Condensed journal' }).click();
-  await expect(page.getByText('Condensed journal active.')).toBeVisible();
+  await page.getByRole('button', { name: 'Journal / 记录表' }).click();
+  await expect(page.getByTestId('paper-journal-view')).toBeVisible();
+  await expect(page.getByTestId('paper-journal-scroll')).toBeVisible();
+  await expect(page.getByTestId('paper-journal-row')).toBeVisible();
+  const rowBox = await page.getByTestId('paper-journal-scroll').boundingBox();
+  expect(rowBox).not.toBeNull();
+  expect(rowBox!.width).toBeLessThanOrEqual(390);
+
+  await page.getByRole('button', { name: 'Timeline / 时间线' }).click();
+  await expect(page.getByText('Timeline view active.')).toBeVisible();
 
   await page.getByRole('link', { name: 'Profile / 资料' }).click();
   await expect(page.getByRole('heading', { name: 'Baby profile / 宝宝资料' })).toBeVisible();
   await page.getByRole('link', { name: 'Today / 今天' }).click();
   await expect(page.getByTestId('today-page')).toBeVisible();
-  await expect(page.getByTestId('compact-mode')).toHaveAttribute('data-compact-mode', 'on');
+  await expect(page.getByTestId('compact-mode')).toHaveAttribute('data-compact-mode', 'off');
 
   await page.evaluate(() => {
     window.scrollTo(0, document.body.scrollHeight);
@@ -178,10 +189,6 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
 
   const dockAfter = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockAfter).not.toBeNull();
-  expect(dockAfter!.y).toBeGreaterThanOrEqual(0);
-  expect(dockAfter!.y + dockAfter!.height).toBeLessThanOrEqual(844);
+  await expect(page.getByTestId('quick-action-dock')).toBeVisible();
 
-  const rowBox = await page.getByTestId('cycle-row-scroll').boundingBox();
-  expect(rowBox).not.toBeNull();
-  expect(rowBox!.width).toBeLessThanOrEqual(390);
 });

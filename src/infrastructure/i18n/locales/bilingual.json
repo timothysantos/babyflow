@@ -1,8 +1,20 @@
 {
-  "journal.wake_up_time": "Wake up time / 起床时间",
-  "journal.start_of_feed_time": "Start of feed time / 开始喂奶时间",
-  "journal.feed": "Feed / 喂奶",
+  "journal.wake_up_time": "Wake Up Time / 醒来的时间",
+  "journal.start_of_feed_time": "Start of Feed Time / 开始喂奶的时间",
+  "journal.feed": "Feed / 奶量",
+  "journal.start_of_play_time": "Start of Play Time / 开始玩的时间",
+  "journal.start_of_sleep_time": "Start of Sleep Time / 开始睡的时间",
+  "journal.sleep_duration": "Sleep Duration / 睡眠时间",
+  "journal.urine": "Urine / 小便",
+  "journal.stool": "Stool / 大便",
+  "journal.remarks": "Remarks / 其他笔记",
+  "view.timeline": "Timeline / 时间线",
+  "view.journal": "Journal / 记录表",
+  "view.compact": "Compact / 简洁",
   "action.wake": "Wake / 醒来",
   "action.feed": "Feed / 喂奶",
-  "action.note": "Note / 备注"
+  "action.play": "Play / 玩耍",
+  "action.diaper": "Diaper / 尿布",
+  "action.note": "Note / 备注",
+  "action.more": "More / 更多"
 }

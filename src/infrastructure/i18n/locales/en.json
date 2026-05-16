@@ -1,8 +1,20 @@
 {
-  "journal.wake_up_time": "Wake up time",
-  "journal.start_of_feed_time": "Start of feed time",
+  "journal.wake_up_time": "Wake Up Time",
+  "journal.start_of_feed_time": "Start of Feed Time",
   "journal.feed": "Feed",
+  "journal.start_of_play_time": "Start of Play Time",
+  "journal.start_of_sleep_time": "Start of Sleep Time",
+  "journal.sleep_duration": "Sleep Duration",
+  "journal.urine": "Urine",
+  "journal.stool": "Stool",
+  "journal.remarks": "Remarks",
+  "view.timeline": "Timeline",
+  "view.journal": "Journal",
+  "view.compact": "Compact",
   "action.wake": "Wake",
   "action.feed": "Feed",
-  "action.note": "Note"
+  "action.play": "Play",
+  "action.diaper": "Diaper",
+  "action.note": "Note",
+  "action.more": "More"
 }

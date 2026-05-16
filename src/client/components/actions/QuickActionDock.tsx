@@ -1,12 +1,17 @@
 import { QuickActionButton } from './QuickActionButton';
 
-const actions = ['Wake note', 'Feed note', 'Burp note', 'Diaper note', 'Sleep note', 'More'] as const;
+const actions = ['Wake', 'Feed', 'Play', 'Diaper', 'Note', 'More'] as const;
 
-export function QuickActionDock() {
+type Props = {
+  onAction: (action: (typeof actions)[number]) => void;
+};
+
+export function QuickActionDock({ onAction }: Props) {
   return (
-    <nav aria-label="Quick actions" className="quick-action-dock" data-testid="quick-action-dock">
+    <nav aria-label="Add to timeline" className="quick-action-dock" data-testid="quick-action-dock">
+      <p className="paper-heading quick-action-heading">Add to timeline</p>
       {actions.map((action) => (
-        <QuickActionButton key={action} label={action} />
+        <QuickActionButton key={action} label={action} onClick={() => onAction(action)} />
       ))}
     </nav>
   );

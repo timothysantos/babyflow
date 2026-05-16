@@ -4,8 +4,8 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 
 ## Canonical References
 
-- Base spec: `/Users/tim/Downloads/babyflow-canonical-master-spec-v7-full.md`
-- Checked-in copy: `docs/spec/babyflow-canonical-master-spec-v7-full.md`
+- Base spec: `/Users/tim/Downloads/babyflow-canonical-master-spec-v8-full.md`
+- Checked-in copy: `docs/spec/babyflow-canonical-master-spec-v8-full.md`
 
 ## Architecture Rules
 
@@ -59,6 +59,7 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 39. For behavioral-session slices, audits must verify session lifecycle continuity and segment chronology. Examples include session start, ordered segment append behavior, close semantics, and preservation of segment order across repository, API, and UI layers.
 40. For temporal behavioral slices, audits must verify chronology integrity across layers. Examples include deterministic segment ordering, chronology preservation through serialization, append continuity after rerender, and stable temporal reconstruction from repository to API to UI.
 41. For UI design-language updates, the current design language must be added to the repo rules and then applied across the existing visible pages and components. Future slice audits must explicitly state whether the implementation matches the current design language, and any deviation must be called out as an audit risk.
+42. For paper-journal parity slices, Today must expose Timeline, Journal, and Compact views, Paper Journal View must mirror the paper columns, quick actions must be treated as timeline stamps, and audits must explicitly verify paper-journal parity.
 
 ## 2026 UI Design Language
 

@@ -12,15 +12,15 @@ describe('row expansion persistence', () => {
         <TodayPage />
       </MemoryRouter>
     );
-    fireEvent.click(screen.getByRole('button', { name: 'Show details' }));
-    expect(screen.getByTestId('cycle-row-expanded-details')).toBeTruthy();
-    expect(window.localStorage.getItem('babyflow.today.cycleRowExpanded')).toBe('true');
+    fireEvent.click(screen.getByRole('button', { name: 'View row details' }));
+    expect(screen.getByTestId('row-details')).toBeTruthy();
+    expect(window.localStorage.getItem('babyflow.today.rowDetailsOpen')).toBe('true');
 
     rerender(
       <MemoryRouter>
         <TodayPage />
       </MemoryRouter>
     );
-    expect(screen.getByTestId('cycle-row-expanded-details')).toBeTruthy();
+    expect(screen.getByTestId('row-details')).toBeTruthy();
   });
 });

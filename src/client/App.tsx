@@ -10,10 +10,10 @@ export function App() {
       <I18nProvider>
         <QueryClientProvider client={queryClient}>
           <main className="app-shell panel-stack" data-testid="app-shell">
-            <header className="timeline-card">
+            <header className="timeline-card app-brand-bar">
               <p className="section-label">BabyFlow</p>
-              <h1 className="today-title">Calm journaling for 2am caregiving</h1>
-              <p className="today-subtitle">Baby profile / 宝宝资料</p>
+              <h1 className="today-title">Paper journal first</h1>
+              <p className="today-subtitle">Timeline / Journal / Compact</p>
             </header>
             <AppRouter />
           </main>
