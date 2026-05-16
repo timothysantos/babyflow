@@ -26,6 +26,8 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 6. After every slice, provide an audit report and list the commits made for that slice.
 7. Before declaring a slice complete, re-check its spec requirements line by line and call out any remaining risk explicitly.
 8. Preserve the canonical spec as the base reference for all future slices unless the spec itself changes.
+9. After every slice commit, push the commit(s) to `origin` before moving on.
+10. Every audit report must include a Markdown version that can be copied into docs or issue comments.
 
 ## Implementation Sequence
 
@@ -42,3 +44,5 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 - D1 access must be reachable through an infrastructure client, not from components.
 - Slice 1 must end with a passed audit report and a commit list.
 - Slice 1 must be re-verified against the spec before moving to slice 2.
+- Slice 1 must also be pushed to `origin` before the slice is considered complete.
+- Slice audit output must include both a concise summary and a Markdown-formatted report.
