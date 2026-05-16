@@ -52,6 +52,7 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 32. If a slice uses transitional infrastructure such as in-memory storage, file-backed storage, or mocks, the audit must explicitly state what is verified, what is not verified, and what future infrastructure is expected.
 33. Do not treat placeholder UI, mounted components, or static mode toggles as fully implemented interaction behavior. Audits must explicitly distinguish `SCAFFOLDED`, `PARTIALLY IMPLEMENTED`, and `BEHAVIORALLY VERIFIED` states where relevant.
 34. For interaction-heavy slices, audits must verify persistence of user interaction state when it matters. Examples include expanded rows surviving rerender, locale surviving rerender, sticky controls remaining reachable during scroll, and overlays preserving draft state.
+35. For mobile-first slices, critical touch ergonomics must be runtime-verified whenever feasible. Examples include touch-target size, sticky control visibility, viewport overflow behavior, interaction persistence during scroll, and safe-area handling. Source review alone is insufficient for mobile UX guarantees when browser measurement is feasible.
 
 ## Implementation Sequence
 

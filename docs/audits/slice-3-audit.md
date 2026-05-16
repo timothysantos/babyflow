@@ -27,7 +27,7 @@ Verdict: COMPLETE
 |---|---|---|
 | Today page usable at 390px width. | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed at 390x844 and found `today-page`, `compact-mode`, and `quick-action-dock`. |
 | Journal row can horizontally scroll only when needed. | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and asserted `cycle-row-scroll` width stayed within the 390px viewport. |
-| Compact mode is scaffolded. | REVIEWED | `TodayPage` renders the `compact-mode` section and `tests/today-page.test.tsx` passed. |
+| Compact mode toggle is behaviorally verified. | VERIFIED | `tests/today-page.test.tsx` and `tests/e2e/today-mobile.spec.ts` passed; compact mode toggles, persists to localStorage, and renders the active state. |
 | Expanded details do not navigate away. | VERIFIED | `tests/today-page.test.tsx` and `tests/row-expansion-persistence.test.tsx` passed; `cycle-row-expanded-details` renders in place after click and survives rerender. |
 | Quick action dock stays visible. | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured the dock bounding box before and after scroll. |
 
@@ -36,10 +36,11 @@ Verdict: COMPLETE
 | Item | Status | Proof |
 |---|---|---|
 | No route navigation away for row expansion | VERIFIED | `tests/today-page.test.tsx` and `tests/row-expansion-persistence.test.tsx` passed; expansion toggles in-place and persists across rerender. |
-| Mobile side padding is in the 8–12px range | REVIEWED | Manual source review of `src/client/global.css` found `padding: 10px` on `.mobile-shell`. |
+| Mobile side padding is in the 8–12px range | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured `mobile-shell` left/right padding at runtime. |
 | Core action buttons are at least 44px | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured the Wake button `min-height` in-browser as at least 44px. |
 | Bilingual header wrapping test exists | VERIFIED | `tests/bilingual-header-wrap.test.tsx` passed. |
 | Locale persists across rerender | VERIFIED | `tests/locale-persistence.test.tsx` passed and `babyflow.locale` remained `bilingual` after rerender. |
+| Compact mode persists across rerender | VERIFIED | `tests/today-page.test.tsx` passed and `babyflow.today.compactMode` remained `true` after rerender. |
 | Tests pass | VERIFIED | `npm test`, Playwright boot smoke test, Playwright mobile smoke test, and `npm run build` passed under Node 22. |
 
 ## Tests Run
@@ -53,10 +54,11 @@ Verdict: COMPLETE
 ## Final Notes
 
 - Slice 3 implements the paper-journal Today shell and now includes repeatable mobile runtime proof plus persistence-oriented UI behavior proof.
-- `compact-mode` is still a scaffolded shell element; the audit treats it as scaffolded, not as a full interaction system.
+- `compact-mode` is now a behaviorally verified toggle with persistence, not just a static scaffold.
 - Browser proof includes the repeatable dark boot-canvas smoke test and the mobile Today-page smoke test.
 - Persistence scope is still transitional: the current proof covers rerender persistence and local UI state, not production D1 durability.
 - Touch target sizing is now runtime-verified in-browser, not just source-reviewed.
 - Slice commits:
   - [`a2b103c`](https://github.com/timothysantos/babyflow/commit/a2b103c) `feat: implement slice 3 paper journal today ui`
   - [`48f8afd`](https://github.com/timothysantos/babyflow/commit/48f8afd) `feat: harden slice 3 mobile behavior proof`
+  - [`4adf657`](https://github.com/timothysantos/babyflow/commit/4adf657) `docs: harden slice 3 interaction proof`

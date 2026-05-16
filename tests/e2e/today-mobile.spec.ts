@@ -8,6 +8,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('compact-mode')).toBeVisible();
   await expect(page.getByTestId('quick-action-dock')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Wake' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Compact mode off' })).toBeVisible();
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
@@ -17,6 +18,16 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
     return { minHeight, height };
   });
   expect(Number.parseFloat(wakeHeight.minHeight)).toBeGreaterThanOrEqual(44);
+
+  const shellPadding = await page.getByTestId('mobile-shell').evaluate((node) => {
+    const { paddingLeft, paddingRight } = getComputedStyle(node);
+    return { paddingLeft, paddingRight };
+  });
+  expect(Number.parseFloat(shellPadding.paddingLeft)).toBeGreaterThanOrEqual(8);
+  expect(Number.parseFloat(shellPadding.paddingRight)).toBeGreaterThanOrEqual(8);
+
+  await page.getByRole('button', { name: 'Compact mode off' }).click();
+  await expect(page.getByText('Compact mode active.')).toBeVisible();
 
   await page.evaluate(() => {
     window.scrollTo(0, document.body.scrollHeight);
