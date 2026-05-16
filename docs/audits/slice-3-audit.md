@@ -40,6 +40,7 @@ Verdict: COMPLETE
 | No route navigation away for row expansion | VERIFIED | `tests/today-page.test.tsx` and `tests/row-expansion-persistence.test.tsx` passed; expansion toggles in-place and persists across rerender. |
 | Mobile side padding is in the 8–12px range | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured `mobile-shell` left/right padding at runtime. |
 | Core action buttons are at least 44px | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured the Wake button `min-height` in-browser as at least 44px. |
+| Dock bottom padding is safe-area-aware | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured `quick-action-dock` bottom padding at runtime. |
 | Bilingual header wrapping test exists | VERIFIED | `tests/bilingual-header-wrap.test.tsx` passed. |
 | Locale persists across rerender | VERIFIED | `tests/locale-persistence.test.tsx` passed and `babyflow.locale` remained `bilingual` after rerender. |
 | Compact mode persists across rerender | VERIFIED | `tests/today-page.test.tsx` passed and `babyflow.today.compactMode` remained `true` after rerender. |
@@ -60,6 +61,7 @@ Verdict: COMPLETE
 - Browser proof includes the repeatable dark boot-canvas smoke test and the mobile Today-page smoke test.
 - Persistence scope is still transitional: the current proof covers rerender persistence and local UI state, not production D1 durability.
 - Touch target sizing is now runtime-verified in-browser, not just source-reviewed.
+- Dock bottom padding is runtime-verified and reflects safe-area-aware spacing.
 - Route continuity is now runtime-verified for Today/Profile navigation with preserved compact-mode state.
 - Slice commits:
   - [`a2b103c`](https://github.com/timothysantos/babyflow/commit/a2b103c) `feat: implement slice 3 paper journal today ui`

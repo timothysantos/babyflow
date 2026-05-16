@@ -26,6 +26,11 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(Number.parseFloat(shellPadding.paddingLeft)).toBeGreaterThanOrEqual(8);
   expect(Number.parseFloat(shellPadding.paddingRight)).toBeGreaterThanOrEqual(8);
 
+  const dockPaddingBottom = await page.getByTestId('quick-action-dock').evaluate((node) => {
+    return getComputedStyle(node).paddingBottom;
+  });
+  expect(Number.parseFloat(dockPaddingBottom)).toBeGreaterThanOrEqual(8);
+
   await page.getByRole('button', { name: 'Compact mode off' }).click();
   await expect(page.getByText('Compact mode active.')).toBeVisible();
 
