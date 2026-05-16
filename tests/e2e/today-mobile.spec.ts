@@ -7,9 +7,16 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('today-page')).toBeVisible();
   await expect(page.getByTestId('compact-mode')).toBeVisible();
   await expect(page.getByTestId('quick-action-dock')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Wake' })).toBeVisible();
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
+
+  const wakeHeight = await page.getByRole('button', { name: 'Wake' }).evaluate((node) => {
+    const { minHeight, height } = getComputedStyle(node);
+    return { minHeight, height };
+  });
+  expect(Number.parseFloat(wakeHeight.minHeight)).toBeGreaterThanOrEqual(44);
 
   await page.evaluate(() => {
     window.scrollTo(0, document.body.scrollHeight);

@@ -37,7 +37,7 @@ Verdict: COMPLETE
 |---|---|---|
 | No route navigation away for row expansion | VERIFIED | `tests/today-page.test.tsx` and `tests/row-expansion-persistence.test.tsx` passed; expansion toggles in-place and persists across rerender. |
 | Mobile side padding is in the 8–12px range | REVIEWED | Manual source review of `src/client/global.css` found `padding: 10px` on `.mobile-shell`. |
-| Core action buttons are at least 44px | REVIEWED | Manual source review of `src/client/global.css` found `.quick-action-button { min-height: 44px; }`. |
+| Core action buttons are at least 44px | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured the Wake button `min-height` in-browser as at least 44px. |
 | Bilingual header wrapping test exists | VERIFIED | `tests/bilingual-header-wrap.test.tsx` passed. |
 | Locale persists across rerender | VERIFIED | `tests/locale-persistence.test.tsx` passed and `babyflow.locale` remained `bilingual` after rerender. |
 | Tests pass | VERIFIED | `npm test`, Playwright boot smoke test, Playwright mobile smoke test, and `npm run build` passed under Node 22. |
@@ -56,5 +56,7 @@ Verdict: COMPLETE
 - `compact-mode` is still a scaffolded shell element; the audit treats it as scaffolded, not as a full interaction system.
 - Browser proof includes the repeatable dark boot-canvas smoke test and the mobile Today-page smoke test.
 - Persistence scope is still transitional: the current proof covers rerender persistence and local UI state, not production D1 durability.
+- Touch target sizing is now runtime-verified in-browser, not just source-reviewed.
 - Slice commits:
   - [`a2b103c`](https://github.com/timothysantos/babyflow/commit/a2b103c) `feat: implement slice 3 paper journal today ui`
+  - [`48f8afd`](https://github.com/timothysantos/babyflow/commit/48f8afd) `feat: harden slice 3 mobile behavior proof`
