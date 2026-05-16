@@ -127,6 +127,21 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
+  expect(dockBefore!.x).toBeLessThanOrEqual(1);
+  expect(dockBefore!.width).toBeGreaterThanOrEqual(388);
+  const dockRadius = await page.getByTestId('quick-action-dock').evaluate((node) => {
+    const style = getComputedStyle(node);
+    return {
+      topLeft: style.borderTopLeftRadius,
+      topRight: style.borderTopRightRadius,
+      bottomLeft: style.borderBottomLeftRadius,
+      bottomRight: style.borderBottomRightRadius
+    };
+  });
+  expect(dockRadius.topLeft).not.toBe('0px');
+  expect(dockRadius.topRight).not.toBe('0px');
+  expect(dockRadius.bottomLeft).toBe('0px');
+  expect(dockRadius.bottomRight).toBe('0px');
 
   const wakeHeight = await page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' }).evaluate((node) => {
     const { minHeight, height } = getComputedStyle(node);
@@ -189,6 +204,8 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
 
   const dockAfter = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockAfter).not.toBeNull();
+  expect(dockAfter!.x).toBeLessThanOrEqual(1);
+  expect(dockAfter!.width).toBeGreaterThanOrEqual(388);
   await expect(page.getByTestId('quick-action-dock')).toBeVisible();
 
 });

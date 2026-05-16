@@ -93,7 +93,7 @@ body {
 }
 
 .today-hero {
-  border-radius: 0;
+  border-radius: 28px 28px 0 0;
   display: grid;
   gap: 12px;
   background: var(--bg-elevated);
@@ -242,7 +242,10 @@ button[aria-pressed='true'],
     linear-gradient(180deg, rgba(117, 165, 236, 0.18), rgba(255, 255, 255, 0.96)),
     var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 0;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   padding: 12px 14px calc(18px + env(safe-area-inset-bottom, 0px));
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
