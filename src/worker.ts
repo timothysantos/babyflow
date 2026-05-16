@@ -1,4 +1,5 @@
 import { healthResponse } from './infrastructure/api/routes/health';
+import { babiesRoute } from './infrastructure/api/routes/babies';
 import { createDbClient } from './infrastructure/db/client';
 
 export interface Env {
@@ -12,6 +13,10 @@ export default {
 
     if (url.pathname === '/health') {
       return healthResponse();
+    }
+
+    if (url.pathname === '/babies') {
+      return babiesRoute(request);
     }
 
     return new Response('BabyFlow', {

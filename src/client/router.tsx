@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BabySelectPage } from './routes/BabySelectPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <div data-testid="router-root">BabyFlow router</div>
+    element: <BabySelectPage />
   }
 ]);
 

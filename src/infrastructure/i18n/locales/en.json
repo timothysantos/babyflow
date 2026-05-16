@@ -1,0 +1,8 @@
+{
+  "journal.wake_up_time": "Wake up time",
+  "journal.start_of_feed_time": "Start of feed time",
+  "journal.feed": "Feed",
+  "action.wake": "Wake",
+  "action.feed": "Feed",
+  "action.note": "Note"
+}

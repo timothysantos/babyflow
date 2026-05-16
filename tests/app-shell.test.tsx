@@ -5,6 +5,6 @@ import { App } from '../src/client/App';
 describe('App shell', () => {
   it('renders the root shell and providers compose without crashing', () => {
     render(<App />);
-    expect(screen.getByTestId('router-root').textContent).toBe('BabyFlow router');
+    expect(screen.getByText('Baby profile / 宝宝资料')).toBeTruthy();
   });
 });

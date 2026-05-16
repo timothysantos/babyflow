@@ -1,0 +1,8 @@
+{
+  "journal.wake_up_time": "起床时间",
+  "journal.start_of_feed_time": "开始喂奶时间",
+  "journal.feed": "喂奶",
+  "action.wake": "醒来",
+  "action.feed": "喂奶",
+  "action.note": "备注"
+}
