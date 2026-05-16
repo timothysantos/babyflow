@@ -69,7 +69,7 @@ body {
   width: 100%;
   max-width: 760px;
   margin-inline: auto;
-  padding: 12px 12px calc(184px + env(safe-area-inset-bottom, 0px));
+  padding: 12px 12px calc(240px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
@@ -229,11 +229,13 @@ button[aria-pressed='true'],
 }
 
 .quick-action-dock {
-  width: calc(100% + 24px);
-  box-sizing: border-box;
-  position: sticky;
+  position: fixed;
+  left: 12px;
+  right: 12px;
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  margin-inline: -12px;
+  width: min(calc(100vw - 24px), 760px);
+  box-sizing: border-box;
+  margin-inline: auto;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
@@ -246,6 +248,7 @@ button[aria-pressed='true'],
   box-shadow: var(--shadow);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+  z-index: 30;
 }
 
 .quick-action-heading {
