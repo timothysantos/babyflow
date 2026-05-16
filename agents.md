@@ -47,6 +47,8 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 27. Manual browser inspection is not enough for `VERIFIED` when a repeatable Playwright smoke test is feasible.
 28. D1 proof must state `mock-env worker test` unless real local D1 was actually exercised.
 29. If a behavior previously caused a false-positive completion, future slices must use stronger proof than before for that behavior.
+30. Repository and persistence tests must use an isolated local data directory per test worker or explicit reset between tests.
+31. Client components must not import Node-only persistence modules; browser bundles should call route-level APIs or use local UI state instead.
 
 ## Implementation Sequence
 
@@ -75,3 +77,4 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 - Slice 1 audits must use `REVIEWED` or `SOURCE VERIFIED` for source-only checks, and `VERIFIED` only for repeatable runtime proof.
 - Slice 1 audits must name D1 proof accurately as `mock-env worker test` unless local D1 is truly exercised.
 - Slice 1 audit practices must escalate proof strength for any behavior that previously caused a false-positive.
+- Slice 2 and later tests must isolate repository state per worker or reset it explicitly before assertions.

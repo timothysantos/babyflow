@@ -1,8 +1,16 @@
 import type { BabyDraft, BabyDTO } from '../../domain/baby/baby.types';
 import { mapBabyRowToDto } from '../mappers/baby-mapper';
 import type { BabyRow } from '../db/schema/babies';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-const store = new Map<string, BabyRow>();
+type BabyStore = {
+  babies: BabyRow[];
+};
+
+const workerKey = process.env.VITEST_WORKER_ID ?? 'main';
+const dataDir = process.env.BABYFLOW_DATA_DIR ?? join('.babyflow-data', workerKey);
+const storeFile = join(dataDir, 'babies.json');
 
 function nowIso() {
   return new Date().toISOString();
@@ -10,6 +18,20 @@ function nowIso() {
 
 function makeId() {
   return `baby_${Math.random().toString(36).slice(2, 10)}`;
+}
+
+async function ensureStore(): Promise<BabyStore> {
+  try {
+    const raw = await readFile(storeFile, 'utf8');
+    return JSON.parse(raw) as BabyStore;
+  } catch {
+    return { babies: [] };
+  }
+}
+
+async function saveStore(store: BabyStore) {
+  await mkdir(dataDir, { recursive: true });
+  await writeFile(storeFile, JSON.stringify(store, null, 2), 'utf8');
 }
 
 export async function createBaby(draft: BabyDraft): Promise<BabyDTO> {
@@ -27,19 +49,27 @@ export async function createBaby(draft: BabyDraft): Promise<BabyDTO> {
     updatedAt: timestamp,
     selectedAt: null
   };
-  store.set(id, row);
+  const store = await ensureStore();
+  store.babies.push(row);
+  await saveStore(store);
   return mapBabyRowToDto(row);
 }
 
 export async function listBabies(): Promise<BabyDTO[]> {
-  return Array.from(store.values()).map(mapBabyRowToDto);
+  const store = await ensureStore();
+  return store.babies.map(mapBabyRowToDto);
 }
 
 export async function selectBaby(id: string): Promise<BabyDTO> {
-  const row = store.get(id);
+  const store = await ensureStore();
+  const row = store.babies.find((baby) => baby.id === id);
   if (!row) throw new Error('Baby not found');
   row.selectedAt = nowIso();
   row.updatedAt = nowIso();
-  store.set(id, row);
+  await saveStore(store);
   return mapBabyRowToDto(row);
+}
+
+export async function resetBabyStoreForTests() {
+  await saveStore({ babies: [] });
 }

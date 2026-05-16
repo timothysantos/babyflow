@@ -9,7 +9,10 @@ export function App() {
     <ThemeProvider>
       <I18nProvider>
         <QueryClientProvider client={queryClient}>
-          <AppRouter />
+          <main data-testid="app-shell">
+            <header>Baby profile / 宝宝资料</header>
+            <AppRouter />
+          </main>
         </QueryClientProvider>
       </I18nProvider>
     </ThemeProvider>

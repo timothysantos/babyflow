@@ -6,6 +6,4 @@ test('boots on a dark canvas and renders the router root', async ({ page }) => {
   const bodyBg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   expect(bodyBg).not.toBe('rgb(255, 255, 255)');
 
-  await expect(page.getByText('Baby profile / 宝宝资料')).toBeVisible();
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'night');
 });

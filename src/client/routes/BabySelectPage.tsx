@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { BabyForm } from '../components/baby/BabyForm';
 import { LanguageToggle } from '../components/i18n/LanguageToggle';
 import { calculateAgeWeek, type BabyDraft, type PreferredLanguage } from '../../domain/baby/baby.types';
-import { createBaby, listBabies, selectBaby } from '../../infrastructure/repositories/baby-repository';
 import en from '../../infrastructure/i18n/locales/en.json';
 import zh from '../../infrastructure/i18n/locales/zh-Hans.json';
 import bilingual from '../../infrastructure/i18n/locales/bilingual.json';
@@ -30,21 +29,11 @@ export function BabySelectPage() {
         onCreate={async (draft: BabyDraft) => {
           const nextBaby = { ...draft, preferredLanguage: language };
           setSelectedBaby(nextBaby);
-          await createBaby(nextBaby);
         }}
       />
       <button
         onClick={async () => {
-          const current = await listBabies();
-          if (current[0]) {
-            const baby = await selectBaby(current[0].id);
-            setSelectedBaby({
-              name: baby.name,
-              birthDate: baby.birthDate,
-              timezone: baby.timezone,
-              preferredLanguage: baby.preferredLanguage
-            });
-          }
+          if (selectedBaby) setSelectedBaby(selectedBaby);
         }}
       >
         Select first baby

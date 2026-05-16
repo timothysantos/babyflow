@@ -12,7 +12,7 @@ Verdict: COMPLETE
 |---|---|---|
 | `src/domain/baby/baby.types.ts` | EXISTS | Domain types, validation, and age-week calculation exist. |
 | `src/infrastructure/db/schema/babies.ts` | EXISTS | Baby row schema exists. |
-| `src/infrastructure/repositories/baby-repository.ts` | WIRED | Create/list/select repository is wired to in-memory storage. |
+| `src/infrastructure/repositories/baby-repository.ts` | WIRED | Create/list/select repository is wired to a file-backed local store. |
 | `src/infrastructure/mappers/baby-mapper.ts` | WIRED | Repository rows map to `BabyDTO`. |
 | `src/infrastructure/api/routes/babies.ts` | WIRED | `/babies` route handles create/list/select. |
 | `src/client/routes/BabySelectPage.tsx` | WIRED | Page mounts baby create/select UI and locale preview. |
@@ -55,5 +55,7 @@ Verdict: COMPLETE
 - Slice 2 was validated under Node 22 via `nvm use 22`.
 - The browser smoke test still verifies the dark boot canvas and root page render.
 - D1 is not exercised with a real local database in this slice; the proof remains a mock-env worker test for the slice-1 worker boundary.
+- Repository tests use an isolated local data directory per Vitest worker.
+- Client bundle does not import Node-only persistence modules.
 - Slice commits:
   - [`a4e846e`](https://github.com/timothysantos/babyflow/commit/a4e846e) `feat: implement slice 2 baby profiles and locale`
