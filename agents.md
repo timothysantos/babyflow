@@ -49,6 +49,7 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 29. If a behavior previously caused a false-positive completion, future slices must use stronger proof than before for that behavior.
 30. Repository and persistence tests must use an isolated local data directory per test worker or explicit reset between tests.
 31. Client components must not import Node-only persistence modules; browser bundles should call route-level APIs or use local UI state instead.
+32. If a slice uses transitional infrastructure such as in-memory storage, file-backed storage, or mocks, the audit must explicitly state what is verified, what is not verified, and what future infrastructure is expected.
 
 ## Implementation Sequence
 
@@ -78,3 +79,4 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 - Slice 1 audits must name D1 proof accurately as `mock-env worker test` unless local D1 is truly exercised.
 - Slice 1 audit practices must escalate proof strength for any behavior that previously caused a false-positive.
 - Slice 2 and later tests must isolate repository state per worker or reset it explicitly before assertions.
+- Transitional infrastructure must never silently become the canonical architecture in an audit.
