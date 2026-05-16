@@ -36,7 +36,7 @@ Verdict: COMPLETE
 |---|---|---|
 | Cycle-event action buttons are uniquely addressable | VERIFIED | `EventLog` uses `aria-label="Record ..."` and the tests target `Record Wake` explicitly. |
 | Cycle-event load does not erase freshly recorded events | VERIFIED | `TodayPage` preserves current events when the initial GET resolves late; the UI tests passed after the fix. |
-| Event ordering is deterministic newest-first | VERIFIED | `tests/event-repository.test.ts` passed and verified three sequential cycle events are returned newest-first. |
+| Event ordering is deterministic newest-first | VERIFIED | `tests/event-repository.test.ts` and `tests/today-page.test.tsx` passed; repository ordering and UI render order both preserve newest-first. |
 | Mobile side padding is in the 8–12px range | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured `mobile-shell` padding at runtime. |
 | Core action buttons are at least 44px | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured the quick-action dock Wake button `min-height` in-browser as at least 44px. |
 | Dock bottom padding is safe-area-aware | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured `quick-action-dock` bottom padding at runtime. |
@@ -58,5 +58,6 @@ Verdict: COMPLETE
 - The repo keeps the canonical spec in [`docs/spec/babyflow-canonical-master-spec-v7-full.md`](/Users/tim/22m/ai-projects/babyflow/docs/spec/babyflow-canonical-master-spec-v7-full.md) and the slice proofs in [`docs/audits/`](/Users/tim/22m/ai-projects/babyflow/docs/audits).
 - Slice 4 validates the cycle-event foundation only. It does not yet validate clustering, recovery-regulation episode reconstruction, intervention causality, replay interpretation, evidence-graph generation, offline queueing, reconnect reconciliation, or multi-caregiver conflict resolution.
 - Event continuity is explicitly guarded by tests for delayed GET preservation and deterministic newest-first ordering.
+- UI ordering is verified against the API response so the user-facing event log preserves newest-first ordering, not just the repository layer.
 - Slice commits:
   - [`82d5977`](https://github.com/timothysantos/babyflow/commit/82d5977) `feat: add today event log slice`

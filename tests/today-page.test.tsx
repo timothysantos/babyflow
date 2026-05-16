@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { TodayPage } from '../src/client/routes/TodayPage';
@@ -24,6 +24,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  cleanup();
   vi.unstubAllGlobals();
 });
 
@@ -54,5 +55,45 @@ describe('TodayPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Show details' }));
     expect(screen.getByTestId('cycle-row-expanded-details')).toBeTruthy();
+  });
+
+  it('renders cycle events newest-first from the API response', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        Response.json({
+          events: [
+            {
+              id: 'event_2',
+              kind: 'FEED',
+              label: 'feed',
+              babyId: 'baby_1',
+              recordedAt: '2026-05-16T00:10:00.000Z'
+            },
+            {
+              id: 'event_1',
+              kind: 'WAKE',
+              label: 'wake',
+              babyId: 'baby_1',
+              recordedAt: '2026-05-16T00:00:00.000Z'
+            }
+          ]
+        })
+      )
+    );
+
+    render(
+      <MemoryRouter>
+        <TodayPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() =>
+      expect(screen.getByTestId('event-log-items').textContent).toContain('FEED: feed')
+    );
+    expect(screen.getByTestId('event-log-items').textContent).toContain('WAKE: wake');
+    expect(screen.getByTestId('event-log-items').textContent?.indexOf('FEED: feed')).toBeLessThan(
+      screen.getByTestId('event-log-items').textContent?.indexOf('WAKE: wake') ?? 0
+    );
   });
 });
