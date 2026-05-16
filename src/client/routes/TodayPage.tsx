@@ -112,24 +112,25 @@ export function TodayPage() {
   return (
     <MobileShell>
       <main className="today-page" data-testid="today-page">
-        <section className="timeline-card panel-stack">
+        <section className="timeline-card panel-stack today-hero">
           <div>
-            <p className="section-label">Today</p>
             <h1 className="today-title">Today / 今天</h1>
-            <p className="today-subtitle">Paper journal row · current cycle</p>
+            <p className="today-subtitle">Current cycle</p>
           </div>
           <div className="view-mode-switcher" role="group" aria-label="View mode switcher" data-testid="view-mode-switcher">
             <button type="button" aria-pressed={viewMode === 'timeline'} onClick={() => setViewMode('timeline')}>
-              Timeline / 时间线
+              <span className="sr-only">Timeline / 时间线</span>
             </button>
             <button type="button" aria-pressed={viewMode === 'journal'} onClick={() => setViewMode('journal')}>
-              Journal / 记录表
+              <span className="sr-only">Journal / 记录表</span>
             </button>
             <button type="button" aria-pressed={viewMode === 'compact'} onClick={() => setViewMode('compact')}>
-              Compact / 简洁
+              <span className="sr-only">Compact / 简洁</span>
             </button>
           </div>
-          <Link to="/profile">Profile / 资料</Link>
+          <Link to="/profile" className="today-profile-link">
+            Profile / 资料
+          </Link>
         </section>
         {viewMode === 'journal' ? (
           <PaperJournalView rows={[rowViewModel]} />
