@@ -61,6 +61,6 @@ Verdict: COMPLETE
   - [`7b3d525`](https://github.com/timothysantos/babyflow/commit/7b3d525) `fix: align health tests with spec`
   - [`5178889`](https://github.com/timothysantos/babyflow/commit/5178889) `docs: add slice audit artifact rule`
   - [`4cec9b9`](https://github.com/timothysantos/babyflow/commit/4cec9b9) `docs: link slice commits in audits`
-  - [`e8300df`](https://github.com/timothysantos/babyflow/commit/e8300df) `docs: harden slice audit discipline`
-  - [`cf42d6a`](https://github.com/timothysantos/babyflow/commit/cf42d6a) `docs: add proof quality audit rules`
-  - [`<pending>`](https://github.com/timothysantos/babyflow/commit/<pending>) `fix: dark boot canvas and theme verification`
+- [`e8300df`](https://github.com/timothysantos/babyflow/commit/e8300df) `docs: harden slice audit discipline`
+- [`cf42d6a`](https://github.com/timothysantos/babyflow/commit/cf42d6a) `docs: add proof quality audit rules`
+- [`a0bc6bc`](https://github.com/timothysantos/babyflow/commit/a0bc6bc) `fix: prove slice 1 boot and theme`
