@@ -89,7 +89,7 @@ describe('TodayPage', () => {
     expect(screen.getByTestId('today-page').className).toContain('today-page');
     expect(screen.getByTestId('compact-mode')).toBeTruthy();
     expect(screen.getByTestId('compact-mode').className).toContain('status-chip');
-    expect(screen.getByText('Compact mode scaffolded.')).toBeTruthy();
+    expect(screen.getByText('Condensed journal available.')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
     expect(screen.getByTestId('feed-sessions').className).toContain('timeline-card');
     expect(screen.getByTestId('feed-sessions')).toBeTruthy();
@@ -98,20 +98,20 @@ describe('TodayPage', () => {
       screen.getByTestId('cycle-row-scroll').clientWidth
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Compact mode off' }));
-    expect(screen.getByText('Compact mode active.')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Condensed journal' }));
+    expect(screen.getByText('Condensed journal active.')).toBeTruthy();
     expect(window.localStorage.getItem('babyflow.today.compactMode')).toBe('true');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Record Wake' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mark wake' }));
     await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('WAKE: wake'));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Start Breast' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Start Nurse' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed for current-baby'));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Add Left' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add Left latch' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('LEFT: left'));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close feed' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Close session' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('Closed'));
 
     fireEvent.click(screen.getByRole('button', { name: 'Show details' }));

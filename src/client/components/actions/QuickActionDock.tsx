@@ -1,6 +1,6 @@
 import { QuickActionButton } from './QuickActionButton';
 
-const actions = ['Wake', 'Feed', 'Burp', 'Diaper', 'Put Down', 'Asleep', 'Note', 'More'] as const;
+const actions = ['Wake note', 'Feed note', 'Burp note', 'Diaper note', 'Sleep note', 'More'] as const;
 
 export function QuickActionDock() {
   return (

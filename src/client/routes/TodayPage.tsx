@@ -100,11 +100,11 @@ export function TodayPage() {
         </section>
         <section className="timeline-card panel-stack">
           <button type="button" onClick={() => setCompactMode((value) => !value)}>
-          {compactMode ? 'Compact mode on' : 'Compact mode off'}
+          {compactMode ? 'Open journal' : 'Condensed journal'}
           </button>
           <SingleRowCycleLogger />
           <div className="compact-mode status-chip" data-testid="compact-mode" data-compact-mode={compactMode ? 'on' : 'off'}>
-          {compactMode ? <p>Compact mode active.</p> : <p>Compact mode scaffolded.</p>}
+          {compactMode ? <p>Condensed journal active.</p> : <p>Condensed journal available.</p>}
           </div>
         </section>
         <section className="panel-stack">

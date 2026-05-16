@@ -1,12 +1,12 @@
 :root {
   color-scheme: light dark;
-  --bg: #f4f8fc;
+  --bg: #f1f7ff;
   --bg-elevated: rgba(255, 255, 255, 0.84);
   --bg-soft: rgba(255, 255, 255, 0.66);
-  --border: rgba(95, 115, 141, 0.16);
-  --text: #122131;
-  --text-soft: #5f7085;
-  --blue: #7daef0;
+  --border: rgba(112, 148, 189, 0.2);
+  --text: #13263a;
+  --text-soft: #5d738c;
+  --blue: #6f9feb;
   --pink: #ecb1cb;
   --warm: #fffaf4;
   --navy: #0d1520;
@@ -22,10 +22,10 @@
   --bg: #0d1520;
   --bg-elevated: rgba(18, 28, 42, 0.82);
   --bg-soft: rgba(255, 255, 255, 0.04);
-  --border: rgba(156, 178, 206, 0.2);
+  --border: rgba(125, 170, 221, 0.24);
   --text: #edf4fb;
   --text-soft: #b8c8d8;
-  --blue: #8fbaf7;
+  --blue: #9cc0ff;
   --pink: #f1b2d1;
   --shadow: 0 18px 48px rgba(2, 8, 16, 0.32);
   background:
@@ -106,7 +106,8 @@ body {
 
 .today-title {
   font-size: clamp(1.6rem, 4vw, 2.1rem);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
 }
 
 .today-subtitle {
@@ -143,7 +144,7 @@ button {
 
 button:hover {
   background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(143, 186, 247, 0.4);
+  border-color: rgba(111, 159, 235, 0.42);
 }
 
 button:active {
@@ -152,8 +153,8 @@ button:active {
 
 button[aria-pressed='true'],
 .status-chip {
-  background: linear-gradient(135deg, rgba(143, 186, 247, 0.22), rgba(241, 178, 209, 0.16));
-  border-color: rgba(143, 186, 247, 0.45);
+  background: linear-gradient(135deg, rgba(111, 159, 235, 0.22), rgba(241, 178, 209, 0.16));
+  border-color: rgba(111, 159, 235, 0.45);
 }
 
 .status-chip {
@@ -190,7 +191,9 @@ button[aria-pressed='true'],
 .quick-action-button {
   min-height: 44px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.74);
+  background: rgba(255, 255, 255, 0.84);
+  color: var(--blue);
+  font-weight: 600;
 }
 
 .cycle-row {
@@ -257,6 +260,13 @@ button[aria-pressed='true'],
   display: inline-flex;
   align-items: center;
   gap: 6px;
+}
+
+.paper-heading {
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.8rem;
 }
 
 .replay-card {

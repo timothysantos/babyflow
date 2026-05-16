@@ -8,17 +8,17 @@ type Props = {
 };
 
 const modes: Array<{ mode: FeedSessionMode; label: string }> = [
-  { mode: 'BREAST', label: 'Breast' },
-  { mode: 'EBM', label: 'EBM' },
+  { mode: 'BREAST', label: 'Nurse' },
+  { mode: 'EBM', label: 'Expressed milk' },
   { mode: 'FORMULA', label: 'Formula' },
-  { mode: 'MIXED', label: 'Mixed' }
+  { mode: 'MIXED', label: 'Mixed feed' }
 ];
 
 const segments: Array<{ kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE'; label: string }> = [
-  { kind: 'LEFT', label: 'Left' },
-  { kind: 'RIGHT', label: 'Right' },
-  { kind: 'BOTTLE', label: 'Bottle' },
-  { kind: 'NOTE', label: 'Note' }
+  { kind: 'LEFT', label: 'Left latch' },
+  { kind: 'RIGHT', label: 'Right latch' },
+  { kind: 'BOTTLE', label: 'Bottle top-up' },
+  { kind: 'NOTE', label: 'Feed note' }
 ];
 
 export function FeedSessionsPanel({ sessions, onStartSession, onAddSegment, onCloseSession }: Props) {
@@ -45,7 +45,7 @@ export function FeedSessionsPanel({ sessions, onStartSession, onAddSegment, onCl
                 </button>
               ))}
               <button type="button" onClick={() => onCloseSession(session.id)}>
-                Close feed
+                Close session
               </button>
             </div>
             <ul className="stack-list">

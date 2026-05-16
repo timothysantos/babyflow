@@ -126,7 +126,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(Number.parseFloat(feedCardRadius)).toBeGreaterThanOrEqual(20);
   await expect(page.getByTestId('feed-sessions')).toBeVisible();
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Compact mode off' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Condensed journal' })).toBeVisible();
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
@@ -149,22 +149,22 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   });
   expect(Number.parseFloat(dockPaddingBottom)).toBeGreaterThanOrEqual(8);
 
-  await page.getByRole('button', { name: 'Record Wake' }).click();
+  await page.getByRole('button', { name: 'Mark wake' }).click();
   await expect(page.getByTestId('event-log-items')).toContainText('WAKE: wake');
 
-  await page.getByRole('button', { name: 'Start Breast' }).click();
+  await page.getByRole('button', { name: 'Start Nurse' }).click();
   await expect(page.getByTestId('feed-session-list')).toContainText('BREAST feed for current-baby');
-  await page.getByRole('button', { name: 'Add Left' }).click();
+  await page.getByRole('button', { name: 'Add Left latch' }).click();
   await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(1);
   await expect(page.getByTestId('feed-session-list')).toContainText('LEFT: left');
-  await page.getByRole('button', { name: 'Add Right' }).click();
+  await page.getByRole('button', { name: 'Add Right latch' }).click();
   await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(2);
   await expect(page.getByTestId('feed-session-list')).toContainText('RIGHT: right');
-  await page.getByRole('button', { name: 'Close feed' }).click();
+  await page.getByRole('button', { name: 'Close session' }).click();
   await expect(page.getByTestId('feed-session-status')).toContainText('Closed');
 
-  await page.getByRole('button', { name: 'Compact mode off' }).click();
-  await expect(page.getByText('Compact mode active.')).toBeVisible();
+  await page.getByRole('button', { name: 'Condensed journal' }).click();
+  await expect(page.getByText('Condensed journal active.')).toBeVisible();
 
   await page.getByRole('link', { name: 'Profile / 资料' }).click();
   await expect(page.getByRole('heading', { name: 'Baby profile / 宝宝资料' })).toBeVisible();

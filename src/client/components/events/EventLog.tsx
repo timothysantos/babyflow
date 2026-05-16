@@ -6,12 +6,12 @@ type Props = {
 };
 
 const actions: Array<{ kind: CycleEventKind; label: string }> = [
-  { kind: 'WAKE', label: 'Wake' },
-  { kind: 'FEED', label: 'Feed' },
-  { kind: 'BURP', label: 'Burp' },
-  { kind: 'DIAPER', label: 'Diaper' },
-  { kind: 'PUT_DOWN', label: 'Put Down' },
-  { kind: 'ASLEEP', label: 'Asleep' }
+  { kind: 'WAKE', label: 'Mark wake' },
+  { kind: 'FEED', label: 'Mark feed' },
+  { kind: 'BURP', label: 'Mark burp' },
+  { kind: 'DIAPER', label: 'Mark diaper' },
+  { kind: 'PUT_DOWN', label: 'Mark down' },
+  { kind: 'ASLEEP', label: 'Mark asleep' }
 ];
 
 export function EventLog({ events, onRecord }: Props) {
@@ -22,7 +22,7 @@ export function EventLog({ events, onRecord }: Props) {
           <button
             key={action.kind}
             type="button"
-            aria-label={`Record ${action.label}`}
+            aria-label={action.label}
             onClick={() => onRecord(action.kind)}
           >
             {action.label}
