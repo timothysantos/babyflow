@@ -17,7 +17,7 @@ Verdict: COMPLETE
 | `src/client/components/journal/CycleRowExpandedDetails.tsx` | WIRED | Expanded details render in place. |
 | `src/client/components/actions/QuickActionDock.tsx` | WIRED | Quick action dock is mounted. |
 | `src/client/components/actions/QuickActionButton.tsx` | WIRED | Dock buttons use the action button primitive. |
-| `src/client/components/overlays/MobileBottomSheet.tsx` | INTENTIONALLY OMITTED | Not yet required because Slice 3 only scaffolds the Today UI shell and no modal bottom-sheet flow is implemented yet. |
+| `src/client/components/overlays/MobileBottomSheet.tsx` | INTENTIONALLY OMITTED | Not yet required because Slice 3 remains a paper-journal shell slice, not a modal editing slice. |
 | `src/client/components/overlays/DesktopDialog.tsx` | INTENTIONALLY OMITTED | Not yet required for the mobile-first Today shell slice. |
 | `docs/audits/slice-3-audit.md` | EXISTS | Downloadable audit artifact exists. |
 
@@ -25,33 +25,36 @@ Verdict: COMPLETE
 
 | Criterion | Status | Proof |
 |---|---|---|
-| Today page usable at 390px width. | VERIFIED | `tests/today-page.test.tsx` passed and the shell uses `MobileShell` with 10px padding. |
-| Journal row can horizontally scroll only when needed. | VERIFIED | `tests/today-page.test.tsx` passed and `cycle-row-scroll` exposes horizontal overflow for the single-row logger. |
-| Compact mode exists or is scaffolded. | VERIFIED | `tests/today-page.test.tsx` passed and `compact-mode` is rendered. |
-| Expanded details do not navigate away. | VERIFIED | `tests/today-page.test.tsx` passed and `cycle-row-expanded-details` renders in place after click. |
-| Quick action dock stays visible. | VERIFIED | `tests/today-page.test.tsx` passed and `quick-action-dock` is rendered as a sticky dock. |
+| Today page usable at 390px width. | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed at 390x844 and found `today-page`, `compact-mode`, and `quick-action-dock`. |
+| Journal row can horizontally scroll only when needed. | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and asserted `cycle-row-scroll` width stayed within the 390px viewport. |
+| Compact mode is scaffolded. | REVIEWED | `TodayPage` renders the `compact-mode` section and `tests/today-page.test.tsx` passed. |
+| Expanded details do not navigate away. | VERIFIED | `tests/today-page.test.tsx` and `tests/row-expansion-persistence.test.tsx` passed; `cycle-row-expanded-details` renders in place after click and survives rerender. |
+| Quick action dock stays visible. | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured the dock bounding box before and after scroll. |
 
 ## Audit Checklist
 
 | Item | Status | Proof |
 |---|---|---|
-| No route navigation away for row expansion | VERIFIED | `tests/today-page.test.tsx` passed; expansion toggles in-place. |
+| No route navigation away for row expansion | VERIFIED | `tests/today-page.test.tsx` and `tests/row-expansion-persistence.test.tsx` passed; expansion toggles in-place and persists across rerender. |
 | Mobile side padding is in the 8–12px range | REVIEWED | Manual source review of `src/client/global.css` found `padding: 10px` on `.mobile-shell`. |
 | Core action buttons are at least 44px | REVIEWED | Manual source review of `src/client/global.css` found `.quick-action-button { min-height: 44px; }`. |
 | Bilingual header wrapping test exists | VERIFIED | `tests/bilingual-header-wrap.test.tsx` passed. |
-| Tests pass | VERIFIED | `npm test`, Playwright boot smoke test, and `npm run build` passed under Node 22. |
+| Locale persists across rerender | VERIFIED | `tests/locale-persistence.test.tsx` passed and `babyflow.locale` remained `bilingual` after rerender. |
+| Tests pass | VERIFIED | `npm test`, Playwright boot smoke test, Playwright mobile smoke test, and `npm run build` passed under Node 22. |
 
 ## Tests Run
 
 | Command | Result |
 |---|---|
 | `npm test` | PASS |
-| `node node_modules/@playwright/test/cli.js test --config=playwright.config.ts tests/e2e/boot.spec.ts` | PASS |
+| `node node_modules/@playwright/test/cli.js test --config=playwright.config.ts tests/e2e/boot.spec.ts tests/e2e/today-mobile.spec.ts` | PASS |
 | `npm run build` | PASS |
 
 ## Final Notes
 
-- Slice 3 implements the paper-journal Today shell and does not yet introduce the deeper cycle-event domain.
-- Browser proof remains the repeatable dark boot-canvas smoke test from the root shell.
+- Slice 3 implements the paper-journal Today shell and now includes repeatable mobile runtime proof plus persistence-oriented UI behavior proof.
+- `compact-mode` is still a scaffolded shell element; the audit treats it as scaffolded, not as a full interaction system.
+- Browser proof includes the repeatable dark boot-canvas smoke test and the mobile Today-page smoke test.
+- Persistence scope is still transitional: the current proof covers rerender persistence and local UI state, not production D1 durability.
 - Slice commits:
   - [`a2b103c`](https://github.com/timothysantos/babyflow/commit/a2b103c) `feat: implement slice 3 paper journal today ui`

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BabyForm } from '../components/baby/BabyForm';
 import { LanguageToggle } from '../components/i18n/LanguageToggle';
 import { calculateAgeWeek, type BabyDraft, type PreferredLanguage } from '../../domain/baby/baby.types';
@@ -15,6 +15,17 @@ function labelsFor(language: PreferredLanguage) {
 export function BabySelectPage() {
   const [language, setLanguage] = useState<PreferredLanguage>('en');
   const [selectedBaby, setSelectedBaby] = useState<BabyDraft | null>(null);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem('babyflow.locale');
+    if (stored === 'en' || stored === 'zh-Hans' || stored === 'bilingual') {
+      setLanguage(stored);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem('babyflow.locale', language);
+  }, [language]);
 
   return (
     <main>

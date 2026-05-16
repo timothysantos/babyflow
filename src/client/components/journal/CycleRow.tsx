@@ -1,8 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CycleRowExpandedDetails } from './CycleRowExpandedDetails';
 
 export function CycleRow() {
   const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem('babyflow.today.cycleRowExpanded');
+    setExpanded(stored === 'true');
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem('babyflow.today.cycleRowExpanded', String(expanded));
+  }, [expanded]);
 
   return (
     <section className="cycle-row" data-testid="cycle-row">
