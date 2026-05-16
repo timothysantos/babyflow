@@ -119,13 +119,13 @@ export function TodayPage() {
           </div>
           <div className="view-mode-switcher" role="group" aria-label="View mode switcher" data-testid="view-mode-switcher">
             <button type="button" aria-pressed={viewMode === 'timeline'} onClick={() => setViewMode('timeline')}>
-              <span className="sr-only">Timeline / 时间线</span>
+              Timeline / 时间线
             </button>
             <button type="button" aria-pressed={viewMode === 'journal'} onClick={() => setViewMode('journal')}>
-              <span className="sr-only">Journal / 记录表</span>
+              Journal / 记录表
             </button>
             <button type="button" aria-pressed={viewMode === 'compact'} onClick={() => setViewMode('compact')}>
-              <span className="sr-only">Compact / 简洁</span>
+              Compact / 简洁
             </button>
           </div>
           <Link to="/profile" className="today-profile-link">
