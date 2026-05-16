@@ -1,18 +1,8 @@
-export type HealthResponse = {
-  ok: true;
-  service: 'babyflow';
-};
-
 export function healthResponse(): Response {
-  const body: HealthResponse = {
-    ok: true,
-    service: 'babyflow'
-  };
-
-  return new Response(JSON.stringify(body), {
+  return new Response('OK', {
     status: 200,
     headers: {
-      'content-type': 'application/json; charset=utf-8'
+      'content-type': 'text/plain; charset=utf-8'
     }
   });
 }
