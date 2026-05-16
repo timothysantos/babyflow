@@ -1,6 +1,7 @@
 import { healthResponse } from './infrastructure/api/routes/health';
 import { babiesRoute } from './infrastructure/api/routes/babies';
 import { cycleEventsRoute } from './infrastructure/api/routes/events';
+import { feedSessionsRoute } from './infrastructure/api/routes/feed-sessions';
 import { createDbClient } from './infrastructure/db/client';
 
 export interface Env {
@@ -22,6 +23,20 @@ export default {
 
     if (url.pathname === '/cycle-events' || url.pathname === '/events') {
       return cycleEventsRoute(request);
+    }
+
+    if (url.pathname === '/feed-sessions') {
+      return feedSessionsRoute(request);
+    }
+
+    if (url.pathname.startsWith('/feed-sessions/') && url.pathname.endsWith('/segments')) {
+      const sessionId = url.pathname.split('/')[2];
+      return feedSessionsRoute(request, sessionId);
+    }
+
+    if (url.pathname.startsWith('/feed-sessions/')) {
+      const sessionId = url.pathname.split('/')[2];
+      return feedSessionsRoute(request, sessionId);
     }
 
     return new Response('BabyFlow', {

@@ -33,12 +33,86 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
 
     await route.fulfill({ status: 405, body: 'Method Not Allowed' });
   });
+  const feedSessions: Array<any> = [];
+  await page.route('**/feed-sessions', async (route) => {
+    const request = route.request();
+    if (request.method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ sessions: feedSessions })
+      });
+      return;
+    }
+
+    if (request.method() === 'POST') {
+      const body = JSON.parse(request.postData() ?? '{}') as { babyId: string; mode: string };
+      const session = {
+        id: `feed_session_${feedSessions.length + 1}`,
+        babyId: body.babyId,
+        mode: body.mode,
+        startedAt: '2026-05-16T00:00:00.000Z',
+        segments: []
+      };
+      feedSessions.unshift(session);
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ session })
+      });
+      return;
+    }
+
+    await route.fulfill({ status: 405, body: 'Method Not Allowed' });
+  });
+  await page.route(/\/feed-sessions\/[^/]+\/segments$/, async (route) => {
+    const request = route.request();
+    const sessionId = new URL(request.url()).pathname.split('/').filter(Boolean)[1];
+    const body = JSON.parse(request.postData() ?? '{}') as { kind: string; label: string };
+    const session = feedSessions.find((entry) => entry.id === sessionId);
+    if (session) {
+      const segment = {
+        id: `feed_segment_${session.segments.length + 1}`,
+        kind: body.kind,
+        label: body.label,
+        recordedAt: '2026-05-16T00:10:00.000Z'
+      };
+      session.segments.push(segment);
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ session })
+      });
+      return;
+    }
+    await route.fulfill({ status: 404, body: 'Feed session not found' });
+  });
+  await page.route(/\/feed-sessions\/[^/]+$/, async (route) => {
+    const request = route.request();
+    if (request.method() !== 'PATCH') {
+      await route.fallback();
+      return;
+    }
+    const sessionId = new URL(request.url()).pathname.split('/').filter(Boolean)[1];
+    const session = feedSessions.find((entry) => entry.id === sessionId);
+    if (session) {
+      session.endedAt = '2026-05-16T00:15:00.000Z';
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ session })
+      });
+      return;
+    }
+    await route.fulfill({ status: 404, body: 'Feed session not found' });
+  });
   await page.goto('/');
 
   await expect(page.getByTestId('today-page')).toBeVisible();
   await expect(page.getByTestId('compact-mode')).toBeVisible();
   await expect(page.getByTestId('quick-action-dock')).toBeVisible();
   await expect(page.getByTestId('event-log')).toBeVisible();
+  await expect(page.getByTestId('feed-sessions')).toBeVisible();
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Compact mode off' })).toBeVisible();
 
@@ -65,6 +139,14 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
 
   await page.getByRole('button', { name: 'Record Wake' }).click();
   await expect(page.getByTestId('event-log-items')).toContainText('WAKE: wake');
+
+  await page.getByRole('button', { name: 'Start Breast' }).click();
+  await expect(page.getByTestId('feed-session-list')).toContainText('BREAST feed for current-baby');
+  await page.getByRole('button', { name: 'Add Left' }).click();
+  await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(1);
+  await expect(page.getByTestId('feed-session-list')).toContainText('LEFT: left');
+  await page.getByRole('button', { name: 'Close feed' }).click();
+  await expect(page.getByTestId('feed-session-status')).toContainText('Closed');
 
   await page.getByRole('button', { name: 'Compact mode off' }).click();
   await expect(page.getByText('Compact mode active.')).toBeVisible();

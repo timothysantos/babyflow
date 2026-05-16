@@ -5,14 +5,21 @@ import { QuickActionDock } from '../components/actions/QuickActionDock';
 import { SingleRowCycleLogger } from '../components/journal/SingleRowCycleLogger';
 import { EventLog } from '../components/events/EventLog';
 import type { CycleEventDTO, CycleEventKind } from '../../domain/event/event.types';
+import { FeedSessionsPanel } from '../components/feed/FeedSessionsPanel';
+import type { FeedSessionDTO, FeedSessionMode } from '../../domain/feed/feed.types';
 
 function eventsUrl() {
   return new URL('/cycle-events', window.location.origin);
 }
 
+function feedsUrl() {
+  return new URL('/feed-sessions', window.location.origin);
+}
+
 export function TodayPage() {
   const [compactMode, setCompactMode] = useState(() => window.localStorage.getItem('babyflow.today.compactMode') === 'true');
   const [events, setEvents] = useState<CycleEventDTO[]>([]);
+  const [feedSessions, setFeedSessions] = useState<FeedSessionDTO[]>([]);
 
   useEffect(() => {
     window.localStorage.setItem('babyflow.today.compactMode', String(compactMode));
@@ -27,6 +34,15 @@ export function TodayPage() {
       .catch(() => setEvents([]));
   }, []);
 
+  useEffect(() => {
+    void fetch(feedsUrl())
+      .then((response) => response.json())
+      .then((payload: { sessions?: FeedSessionDTO[] }) =>
+        setFeedSessions((current) => (current.length > 0 ? current : payload.sessions ?? []))
+      )
+      .catch(() => setFeedSessions([]));
+  }, []);
+
   async function recordEvent(kind: CycleEventKind) {
     const response = await fetch(eventsUrl(), {
       method: 'POST',
@@ -36,6 +52,40 @@ export function TodayPage() {
     const payload = (await response.json()) as { event?: CycleEventDTO };
     if (payload.event) {
       setEvents((current) => [payload.event!, ...current]);
+    }
+  }
+
+  async function startFeedSession(mode: FeedSessionMode) {
+    const response = await fetch(feedsUrl(), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ mode, babyId: 'current-baby' })
+    });
+    const payload = (await response.json()) as { session?: FeedSessionDTO };
+    if (payload.session) {
+      setFeedSessions((current) => [payload.session!, ...current]);
+    }
+  }
+
+  async function addFeedSegment(sessionId: string, kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE') {
+    const response = await fetch(new URL(`/feed-sessions/${sessionId}/segments`, window.location.origin), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ kind, label: kind.toLowerCase() })
+    });
+    const payload = (await response.json()) as { session?: FeedSessionDTO };
+    if (payload.session) {
+      setFeedSessions((current) => current.map((session) => (session.id === payload.session!.id ? payload.session! : session)));
+    }
+  }
+
+  async function closeFeedSession(sessionId: string) {
+    const response = await fetch(new URL(`/feed-sessions/${sessionId}`, window.location.origin), {
+      method: 'PATCH'
+    });
+    const payload = (await response.json()) as { session?: FeedSessionDTO };
+    if (payload.session) {
+      setFeedSessions((current) => current.map((session) => (session.id === payload.session!.id ? payload.session! : session)));
     }
   }
 
@@ -53,6 +103,12 @@ export function TodayPage() {
           {compactMode ? <p>Compact mode active.</p> : <p>Compact mode scaffolded.</p>}
         </div>
         <EventLog events={events} onRecord={recordEvent} />
+        <FeedSessionsPanel
+          sessions={feedSessions}
+          onStartSession={startFeedSession}
+          onAddSegment={addFeedSegment}
+          onCloseSession={closeFeedSession}
+        />
         <QuickActionDock />
       </main>
     </MobileShell>
