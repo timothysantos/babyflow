@@ -1,10 +1,34 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { TodayPage } from '../src/client/routes/TodayPage';
 
+beforeEach(() => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      const method = init?.method ?? 'GET';
+      if (method === 'GET') {
+        return Response.json({ events: [] });
+      }
+      return Response.json({
+        event: {
+          id: 'event_1',
+          kind: 'WAKE',
+          label: 'wake',
+          recordedAt: '2026-05-16T00:00:00.000Z'
+        }
+      });
+    })
+  );
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
+
 describe('TodayPage', () => {
-  it('renders mobile layout, expandable row, and quick action dock', () => {
+  it('renders mobile layout, expandable row, event log, and quick action dock', async () => {
     render(
       <MemoryRouter>
         <TodayPage />
@@ -24,6 +48,9 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Compact mode off' }));
     expect(screen.getByText('Compact mode active.')).toBeTruthy();
     expect(window.localStorage.getItem('babyflow.today.compactMode')).toBe('true');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Record Wake' }));
+    await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('WAKE: wake'));
 
     fireEvent.click(screen.getByRole('button', { name: 'Show details' }));
     expect(screen.getByTestId('cycle-row-expanded-details')).toBeTruthy();
