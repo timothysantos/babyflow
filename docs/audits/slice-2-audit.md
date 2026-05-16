@@ -56,4 +56,4 @@ Verdict: COMPLETE
 - The browser smoke test still verifies the dark boot canvas and root page render.
 - D1 is not exercised with a real local database in this slice; the proof remains a mock-env worker test for the slice-1 worker boundary.
 - Slice commits:
-  - [`<pending>`](https://github.com/timothysantos/babyflow/commit/<pending>) `feat: implement slice 2 baby profiles and locale`
+  - [`a4e846e`](https://github.com/timothysantos/babyflow/commit/a4e846e) `feat: implement slice 2 baby profiles and locale`
