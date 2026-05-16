@@ -54,4 +54,4 @@ Verdict: COMPLETE
 - Slice 3 implements the paper-journal Today shell and does not yet introduce the deeper cycle-event domain.
 - Browser proof remains the repeatable dark boot-canvas smoke test from the root shell.
 - Slice commits:
-  - [`<pending>`](https://github.com/timothysantos/babyflow/commit/<pending>) `feat: implement slice 3 paper journal today ui`
+  - [`a2b103c`](https://github.com/timothysantos/babyflow/commit/a2b103c) `feat: implement slice 3 paper journal today ui`
