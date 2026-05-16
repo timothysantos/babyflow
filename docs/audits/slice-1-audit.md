@@ -56,3 +56,7 @@ Verdict: INCOMPLETE
 - The router is mounted and tested.
 - `/health` now returns plain `OK` to match the slice wording.
 - The remaining blocker is browser-level proof that the app loads without a bright white flash.
+- Slice commits:
+  - [`b72a12f`](https://github.com/timothysantos/babyflow/commit/b72a12f) `feat: wire slice 1 router`
+  - [`7b3d525`](https://github.com/timothysantos/babyflow/commit/7b3d525) `fix: align health tests with spec`
+  - [`5178889`](https://github.com/timothysantos/babyflow/commit/5178889) `docs: add slice audit artifact rule`

@@ -31,6 +31,7 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 11. Never use the word `complete` unless the slice completion gate passes with every required file, criterion, checklist item, and test proven.
 12. Slice completion requires adversarial verification, not intent or partial wiring.
 13. Every slice must also produce a downloadable Markdown audit artifact in the repo, under `docs/audits/`, using a filename that matches the slice being audited.
+14. The audit report, including the downloadable Markdown artifact, must include GitHub links for every commit created in that slice.
 
 ## Implementation Sequence
 
@@ -52,3 +53,4 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 - Slice 1 must satisfy the slice completion gate in `/Users/tim/Downloads/agents-md-slice-completion-gate.md`.
 - Slice 1 must include `src/client/router.tsx` and prove the router is mounted and tested.
 - Slice 1 must emit `docs/audits/slice-1-audit.md` as the downloadable Markdown report artifact.
+- Slice 1 audit artifacts must include GitHub links for the slice commits.
