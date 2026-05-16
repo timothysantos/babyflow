@@ -8,6 +8,8 @@ COMPLETE
 
 | Item | Level | Evidence |
 |---|---|---|
+| `docs/spec/ui-design-language-2026.md` | EXISTS | 2026 UI design language is checked into the repo spec. |
+| Design language application on Today and Profile surfaces | VERIFIED | `tests/app-shell.test.tsx`, `tests/baby-select-page.test.tsx`, `tests/today-page.test.tsx`, and `tests/e2e/today-mobile.spec.ts` passed with surface class and runtime style assertions. |
 | `src/domain/feed/feed.types.ts` | EXISTS | Feed session and segment types exist. |
 | `src/infrastructure/repositories/feed-repository.ts` | WIRED | File-backed feed session store is wired into the API. |
 | `src/infrastructure/api/routes/feed-sessions.ts` | WIRED | `/feed-sessions` and `/feed-sessions/:id/segments` are routed in the worker. |
@@ -31,6 +33,14 @@ Slice 5 establishes the feed-session foundation:
 - chronology preservation across repository, API, and UI layers
 - mobile runtime interaction proof
 
+Slice 5 also inherits the repo-wide 2026 UI design language:
+
+- calm OS-native journaling feel
+- soft glassy surfaces
+- rounded timeline cards
+- breathable mobile spacing
+- thumb-safe controls
+
 ## What Is Verified
 
 - A feed session can be started from the Today surface.
@@ -39,6 +49,7 @@ Slice 5 establishes the feed-session foundation:
 - Repository and API ordering remain newest-first.
 - Segment chronology remains append-ordered across repository, API, and UI layers.
 - The mobile browser proof covers the feed-session interactions alongside the existing Today continuity checks.
+- Today and Profile surfaces render through the 2026 UI design language, with surface cards, status chips, and runtime style checks.
 
 ## What Is Not Yet Verified
 
@@ -64,9 +75,12 @@ This slice does not yet validate:
 - [`/Users/tim/22m/ai-projects/babyflow/tests/feed-repository.test.ts`](../../tests/feed-repository.test.ts)
 - [`/Users/tim/22m/ai-projects/babyflow/tests/feed-sessions-route.test.ts`](../../tests/feed-sessions-route.test.ts)
 - [`/Users/tim/22m/ai-projects/babyflow/tests/e2e/today-mobile.spec.ts`](../../tests/e2e/today-mobile.spec.ts)
+- [`/Users/tim/22m/ai-projects/babyflow/docs/spec/ui-design-language-2026.md`](../../docs/spec/ui-design-language-2026.md)
 
 ## Commit
 
 - [`ba596e8`](https://github.com/timothysantos/babyflow/commit/ba596e8) `feat: implement slice 5 feed sessions`
 - [`4bb19ee`](https://github.com/timothysantos/babyflow/commit/4bb19ee) `docs: finalize slice 5 audit report`
 - [`96fc18b`](https://github.com/timothysantos/babyflow/commit/96fc18b) `docs: harden slice 5 behavioral session proof`
+- [`f4d975d`](https://github.com/timothysantos/babyflow/commit/f4d975d) `docs: add slice 5 chronology integrity rule`
+- [`5ef167a`](https://github.com/timothysantos/babyflow/commit/5ef167a) `feat: add 2026 ui design language`
