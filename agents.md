@@ -40,6 +40,10 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 20. Do not treat `EXISTS` or `WIRED` as `VERIFIED`.
 21. For UI acceptance criteria involving flashes, layout, themes, rendering, responsiveness, hydration, or transitions, browser-level verification is mandatory.
 22. Source inspection alone is insufficient for behavior verification.
+23. Proof quality must be explicit: `EXISTS` means the file/component/function exists, `WIRED` means it is connected into runtime flow, and `VERIFIED` means runtime behavior is proven.
+24. Never treat `EXISTS` or `WIRED` as `VERIFIED`.
+25. Use measurable proof wording in audits. Avoid subjective phrases like "small", "looks correct", or "appears mounted".
+26. Prefer runtime proof, test output, DOM assertions, API responses, browser validation, screenshot proof, or rendered-behavior verification over source inspection whenever behavior is being audited.
 
 ## Implementation Sequence
 
@@ -63,3 +67,4 @@ This repository is built from the canonical BabyFlow spec. The spec is the sourc
 - Slice 1 must emit `docs/audits/slice-1-audit.md` as the downloadable Markdown report artifact.
 - Slice 1 audit artifacts must include GitHub links for the slice commits.
 - Slice 1 audits must distinguish `EXISTS`, `WIRED`, and `VERIFIED` explicitly.
+- Slice 1 audits must use measurable proof wording, not subjective descriptions.
