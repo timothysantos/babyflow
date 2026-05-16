@@ -113,6 +113,9 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('compact-mode')).toBeVisible();
   await expect(page.getByTestId('compact-mode')).toHaveClass(/status-chip/);
   await expect(page.getByTestId('quick-action-dock')).toBeVisible();
+  const shellBox = await page.getByTestId('mobile-shell').boundingBox();
+  expect(shellBox).not.toBeNull();
+  expect(shellBox!.width).toBeGreaterThanOrEqual(360);
   const shellBg = await page.getByTestId('app-shell').evaluate((node) => getComputedStyle(node).backgroundColor);
   expect(shellBg).not.toBe('rgb(255, 255, 255)');
   await expect(page.getByTestId('event-log')).toBeVisible();
@@ -135,8 +138,8 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
     const { paddingLeft, paddingRight } = getComputedStyle(node);
     return { paddingLeft, paddingRight };
   });
-  expect(Number.parseFloat(shellPadding.paddingLeft)).toBeGreaterThanOrEqual(8);
-  expect(Number.parseFloat(shellPadding.paddingRight)).toBeGreaterThanOrEqual(8);
+  expect(Number.parseFloat(shellPadding.paddingLeft)).toBe(0);
+  expect(Number.parseFloat(shellPadding.paddingRight)).toBe(0);
 
   const dockPaddingBottom = await page.getByTestId('quick-action-dock').evaluate((node) => {
     return getComputedStyle(node).paddingBottom;
