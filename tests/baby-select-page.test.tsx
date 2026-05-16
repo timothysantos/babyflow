@@ -1,10 +1,15 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { BabySelectPage } from '../src/client/routes/BabySelectPage';
 
 describe('BabySelectPage', () => {
   it('renders bilingual labels and computes age week after create', async () => {
-    render(<BabySelectPage />);
+    render(
+      <MemoryRouter>
+        <BabySelectPage />
+      </MemoryRouter>
+    );
 
     expect(screen.getByText('Baby profile / 宝宝资料')).toBeTruthy();
     expect(screen.getByTestId('bilingual-label').textContent).toBe('Wake up time');

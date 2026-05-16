@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BabyForm } from '../components/baby/BabyForm';
 import { LanguageToggle } from '../components/i18n/LanguageToggle';
 import { calculateAgeWeek, type BabyDraft, type PreferredLanguage } from '../../domain/baby/baby.types';
@@ -13,15 +14,14 @@ function labelsFor(language: PreferredLanguage) {
 }
 
 export function BabySelectPage() {
-  const [language, setLanguage] = useState<PreferredLanguage>('en');
-  const [selectedBaby, setSelectedBaby] = useState<BabyDraft | null>(null);
-
-  useEffect(() => {
+  const [language, setLanguage] = useState<PreferredLanguage>(() => {
     const stored = window.localStorage.getItem('babyflow.locale');
     if (stored === 'en' || stored === 'zh-Hans' || stored === 'bilingual') {
-      setLanguage(stored);
+      return stored;
     }
-  }, []);
+    return 'en';
+  });
+  const [selectedBaby, setSelectedBaby] = useState<BabyDraft | null>(null);
 
   useEffect(() => {
     window.localStorage.setItem('babyflow.locale', language);
@@ -30,6 +30,7 @@ export function BabySelectPage() {
   return (
     <main>
       <h1>Baby profile / 宝宝资料</h1>
+      <Link to="/">Today / 今天</Link>
       <LanguageToggle value={language} onChange={setLanguage} />
       <section aria-label="labels-preview">
         <p>{labelsFor(language)['journal.wake_up_time']}</p>

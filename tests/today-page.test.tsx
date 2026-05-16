@@ -1,10 +1,15 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { TodayPage } from '../src/client/routes/TodayPage';
 
 describe('TodayPage', () => {
   it('renders mobile layout, expandable row, and quick action dock', () => {
-    render(<TodayPage />);
+    render(
+      <MemoryRouter>
+        <TodayPage />
+      </MemoryRouter>
+    );
 
     expect(screen.getByTestId('mobile-shell')).toBeTruthy();
     expect(screen.getByTestId('today-page')).toBeTruthy();

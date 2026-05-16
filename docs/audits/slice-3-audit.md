@@ -17,6 +17,7 @@ Verdict: COMPLETE
 | `src/client/components/journal/CycleRowExpandedDetails.tsx` | WIRED | Expanded details render in place. |
 | `src/client/components/actions/QuickActionDock.tsx` | WIRED | Quick action dock is mounted. |
 | `src/client/components/actions/QuickActionButton.tsx` | WIRED | Dock buttons use the action button primitive. |
+| `src/client/router.tsx` | WIRED | Today and profile routes are both reachable through the app router. |
 | `src/client/components/overlays/MobileBottomSheet.tsx` | INTENTIONALLY OMITTED | Not yet required because Slice 3 remains a paper-journal shell slice, not a modal editing slice. |
 | `src/client/components/overlays/DesktopDialog.tsx` | INTENTIONALLY OMITTED | Not yet required for the mobile-first Today shell slice. |
 | `docs/audits/slice-3-audit.md` | EXISTS | Downloadable audit artifact exists. |
@@ -30,6 +31,7 @@ Verdict: COMPLETE
 | Compact mode toggle is behaviorally verified. | VERIFIED | `tests/today-page.test.tsx` and `tests/e2e/today-mobile.spec.ts` passed; compact mode toggles, persists to localStorage, and renders the active state. |
 | Expanded details do not navigate away. | VERIFIED | `tests/today-page.test.tsx` and `tests/row-expansion-persistence.test.tsx` passed; `cycle-row-expanded-details` renders in place after click and survives rerender. |
 | Quick action dock stays visible. | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured the dock bounding box before and after scroll. |
+| Route continuity preserves compact mode. | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed; navigation from Today to Profile and back preserved `Compact mode active.`. |
 
 ## Audit Checklist
 
@@ -58,6 +60,7 @@ Verdict: COMPLETE
 - Browser proof includes the repeatable dark boot-canvas smoke test and the mobile Today-page smoke test.
 - Persistence scope is still transitional: the current proof covers rerender persistence and local UI state, not production D1 durability.
 - Touch target sizing is now runtime-verified in-browser, not just source-reviewed.
+- Route continuity is now runtime-verified for Today/Profile navigation with preserved compact-mode state.
 - Slice commits:
   - [`a2b103c`](https://github.com/timothysantos/babyflow/commit/a2b103c) `feat: implement slice 3 paper journal today ui`
   - [`48f8afd`](https://github.com/timothysantos/babyflow/commit/48f8afd) `feat: harden slice 3 mobile behavior proof`

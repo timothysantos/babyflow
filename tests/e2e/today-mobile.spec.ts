@@ -29,6 +29,12 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await page.getByRole('button', { name: 'Compact mode off' }).click();
   await expect(page.getByText('Compact mode active.')).toBeVisible();
 
+  await page.getByRole('link', { name: 'Profile / 资料' }).click();
+  await expect(page.getByRole('heading', { name: 'Baby profile / 宝宝资料' })).toBeVisible();
+  await page.getByRole('link', { name: 'Today / 今天' }).click();
+  await expect(page.getByTestId('today-page')).toBeVisible();
+  await expect(page.getByTestId('compact-mode')).toHaveAttribute('data-compact-mode', 'on');
+
   await page.evaluate(() => {
     window.scrollTo(0, document.body.scrollHeight);
   });
