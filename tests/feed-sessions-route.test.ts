@@ -3,7 +3,7 @@ import { feedSessionsRoute } from '../src/infrastructure/api/routes/feed-session
 import { resetFeedStoreForTests } from '../src/infrastructure/repositories/feed-repository';
 
 describe('feed sessions route', () => {
-  it('creates, segments, closes, and lists feed sessions', async () => {
+  it('creates, segments, closes, and lists feed sessions with ordered segments', async () => {
     await resetFeedStoreForTests();
 
     const postResponse = await feedSessionsRoute(
@@ -27,6 +27,16 @@ describe('feed sessions route', () => {
     );
     const segmented = await segmentResponse.json();
     expect(segmented.session.segments[0]).toMatchObject({ kind: 'LEFT', label: 'left' });
+
+    const secondSegmentResponse = await feedSessionsRoute(
+      new Request(`https://example.com/feed-sessions/${sessionId}/segments`, {
+        method: 'POST',
+        body: JSON.stringify({ kind: 'RIGHT', label: 'right' })
+      }),
+      sessionId
+    );
+    const twiceSegmented = await secondSegmentResponse.json();
+    expect(twiceSegmented.session.segments[1]).toMatchObject({ kind: 'RIGHT', label: 'right' });
 
     const closeResponse = await feedSessionsRoute(
       new Request(`https://example.com/feed-sessions/${sessionId}`, { method: 'PATCH' }),

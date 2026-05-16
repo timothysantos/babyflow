@@ -14,6 +14,7 @@ COMPLETE
 | `src/client/components/feed/FeedSessionsPanel.tsx` | WIRED | Feed sessions UI is mounted in `TodayPage`. |
 | Feed session create/segment/close behavior | VERIFIED | `tests/feed-sessions-route.test.ts` passed. |
 | Feed repository newest-first ordering | VERIFIED | `tests/feed-repository.test.ts` passed. |
+| Feed segment append chronology | VERIFIED | `tests/feed-repository.test.ts` and `tests/feed-sessions-route.test.ts` passed with multiple segments in order. |
 | Feed session UI flow on mobile | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed. |
 | Build output | VERIFIED | `npm run build` passed. |
 | Full vitest suite | VERIFIED | `npm test` passed. |
@@ -26,6 +27,7 @@ Slice 5 establishes the feed-session foundation:
 - segment capture
 - session closure
 - newest-first session ordering
+- ordered segment append behavior
 - mobile runtime interaction proof
 
 ## What Is Verified
@@ -34,6 +36,7 @@ Slice 5 establishes the feed-session foundation:
 - Feed segments can be appended to the active session.
 - A feed session can be closed and surfaces as closed in the UI.
 - Repository and API ordering remain newest-first.
+- Segment chronology remains append-ordered across repository, API, and UI layers.
 - The mobile browser proof covers the feed-session interactions alongside the existing Today continuity checks.
 
 ## What Is Not Yet Verified
@@ -62,4 +65,4 @@ This slice does not yet validate:
 ## Commit
 
 - [`ba596e8`](https://github.com/timothysantos/babyflow/commit/ba596e8) `feat: implement slice 5 feed sessions`
-
+- [`4bb19ee`](https://github.com/timothysantos/babyflow/commit/4bb19ee) `docs: finalize slice 5 audit report`

@@ -8,12 +8,13 @@ import {
 } from '../src/infrastructure/repositories/feed-repository';
 
 describe('feed repository', () => {
-  it('stores feed sessions with newest first and keeps segments on the session', async () => {
+  it('stores feed sessions with newest first and keeps segments in append order on the session', async () => {
     await resetFeedStoreForTests();
 
     const first = await createFeedSession({ babyId: 'baby_1', mode: 'BREAST' });
     const second = await createFeedSession({ babyId: 'baby_1', mode: 'FORMULA' });
     await addFeedSegment(second.id, { kind: 'LEFT', label: 'left' });
+    await addFeedSegment(second.id, { kind: 'RIGHT', label: 'right' });
     const closed = await closeFeedSession(second.id);
     const sessions = await listFeedSessions();
 
@@ -21,5 +22,6 @@ describe('feed repository', () => {
     expect(sessions[1].id).toBe(first.id);
     expect(closed.endedAt).toBeTruthy();
     expect(sessions[0].segments[0]).toMatchObject({ kind: 'LEFT', label: 'left' });
+    expect(sessions[0].segments[1]).toMatchObject({ kind: 'RIGHT', label: 'right' });
   });
 });

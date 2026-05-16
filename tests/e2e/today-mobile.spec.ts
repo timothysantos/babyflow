@@ -145,6 +145,9 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await page.getByRole('button', { name: 'Add Left' }).click();
   await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(1);
   await expect(page.getByTestId('feed-session-list')).toContainText('LEFT: left');
+  await page.getByRole('button', { name: 'Add Right' }).click();
+  await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(2);
+  await expect(page.getByTestId('feed-session-list')).toContainText('RIGHT: right');
   await page.getByRole('button', { name: 'Close feed' }).click();
   await expect(page.getByTestId('feed-session-status')).toContainText('Closed');
 
