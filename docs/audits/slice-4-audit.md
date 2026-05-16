@@ -36,6 +36,7 @@ Verdict: COMPLETE
 |---|---|---|
 | Cycle-event action buttons are uniquely addressable | VERIFIED | `EventLog` uses `aria-label="Record ..."` and the tests target `Record Wake` explicitly. |
 | Cycle-event load does not erase freshly recorded events | VERIFIED | `TodayPage` preserves current events when the initial GET resolves late; the UI tests passed after the fix. |
+| Event ordering is deterministic newest-first | VERIFIED | `tests/event-repository.test.ts` passed and verified three sequential cycle events are returned newest-first. |
 | Mobile side padding is in the 8–12px range | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured `mobile-shell` padding at runtime. |
 | Core action buttons are at least 44px | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured the quick-action dock Wake button `min-height` in-browser as at least 44px. |
 | Dock bottom padding is safe-area-aware | VERIFIED | `tests/e2e/today-mobile.spec.ts` passed and measured `quick-action-dock` bottom padding at runtime. |
@@ -55,5 +56,7 @@ Verdict: COMPLETE
 - Slice 4 establishes the cycle-event foundation on the Today screen, not just a generic event log.
 - The event repository is transitional but behaviorally verified through a file-backed per-worker store. It does not prove production D1 durability.
 - The repo keeps the canonical spec in [`docs/spec/babyflow-canonical-master-spec-v7-full.md`](/Users/tim/22m/ai-projects/babyflow/docs/spec/babyflow-canonical-master-spec-v7-full.md) and the slice proofs in [`docs/audits/`](/Users/tim/22m/ai-projects/babyflow/docs/audits).
+- Slice 4 validates the cycle-event foundation only. It does not yet validate clustering, recovery-regulation episode reconstruction, intervention causality, replay interpretation, evidence-graph generation, offline queueing, reconnect reconciliation, or multi-caregiver conflict resolution.
+- Event continuity is explicitly guarded by tests for delayed GET preservation and deterministic newest-first ordering.
 - Slice commits:
   - [`82d5977`](https://github.com/timothysantos/babyflow/commit/82d5977) `feat: add today event log slice`
