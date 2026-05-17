@@ -114,6 +114,7 @@ describe('TodayPage', () => {
     expect(screen.getByRole('button', { name: 'Timeline / 时间线' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Journal / 记录表' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Compact / 简洁' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Guide / 说明' })).toBeTruthy();
     expect(screen.getByText('Timeline view active.')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
     expect(screen.getByTestId('journal-summary')).toBeTruthy();

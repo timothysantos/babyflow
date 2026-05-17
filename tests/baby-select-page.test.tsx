@@ -13,6 +13,7 @@ describe('BabySelectPage', () => {
 
     expect(screen.getByText('Baby profile / 宝宝资料')).toBeTruthy();
     expect(screen.getByTestId('baby-select-page').className).toContain('panel-stack');
+    expect(screen.getByRole('link', { name: 'Guide / 说明' })).toBeTruthy();
     expect(screen.getByTestId('bilingual-label').className).toContain('status-chip');
     expect(screen.getByTestId('bilingual-label').textContent).toBe('Wake Up Time');
 
