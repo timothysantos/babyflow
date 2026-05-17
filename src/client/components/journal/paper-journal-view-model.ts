@@ -28,11 +28,25 @@ function joinLabels(values: string[]) {
   return values.length > 0 ? values.join(' · ') : '—';
 }
 
+function formatDuration(minutes: number) {
+  if (!Number.isFinite(minutes) || minutes < 0) return '0m';
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const remaining = minutes % 60;
+  return `${hours}h ${remaining}m`;
+}
+
+function formatElapsedMinutes(startedAt: string, now: Date) {
+  const elapsed = Math.max(0, now.getTime() - new Date(startedAt).getTime());
+  return Math.round(elapsed / 60000);
+}
+
 export function buildPaperJournalRowViewModel(
   events: CycleEventDTO[],
   sessions: FeedSessionDTO[],
   interventions: InterventionAttemptDTO[] = [],
-  stateTransitions: BabyStateTransitionDTO[] = []
+  stateTransitions: BabyStateTransitionDTO[] = [],
+  now: Date = new Date()
 ): PaperJournalRowViewModel {
   const wakeEvent = events.find((event) => event.kind === 'WAKE');
   const playEvent = events.find((event) => event.kind === 'PLAY');
@@ -42,6 +56,13 @@ export function buildPaperJournalRowViewModel(
   const diaperEvents = events.filter((event) => event.kind === 'DIAPER');
   const feedSession = sessions[0];
   const feedSegments = feedSession?.segments ?? [];
+  const feedDurationMinutes =
+    feedSession?.durationMinutes ??
+    (feedSession
+      ? feedSession.endedAt
+        ? Math.max(0, Math.round((new Date(feedSession.endedAt).getTime() - new Date(feedSession.startedAt).getTime()) / 60000))
+        : formatElapsedMinutes(feedSession.startedAt, now)
+      : null);
   const feedSegmentSummary =
     feedSegments.length > 0
       ? joinLabels(
@@ -59,7 +80,7 @@ export function buildPaperJournalRowViewModel(
 
   const feedSummary = feedSession
     ? cell(
-        [feedSession.mode === 'BREAST' ? 'Breast feed' : feedSession.mode, feedSegmentSummary]
+        [feedSession.mode === 'BREAST' ? 'Breast feed' : feedSession.mode, feedSegmentSummary, feedDurationMinutes != null ? `${feedSession.durationSource === 'MANUAL' ? 'Imported' : feedSession.endedAt ? 'Closed' : 'Live'} ${formatDuration(feedDurationMinutes)}` : null]
           .filter(Boolean)
           .join(' · '),
         'EVENT'

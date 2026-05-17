@@ -95,6 +95,7 @@ export function TodayPage() {
     normalizeViewMode(window.localStorage.getItem('babyflow.today.viewMode') ?? window.localStorage.getItem('babyflow.today.compactMode'))
   );
   const [detailsOpen, setDetailsOpen] = useState(() => window.localStorage.getItem('babyflow.today.rowDetailsOpen') === 'true');
+  const [now, setNow] = useState(() => Date.now());
   const [events, setEvents] = useState<CycleEventDTO[]>([]);
   const [feedSessions, setFeedSessions] = useState<FeedSessionDTO[]>([]);
   const [interventionAttempts, setInterventionAttempts] = useState<InterventionAttemptDTO[]>([]);
@@ -118,10 +119,10 @@ export function TodayPage() {
     [events, feedSessions, interventionAttempts]
   );
   const rowViewModel = useMemo(
-    () => buildPaperJournalRowViewModel(events, feedSessions, interventionAttempts, derivedBabyStateTransitions),
-    [events, feedSessions, interventionAttempts, derivedBabyStateTransitions]
+    () => buildPaperJournalRowViewModel(events, feedSessions, interventionAttempts, derivedBabyStateTransitions, new Date(now)),
+    [events, feedSessions, interventionAttempts, derivedBabyStateTransitions, now]
   );
-  const timelineItems = useMemo(() => buildTimelineItems(events, feedSessions), [events, feedSessions]);
+  const timelineItems = useMemo(() => buildTimelineItems(events, feedSessions, new Date(now)), [events, feedSessions, now]);
   const timelineClusters = useMemo<TimelineClusterDTO[]>(
     () =>
       buildTimelineClusters(events, feedSessions, interventionAttempts, derivedBabyStateTransitions).map((cluster) =>
@@ -300,6 +301,11 @@ export function TodayPage() {
   useEffect(() => {
     window.localStorage.setItem('babyflow.today.rowDetailsOpen', String(detailsOpen));
   }, [detailsOpen]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     void fetch(eventsUrl())
@@ -916,6 +922,18 @@ export function TodayPage() {
     }
   }
 
+  async function importFeedDuration(sessionId: string, durationMinutes: number) {
+    const response = await fetch(new URL(`/feed-sessions/${sessionId}`, window.location.origin), {
+      method: 'PATCH',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ durationMinutes })
+    });
+    const payload = await parseJsonResponse<{ session?: FeedSessionDTO }>(response, 'feed-sessions');
+    if (payload.session) {
+      setFeedSessions((current) => current.map((session) => (session.id === payload.session!.id ? payload.session! : session)));
+    }
+  }
+
   async function recordIntervention(kind: InterventionAttemptKind, outcome?: InterventionAttemptOutcome) {
     const optimisticIntervention: InterventionAttemptDTO = {
       id: `optimistic_intervention_${kind.toLowerCase()}_${Date.now()}`,
@@ -1070,9 +1088,11 @@ export function TodayPage() {
                 <StateTransitionViewer transitions={derivedBabyStateTransitions} />
                 <FeedSessionsPanel
                   sessions={feedSessions}
+                  now={now}
                   onStartSession={startFeedSession}
                   onAddSegment={addFeedSegment}
                   onCloseSession={closeFeedSession}
+                  onImportDuration={importFeedDuration}
                 />
               </section>
             ) : null}

@@ -5,6 +5,7 @@ import { TodayPage } from '../src/client/routes/TodayPage';
 
 beforeEach(() => {
   window.localStorage.clear();
+  let importedDurationMinutes: number | null = null;
   vi.stubGlobal(
     'fetch',
       vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -76,6 +77,21 @@ beforeEach(() => {
         });
       }
       if (method === 'PATCH' && url.includes('/feed-sessions')) {
+        const body = init?.body ? JSON.parse(init.body.toString()) as { durationMinutes?: number } : {};
+        if (typeof body.durationMinutes === 'number') {
+          importedDurationMinutes = body.durationMinutes;
+          return Response.json({
+            session: {
+              id: 'feed_session_1',
+              babyId: 'current-baby',
+              mode: 'BREAST',
+              startedAt: '2026-05-16T00:00:00.000Z',
+              durationMinutes: body.durationMinutes,
+              durationSource: 'MANUAL',
+              segments: []
+            }
+          });
+        }
         return Response.json({
           session: {
             id: 'feed_session_1',
@@ -83,6 +99,8 @@ beforeEach(() => {
             mode: 'BREAST',
             startedAt: '2026-05-16T00:00:00.000Z',
             endedAt: '2026-05-16T00:15:00.000Z',
+            durationMinutes: importedDurationMinutes ?? 15,
+            durationSource: importedDurationMinutes != null ? 'MANUAL' : 'LIVE',
             segments: []
           }
         });
@@ -141,12 +159,22 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Start Nurse' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed · current-baby'));
     expect(screen.getByTestId('state-transition-list').textContent).toContain('AWAKE_CALM → FEEDING');
+    expect(screen.getByTestId('feed-session-status').textContent).toContain('Live');
 
     fireEvent.click(screen.getByRole('button', { name: 'Add Left latch' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('LEFT'));
 
+    fireEvent.click(screen.getByRole('button', { name: 'Import duration' }));
+    await waitFor(() => expect(screen.getByTestId('feed-duration-editor')).toBeTruthy());
+    fireEvent.change(screen.getByTestId('feed-duration-input'), { target: { value: '18' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save duration' }));
+    await waitFor(() => expect(screen.getByTestId('feed-session-status').textContent).toContain('Imported · 18m'));
+
     fireEvent.click(screen.getByRole('button', { name: 'Close session' }));
-    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('Closed session'));
+    await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('Imported · 18m'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Journal / 记录表' }));
+    await waitFor(() => expect(screen.getByTestId('paper-journal-cell-feedSummary').textContent).toContain('Imported 18m'));
 
     fireEvent.click(screen.getByRole('button', { name: 'Journal / 记录表' }));
     expect(screen.getByTestId('paper-journal-view')).toBeTruthy();

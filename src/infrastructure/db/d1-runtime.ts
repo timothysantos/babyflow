@@ -32,12 +32,27 @@ async function first<T>(query: string, values: Array<string | number | boolean |
 }
 
 const initializedTables = new Set<string>();
+const initializedColumns = new Set<string>();
 
 export async function ensureRuntimeTable(name: string, ddl: string) {
   const db = runtimeDb();
   if (!db || initializedTables.has(name)) return;
   initializedTables.add(name);
   await exec(ddl);
+}
+
+export async function ensureRuntimeColumns(tableName: string, columns: Array<{ name: string; ddl: string }>) {
+  const db = runtimeDb();
+  if (!db) return;
+  for (const column of columns) {
+    const key = `${tableName}:${column.name}`;
+    if (initializedColumns.has(key)) continue;
+    const existing = await all<{ name: string }>(`PRAGMA table_info(${tableName})`);
+    if (!existing.some((entry) => entry.name === column.name)) {
+      await exec(`ALTER TABLE ${tableName} ADD COLUMN ${column.name} ${column.ddl}`);
+    }
+    initializedColumns.add(key);
+  }
 }
 
 export { all, first, exec };

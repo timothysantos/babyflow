@@ -1,4 +1,5 @@
 export type FeedSessionMode = 'BREAST' | 'EBM' | 'FORMULA' | 'MIXED';
+export type FeedDurationSource = 'LIVE' | 'MANUAL';
 
 export type FeedSegmentKind = 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE';
 
@@ -25,5 +26,7 @@ export type FeedSessionDTO = {
   mode: FeedSessionMode;
   startedAt: string;
   endedAt?: string;
+  durationMinutes?: number;
+  durationSource?: FeedDurationSource;
   segments: FeedSegmentDTO[];
 };

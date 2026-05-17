@@ -49,4 +49,32 @@ describe('feed sessions route', () => {
     const payload = await getResponse.json();
     expect(payload.sessions[0]).toMatchObject({ babyId: 'baby_1', mode: 'BREAST' });
   });
+
+  it('imports a manual duration through the route', async () => {
+    await resetFeedStoreForTests();
+
+    const postResponse = await feedSessionsRoute(
+      new Request('https://example.com/feed-sessions', {
+        method: 'POST',
+        body: JSON.stringify({ babyId: 'baby_1', mode: 'BREAST' })
+      })
+    );
+    const created = await postResponse.json();
+    const sessionId = created.session.id as string;
+
+    const patchResponse = await feedSessionsRoute(
+      new Request(`https://example.com/feed-sessions/${sessionId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ durationMinutes: 22 })
+      }),
+      sessionId
+    );
+    const imported = await patchResponse.json();
+
+    expect(imported.session).toMatchObject({ durationMinutes: 22, durationSource: 'MANUAL' });
+
+    const getResponse = await feedSessionsRoute(new Request('https://example.com/feed-sessions'));
+    const payload = await getResponse.json();
+    expect(payload.sessions[0]).toMatchObject({ durationMinutes: 22, durationSource: 'MANUAL' });
+  });
 });

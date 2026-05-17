@@ -10,11 +10,30 @@ function formatLabel(event: CycleEventDTO) {
   return `${event.kind.toLowerCase().replaceAll('_', ' ')} · ${event.label}`;
 }
 
-function formatSessionLabel(session: FeedSessionDTO) {
-  return `${session.mode} feed · ${session.babyId}`;
+function formatDuration(minutes: number) {
+  if (!Number.isFinite(minutes) || minutes < 0) return '0m';
+  if (minutes < 60) return `${minutes}m`;
+  const hours = Math.floor(minutes / 60);
+  const remaining = minutes % 60;
+  return `${hours}h ${remaining}m`;
 }
 
-export function buildTimelineItems(events: CycleEventDTO[], sessions: FeedSessionDTO[]): TimelineItemDTO[] {
+function formatSessionLabel(session: FeedSessionDTO, now: Date) {
+  const durationMinutes =
+    session.durationMinutes ??
+    (session.endedAt
+      ? Math.max(0, Math.round((new Date(session.endedAt).getTime() - new Date(session.startedAt).getTime()) / 60000))
+      : Math.max(0, Math.round((now.getTime() - new Date(session.startedAt).getTime()) / 60000)));
+  const durationLabel =
+    session.durationMinutes != null
+      ? `${session.durationSource === 'MANUAL' ? 'Imported' : 'Closed'} ${formatDuration(durationMinutes)}`
+      : session.endedAt
+        ? `Closed ${formatDuration(durationMinutes)}`
+        : `Live ${formatDuration(durationMinutes)}`;
+  return `${session.mode} feed · ${session.babyId} · ${durationLabel}`;
+}
+
+export function buildTimelineItems(events: CycleEventDTO[], sessions: FeedSessionDTO[], now: Date = new Date()): TimelineItemDTO[] {
   const records: TimelineSourceRecord[] = [
     ...events.map((event) => ({ type: 'cycle-event', event }) as const),
     ...sessions.flatMap((session) => [
@@ -43,7 +62,7 @@ export function buildTimelineItems(events: CycleEventDTO[], sessions: FeedSessio
           id: `feed-session-start:${record.session.id}`,
           kind: 'FEED_SESSION_START' as const,
           title: 'feed session started',
-          details: formatSessionLabel(record.session),
+          details: formatSessionLabel(record.session, now),
           recordedAt: record.session.startedAt,
           sourceId: record.session.id,
           sourceType: 'feed-session' as const
@@ -55,7 +74,7 @@ export function buildTimelineItems(events: CycleEventDTO[], sessions: FeedSessio
           id: `feed-session-end:${record.session.id}`,
           kind: 'FEED_SESSION_END' as const,
           title: 'feed session closed',
-          details: formatSessionLabel(record.session),
+          details: formatSessionLabel(record.session, now),
           recordedAt: record.session.endedAt ?? record.session.startedAt,
           sourceId: record.session.id,
           sourceType: 'feed-session' as const
@@ -66,7 +85,7 @@ export function buildTimelineItems(events: CycleEventDTO[], sessions: FeedSessio
         id: `feed-segment:${record.session.id}:${record.segment.id}`,
         kind: 'FEED_SEGMENT' as const,
         title: record.segment.kind.toLowerCase().replaceAll('_', ' '),
-        details: `${record.segment.label} · ${formatSessionLabel(record.session)}`,
+        details: `${record.segment.label} · ${formatSessionLabel(record.session, now)}`,
         recordedAt: record.segment.recordedAt,
         sourceId: record.segment.id,
         sourceType: 'feed-segment' as const

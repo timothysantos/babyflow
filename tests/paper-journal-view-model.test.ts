@@ -17,6 +17,8 @@ describe('paper journal view model', () => {
         babyId: 'baby_1',
         mode: 'BREAST',
         startedAt: '2026-05-16T00:05:00.000Z',
+        durationMinutes: 18,
+        durationSource: 'MANUAL',
         segments: [
           { id: 'segment_1', kind: 'LEFT', label: 'left', recordedAt: '2026-05-16T00:05:00.000Z' },
           { id: 'segment_2', kind: 'RIGHT', label: 'right', recordedAt: '2026-05-16T00:12:00.000Z' }
@@ -45,6 +47,7 @@ describe('paper journal view model', () => {
     expect(row.feedSummary.display).toContain('Breast feed');
     expect(row.feedSummary.display).toContain('LB');
     expect(row.feedSummary.display).toContain('RB');
+    expect(row.feedSummary.display).toContain('Imported 18m');
     expect(row.startOfPlayTime.display).not.toBe('—');
     expect(row.remarks.display).toContain('settled quickly');
     expect(row.details.timelineEventIds).toEqual(['event_2', 'event_1', 'event_3']);

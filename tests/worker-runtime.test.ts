@@ -36,7 +36,17 @@ describe('worker runtime routes', () => {
     });
     expect(feedResponse.statusCode).toBeGreaterThanOrEqual(200);
     expect(feedResponse.statusCode).toBeLessThan(300);
-    expect(JSON.parse(feedResponse.body)).toHaveProperty('session');
+    const feedPayload = JSON.parse(feedResponse.body);
+    expect(feedPayload).toHaveProperty('session');
+
+    const sessionId = feedPayload.session.id as string;
+    const durationResponse = await request(workerUrl, `/feed-sessions/${sessionId}`, {
+      method: 'PATCH',
+      body: body({ durationMinutes: 21 })
+    });
+    expect(durationResponse.statusCode).toBeGreaterThanOrEqual(200);
+    expect(durationResponse.statusCode).toBeLessThan(300);
+    expect(JSON.parse(durationResponse.body)).toMatchObject({ session: { durationMinutes: 21, durationSource: 'MANUAL' } });
 
     const interventionsResponse = await request(workerUrl, '/interventions', {
       method: 'POST',

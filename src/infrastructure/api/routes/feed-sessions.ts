@@ -1,5 +1,11 @@
 import type { FeedSegmentDraft, FeedSessionDraft } from '../../../domain/feed/feed.types';
-import { addFeedSegment, closeFeedSession, createFeedSession, listFeedSessions } from '../../repositories/feed-repository';
+import {
+  addFeedSegment,
+  closeFeedSession,
+  createFeedSession,
+  importFeedSessionDuration,
+  listFeedSessions
+} from '../../repositories/feed-repository';
 
 export async function feedSessionsRoute(request: Request, sessionId?: string): Promise<Response> {
   if (request.method === 'GET') {
@@ -20,7 +26,11 @@ export async function feedSessionsRoute(request: Request, sessionId?: string): P
   }
 
   if (request.method === 'PATCH' && sessionId) {
-    const session = await closeFeedSession(sessionId);
+    const body = (await request.json().catch(() => ({}))) as { durationMinutes?: number };
+    const session =
+      typeof body.durationMinutes === 'number'
+        ? await importFeedSessionDuration(sessionId, body.durationMinutes)
+        : await closeFeedSession(sessionId);
     return Response.json({ session });
   }
 
