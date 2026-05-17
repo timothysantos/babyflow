@@ -5,6 +5,7 @@ import type { JournalCellValue, PaperJournalRowViewModel } from './paper-journal
 function formatClock(timestamp?: string) {
   if (!timestamp) return '—';
   const date = new Date(timestamp);
+  if (Number.isNaN(date.getTime())) return timestamp;
   return new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' }).format(date);
 }
 

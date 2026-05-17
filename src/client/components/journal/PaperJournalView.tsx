@@ -2,6 +2,7 @@ import type { PaperJournalRowViewModel } from './paper-journal.types';
 
 type Props = {
   rows: PaperJournalRowViewModel[];
+  onEditCell?: (key: keyof PaperJournalRowViewModel, label: string, value: string) => void;
 };
 
 const columns = [
@@ -16,7 +17,7 @@ const columns = [
   { key: 'remarks', label: 'Remarks / 其他笔记' }
 ] as const;
 
-export function PaperJournalView({ rows }: Props) {
+export function PaperJournalView({ rows, onEditCell }: Props) {
   return (
     <section className="timeline-card panel-stack" data-testid="paper-journal-view" aria-label="Paper journal view">
       <div>
@@ -46,7 +47,14 @@ export function PaperJournalView({ rows }: Props) {
                   };
                   return (
                     <td key={column.key} data-source={value.source} data-needs-review={value.needsReview ? 'true' : 'false'}>
-                      <span className="paper-journal-value">{value.display}</span>
+                      <button
+                        type="button"
+                        className="paper-journal-value paper-journal-value-button"
+                        data-testid={`paper-journal-cell-${column.key}`}
+                        onClick={() => onEditCell?.(column.key as keyof PaperJournalRowViewModel, column.label, value.display)}
+                      >
+                        {value.display}
+                      </button>
                     </td>
                   );
                 })}

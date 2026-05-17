@@ -10,6 +10,8 @@ import type { FeedSessionDTO, FeedSessionMode } from '../../domain/feed/feed.typ
 import { buildPaperJournalRowViewModel } from '../components/journal/paper-journal-view-model';
 import { JournalRowSummary } from '../components/journal/JournalRowSummary';
 import { PaperJournalView } from '../components/journal/PaperJournalView';
+import { PaperJournalCellEditSheet } from '../components/timeline/PaperJournalCellEditSheet';
+import { CompactBlockDetailSheet } from '../components/timeline/CompactBlockDetailSheet';
 import { LiveTimelineStream } from '../components/timeline/LiveTimelineStream';
 import { CorrectionHistoryPanel } from '../components/timeline/CorrectionHistoryPanel';
 import { TimelineDetailSheet } from '../components/timeline/TimelineDetailSheet';
@@ -21,7 +23,21 @@ type TodayViewMode = 'timeline' | 'journal' | 'compact';
 type UndoRecord =
   | { action: 'SOFT_DELETE'; item: TimelineItemDTO }
   | { action: 'UPDATE_TIME'; item: TimelineItemDTO; previousValue: string }
-  | { action: 'UPDATE_DETAILS'; item: TimelineItemDTO; previousValue: string };
+  | { action: 'UPDATE_DETAILS'; item: TimelineItemDTO; previousValue: string }
+  | {
+      action: 'PROJECT_CELL';
+      key: keyof ReturnType<typeof buildPaperJournalRowViewModel>;
+      previousValue: string;
+      sourceType: 'cycle-event' | 'feed-session';
+      sourceId: string;
+      created: boolean;
+    };
+
+type CellEditorState = {
+  key: keyof ReturnType<typeof buildPaperJournalRowViewModel>;
+  label: string;
+  value: string;
+} | null;
 
 function normalizeViewMode(value: string | null): TodayViewMode {
   if (value === 'timeline' || value === 'journal' || value === 'compact') return value;
@@ -45,6 +61,8 @@ export function TodayPage() {
   const [events, setEvents] = useState<CycleEventDTO[]>([]);
   const [feedSessions, setFeedSessions] = useState<FeedSessionDTO[]>([]);
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItemDTO | null>(null);
+  const [paperJournalEditor, setPaperJournalEditor] = useState<CellEditorState>(null);
+  const [compactBlockEditor, setCompactBlockEditor] = useState<CellEditorState>(null);
   const [correctionHistory, setCorrectionHistory] = useState<CorrectionHistoryDTO[]>([]);
   const [undoStack, setUndoStack] = useState<UndoRecord[]>([]);
 
@@ -106,6 +124,260 @@ export function TodayPage() {
 
   function pushUndo(record: UndoRecord) {
     setUndoStack((current) => [record, ...current]);
+  }
+
+  function updateJournalProjectionCell(key: CellEditorState['key'], nextValue: string) {
+    if (key === 'wakeUpTime') {
+      const wake = events.find((event) => event.kind === 'WAKE');
+      if (wake) {
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.wakeUpTime.display,
+          sourceType: 'cycle-event',
+          sourceId: wake.id,
+          created: false
+        });
+        setEvents((current) => current.map((event) => (event.id === wake.id ? { ...event, recordedAt: nextValue } : event)));
+      } else {
+        const createdId = `manual-wake-${events.length + 1}`;
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.wakeUpTime.display,
+          sourceType: 'cycle-event',
+          sourceId: createdId,
+          created: true
+        });
+        setEvents((current) => [
+          {
+            id: createdId,
+            kind: 'WAKE',
+            label: 'wake',
+            babyId: 'current-baby',
+            recordedAt: nextValue
+          },
+          ...current
+        ]);
+      }
+      recordCorrection('correction.update', wake?.id ?? 'manual-wake', 'cycle-event', `Updated ${key}`);
+      return;
+    }
+    if (key === 'startOfFeedTime') {
+      const session = feedSessions[0];
+      if (session) {
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.startOfFeedTime.display,
+          sourceType: 'feed-session',
+          sourceId: session.id,
+          created: false
+        });
+        setFeedSessions((current) => current.map((entry) => (entry.id === session.id ? { ...entry, startedAt: nextValue } : entry)));
+      } else {
+        const createdId = `manual-feed-${feedSessions.length + 1}`;
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.startOfFeedTime.display,
+          sourceType: 'feed-session',
+          sourceId: createdId,
+          created: true
+        });
+        setFeedSessions((current) => [
+          {
+            id: createdId,
+            babyId: 'current-baby',
+            mode: 'BREAST',
+            startedAt: nextValue,
+            segments: []
+          },
+          ...current
+        ]);
+      }
+      recordCorrection('correction.update', session?.id ?? 'manual-feed', 'feed-session', `Updated ${key}`);
+      return;
+    }
+    if (key === 'startOfPlayTime') {
+      const play = events.find((event) => event.kind === 'PLAY');
+      if (play) {
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.startOfPlayTime.display,
+          sourceType: 'cycle-event',
+          sourceId: play.id,
+          created: false
+        });
+        setEvents((current) => current.map((event) => (event.id === play.id ? { ...event, recordedAt: nextValue } : event)));
+      } else {
+        const createdId = `manual-play-${events.length + 1}`;
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.startOfPlayTime.display,
+          sourceType: 'cycle-event',
+          sourceId: createdId,
+          created: true
+        });
+        setEvents((current) => [
+          {
+            id: createdId,
+            kind: 'PLAY',
+            label: 'play',
+            babyId: 'current-baby',
+            recordedAt: nextValue
+          },
+          ...current
+        ]);
+      }
+      recordCorrection('correction.update', play?.id ?? 'manual-play', 'cycle-event', `Updated ${key}`);
+      return;
+    }
+    if (key === 'startOfSleepTime') {
+      const sleep = events.find((event) => event.kind === 'ASLEEP' || event.kind === 'PUT_DOWN');
+      if (sleep) {
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.startOfSleepTime.display,
+          sourceType: 'cycle-event',
+          sourceId: sleep.id,
+          created: false
+        });
+        setEvents((current) => current.map((event) => (event.id === sleep.id ? { ...event, recordedAt: nextValue } : event)));
+      } else {
+        const createdId = `manual-sleep-${events.length + 1}`;
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.startOfSleepTime.display,
+          sourceType: 'cycle-event',
+          sourceId: createdId,
+          created: true
+        });
+        setEvents((current) => [
+          {
+            id: createdId,
+            kind: 'PUT_DOWN',
+            label: 'put down',
+            babyId: 'current-baby',
+            recordedAt: nextValue
+          },
+          ...current
+        ]);
+      }
+      recordCorrection('correction.update', sleep?.id ?? 'manual-sleep', 'cycle-event', `Updated ${key}`);
+      return;
+    }
+    if (key === 'urine') {
+      const diaper = events.find((event) => event.kind === 'DIAPER');
+      if (diaper) {
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.urine.display,
+          sourceType: 'cycle-event',
+          sourceId: diaper.id,
+          created: false
+        });
+        setEvents((current) => current.map((event) => (event.id === diaper.id ? { ...event, label: nextValue } : event)));
+      } else {
+        const createdId = `manual-diaper-${events.length + 1}`;
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.urine.display,
+          sourceType: 'cycle-event',
+          sourceId: createdId,
+          created: true
+        });
+        setEvents((current) => [
+          {
+            id: createdId,
+            kind: 'DIAPER',
+            label: nextValue,
+            babyId: 'current-baby',
+            recordedAt: new Date().toISOString()
+          },
+          ...current
+        ]);
+      }
+      recordCorrection('correction.update', diaper?.id ?? 'manual-diaper', 'cycle-event', `Updated ${key}`);
+      return;
+    }
+    if (key === 'stool') {
+      const diaper = events.find((event) => event.kind === 'DIAPER');
+      if (diaper) {
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.stool.display,
+          sourceType: 'cycle-event',
+          sourceId: diaper.id,
+          created: false
+        });
+        setEvents((current) => current.map((event) => (event.id === diaper.id ? { ...event, label: nextValue } : event)));
+      } else {
+        const createdId = `manual-diaper-${events.length + 1}`;
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.stool.display,
+          sourceType: 'cycle-event',
+          sourceId: createdId,
+          created: true
+        });
+        setEvents((current) => [
+          {
+            id: createdId,
+            kind: 'DIAPER',
+            label: nextValue,
+            babyId: 'current-baby',
+            recordedAt: new Date().toISOString()
+          },
+          ...current
+        ]);
+      }
+      recordCorrection('correction.update', diaper?.id ?? 'manual-diaper', 'cycle-event', `Updated ${key}`);
+      return;
+    }
+    if (key === 'remarks') {
+      const note = events.find((event) => event.kind === 'NOTE');
+      if (note) {
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.remarks.display,
+          sourceType: 'cycle-event',
+          sourceId: note.id,
+          created: false
+        });
+        setEvents((current) => current.map((event) => (event.id === note.id ? { ...event, label: nextValue } : event)));
+      } else {
+        const createdId = `manual-note-${events.length + 1}`;
+        pushUndo({
+          action: 'PROJECT_CELL',
+          key,
+          previousValue: rowViewModel.remarks.display,
+          sourceType: 'cycle-event',
+          sourceId: createdId,
+          created: true
+        });
+        setEvents((current) => [
+          {
+            id: createdId,
+            kind: 'NOTE',
+            label: nextValue,
+            babyId: 'current-baby',
+            recordedAt: new Date().toISOString()
+          },
+          ...current
+        ]);
+      }
+      recordCorrection('correction.update', note?.id ?? 'manual-note', 'cycle-event', 'Updated remarks');
+    }
   }
 
   function softDeleteTimelineItem(item: TimelineItemDTO) {
@@ -267,16 +539,51 @@ export function TodayPage() {
         );
       }
     }
-    setSelectedTimelineItem((current) => (current?.id === last.item.id ? last.item : current));
+    if (last.action === 'PROJECT_CELL') {
+      if (last.created) {
+        if (last.sourceType === 'cycle-event') {
+          setEvents((current) => current.filter((event) => event.id !== last.sourceId));
+        }
+        if (last.sourceType === 'feed-session') {
+          setFeedSessions((current) => current.filter((session) => session.id !== last.sourceId));
+        }
+      } else if (last.sourceType === 'cycle-event') {
+        if (last.key === 'wakeUpTime') {
+          setEvents((current) =>
+            current.map((event) => (event.id === last.sourceId ? { ...event, recordedAt: last.previousValue } : event))
+          );
+        }
+        if (last.key === 'startOfPlayTime' || last.key === 'startOfSleepTime') {
+          setEvents((current) =>
+            current.map((event) => (event.id === last.sourceId ? { ...event, recordedAt: last.previousValue } : event))
+          );
+        }
+        if (last.key === 'urine' || last.key === 'stool' || last.key === 'remarks') {
+          setEvents((current) => current.map((event) => (event.id === last.sourceId ? { ...event, label: last.previousValue } : event)));
+        }
+      } else if (last.sourceType === 'feed-session') {
+        setFeedSessions((current) =>
+          current.map((session) =>
+            session.id === last.sourceId ? { ...session, startedAt: last.previousValue } : session
+          )
+        );
+      }
+    }
+    if (last.action !== 'PROJECT_CELL') {
+      setSelectedTimelineItem((current) => (current?.id === last.item.id ? last.item : current));
+    }
     setUndoStack((current) => current.slice(1));
     setCorrectionHistory((current) => [
       {
-        id: `correction.undo:${last.item.sourceId}:${current.length + 1}`,
+        id: `correction.undo:${'item' in last ? last.item.sourceId : last.sourceId}:${current.length + 1}`,
         action: 'correction.undo',
-        sourceId: last.item.sourceId,
-        sourceType: last.item.sourceType,
+        sourceId: 'item' in last ? last.item.sourceId : last.sourceId,
+        sourceType: 'item' in last ? last.item.sourceType : last.sourceType,
         createdAt: new Date().toISOString(),
-        summary: `Undid ${last.action.toLowerCase().replaceAll('_', ' ')} for ${last.item.title}`
+        summary:
+          'item' in last
+            ? `Undid ${last.action.toLowerCase().replaceAll('_', ' ')} for ${last.item.title}`
+            : `Undid ${last.action.toLowerCase().replaceAll('_', ' ')} for ${String(last.key)}`
       },
       ...current
     ]);
@@ -343,11 +650,17 @@ export function TodayPage() {
         }
       >
         {viewMode === 'journal' ? (
-          <PaperJournalView rows={[rowViewModel]} />
+          <PaperJournalView
+            rows={[rowViewModel]}
+            onEditCell={(key, label, value) => setPaperJournalEditor({ key, label, value })}
+          />
         ) : viewMode === 'compact' ? (
           <section className="timeline-card panel-stack" data-testid="compact-journal">
             <p className="paper-heading">Compact journal</p>
-            <JournalRowSummary row={rowViewModel} />
+            <JournalRowSummary
+              row={rowViewModel}
+              onEditCell={(key, label, value) => setCompactBlockEditor({ key, label, value })}
+            />
             <p className="status-chip compact-mode" data-testid="compact-mode" data-compact-mode="on">
               Compact journal active.
             </p>
@@ -356,7 +669,10 @@ export function TodayPage() {
           <>
             <section className="timeline-card panel-stack">
               <p className="paper-heading">Current cycle summary</p>
-              <JournalRowSummary row={rowViewModel} />
+              <JournalRowSummary
+                row={rowViewModel}
+                onEditCell={(key, label, value) => setPaperJournalEditor({ key, label, value })}
+              />
               <button type="button" onClick={() => setDetailsOpen((value) => !value)} aria-expanded={detailsOpen}>
                 {detailsOpen ? 'Hide row details' : 'View row details'}
               </button>
@@ -412,6 +728,38 @@ export function TodayPage() {
             ) : null}
           </>
         )}
+        {paperJournalEditor ? (
+          <PaperJournalCellEditSheet
+            title={paperJournalEditor.label}
+            currentValue={paperJournalEditor.value}
+            currentSource={rowViewModel[paperJournalEditor.key].source}
+            onSave={(nextValue) => {
+              updateJournalProjectionCell(paperJournalEditor.key, nextValue);
+              setPaperJournalEditor(null);
+            }}
+            onRestore={() => {
+              undoLastAction();
+              setPaperJournalEditor(null);
+            }}
+            onClose={() => setPaperJournalEditor(null)}
+          />
+        ) : null}
+        {compactBlockEditor ? (
+          <CompactBlockDetailSheet
+            title={compactBlockEditor.label}
+            currentValue={compactBlockEditor.value}
+            currentSource={rowViewModel[compactBlockEditor.key].source}
+            onSave={(nextValue) => {
+              updateJournalProjectionCell(compactBlockEditor.key, nextValue);
+              setCompactBlockEditor(null);
+            }}
+            onRestore={() => {
+              undoLastAction();
+              setCompactBlockEditor(null);
+            }}
+            onClose={() => setCompactBlockEditor(null)}
+          />
+        ) : null}
       </PageShell>
     </MobileShell>
   );

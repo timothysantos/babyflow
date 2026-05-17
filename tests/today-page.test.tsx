@@ -310,4 +310,47 @@ describe('TodayPage', () => {
     await waitFor(() => expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.merge'));
     expect(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')).toHaveLength(1);
   });
+
+  it('opens paper journal and compact edit sheets and applies updates', async () => {
+    render(
+      <MemoryRouter>
+        <TodayPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Journal / 记录表' }));
+    fireEvent.click(screen.getByTestId('paper-journal-cell-wakeUpTime'));
+    await waitFor(() => expect(screen.getByTestId('paper-journal-cell-edit-sheet')).toBeTruthy());
+    fireEvent.change(screen.getByTestId('paper-journal-cell-edit-input'), { target: { value: '9:15 AM' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save update' }));
+    await waitFor(() => expect(screen.getByTestId('paper-journal-cell-wakeUpTime').textContent).toContain('9:15 AM'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
+    await waitFor(() => expect(screen.getByTestId('journal-summary-wakeUpTime').textContent).toContain('9:15 AM'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Journal / 记录表' }));
+    fireEvent.click(screen.getByTestId('paper-journal-cell-wakeUpTime'));
+    await waitFor(() => expect(screen.getByTestId('paper-journal-cell-edit-sheet')).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Restore' }));
+    await waitFor(() => expect(screen.getByTestId('paper-journal-cell-wakeUpTime').textContent).toBe('—'));
+    fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
+    await waitFor(() => expect(screen.getByTestId('journal-summary-wakeUpTime').textContent).toBe('—'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
+    fireEvent.click(screen.getByTestId('journal-summary-startOfPlayTime'));
+    await waitFor(() => expect(screen.getByTestId('compact-block-detail-sheet')).toBeTruthy());
+    fireEvent.change(screen.getByTestId('compact-block-edit-input'), { target: { value: '10:30 AM' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save update' }));
+    await waitFor(() => expect(screen.getByTestId('journal-summary-startOfPlayTime').textContent).toContain('10:30 AM'));
+    fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
+    await waitFor(() => expect(screen.getByTestId('journal-summary-startOfPlayTime').textContent).toContain('10:30 AM'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
+    fireEvent.click(screen.getByTestId('journal-summary-startOfPlayTime'));
+    await waitFor(() => expect(screen.getByTestId('compact-block-detail-sheet')).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Restore' }));
+    await waitFor(() => expect(screen.getByTestId('journal-summary-startOfPlayTime').textContent).toBe('—'));
+    fireEvent.click(screen.getByRole('button', { name: 'Journal / 记录表' }));
+    await waitFor(() => expect(screen.getByTestId('paper-journal-cell-startOfPlayTime').textContent).toBe('—'));
+  });
 });

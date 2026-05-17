@@ -2,6 +2,7 @@ import type { PaperJournalRowViewModel } from './paper-journal.types';
 
 type Props = {
   row: PaperJournalRowViewModel;
+  onEditCell?: (key: keyof PaperJournalRowViewModel, label: string, value: string) => void;
 };
 
 const labels = [
@@ -14,7 +15,7 @@ const labels = [
   ['Remarks', 'remarks']
 ] as const;
 
-export function JournalRowSummary({ row }: Props) {
+export function JournalRowSummary({ row, onEditCell }: Props) {
   return (
     <section className="journal-summary" data-testid="journal-summary">
       <div className="journal-summary-grid">
@@ -23,9 +24,14 @@ export function JournalRowSummary({ row }: Props) {
           return (
             <article className="journal-summary-cell" key={label}>
               <p className="paper-heading">{label}</p>
-              <p className="journal-summary-value" data-testid={`journal-summary-${key}`}>
+              <button
+                type="button"
+                className="journal-summary-value journal-summary-value-button"
+                data-testid={`journal-summary-${key}`}
+                onClick={() => onEditCell?.(key, label, value.display)}
+              >
                 {value.display}
-              </p>
+              </button>
             </article>
           );
         })}
