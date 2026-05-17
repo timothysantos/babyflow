@@ -141,3 +141,6 @@ Avoid:
 - Scaffolded UI must never be reported as fully implemented interaction behavior without a runtime proof of the interaction itself.
 43. v8a requires Timeline View to render a visible CurrentCycleSummary plus a real chronological LiveTimelineStream, and correction/update/delete/undo/merge flows must be audited as visible behavior even when the persistence layer is still transitional.
 44. When v8a correction flows are implemented, audits must call out whether they are behaviorally verified in the client only or persisted through the backend, and must not blur the distinction.
+45. For v8a, audits must explicitly distinguish `CurrentCycleSummary` from `LiveTimelineStream`; the summary is not the timeline, and later slice reports must not conflate the two.
+46. When the same caregiving episode appears in Timeline, Journal, Compact, replay, or correction flows, audits must verify cross-surface consistency: edits, deletes, merges, undo, chronology, and derived values must stay synchronized across surfaces.
+47. Slice 5D remains incomplete until dedicated Journal cell and Compact block edit surfaces exist, with restore semantics and consistency tests across Timeline/Journal/Compact.

@@ -58,6 +58,7 @@ Verdict: COMPLETE
 
 - Slice 3 implements the paper-journal Today shell and now includes repeatable mobile runtime proof plus persistence-oriented UI behavior proof.
 - Under the current v8a canonical spec, Slice 3 remains the Today shell and mobile UX foundation only; v8a additions such as LiveTimelineStream and correction flows are layered later and do not invalidate the Slice 3 verdict.
+- v8a scope clarification: Slice 3 validates shell structure, compact/journal projection continuity, mobile interaction continuity, view persistence, and touch ergonomics. It does not validate `LiveTimelineStream`, timeline event ordering, correction flows, or replay semantics.
 - `compact-mode` is now a behaviorally verified toggle with persistence, not just a static scaffold.
 - Browser proof includes the repeatable dark boot-canvas smoke test and the mobile Today-page smoke test.
 - Persistence scope is still transitional: the current proof covers rerender persistence and local UI state, not production D1 durability.

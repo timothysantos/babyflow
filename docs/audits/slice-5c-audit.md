@@ -39,6 +39,7 @@ Verdict: COMPLETE
 
 - Slice 5C is the real timeline stream layer required by v8a, and it now exists as a visible ordered feed beneath the summary.
 - The stream is still a view-layer chronology of cycle events and feed sessions; later interpretation layers remain out of scope.
+- v8a scope clarification: `CurrentCycleSummary` and `LiveTimelineStream` are separate surfaces. This slice validates the real stream, not the summary card.
+- The current implementation uses deterministic newest-first ordering for the visible stream. That is correct for the current app behavior, but future replay-focused surfaces may need an explicit oldest-first story mode.
 - Slice commits:
   - [`39345fa`](https://github.com/timothysantos/babyflow/commit/39345fa) `feat: add v8a timeline stream and correction scaffold`
-

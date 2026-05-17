@@ -51,5 +51,7 @@ Verdict: INCOMPLETE
 - Slice 5D is partially implemented as a visible Timeline correction layer, but it is not yet the full cross-view edit surface required by v8a.
 - The current implementation covers timeline corrections, undo, soft delete, merge, and history logging.
 - The remaining v8a work for this slice is to add dedicated Journal cell and Compact block edit surfaces and restore behavior.
+- v8a scope clarification: correction behavior must eventually stay synchronized across Timeline, Journal, and Compact. This audit only proves the Timeline-side correction path.
+- Recommended tests still to implement for Slice 5D: Journal cell edit propagation, Compact block edit propagation, soft-delete restore, and cross-surface consistency after correction.
 - Slice commits:
   - [`39345fa`](https://github.com/timothysantos/babyflow/commit/39345fa) `feat: add v8a timeline stream and correction scaffold`
