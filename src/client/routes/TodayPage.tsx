@@ -83,6 +83,13 @@ function interventionsUrl() {
   return new URL('/interventions', window.location.origin);
 }
 
+async function parseJsonResponse<T>(response: Response, label: string): Promise<T> {
+  if (!response.ok) {
+    throw new Error(`${label} request failed with status ${response.status}`);
+  }
+  return (await response.json()) as T;
+}
+
 export function TodayPage() {
   const [viewMode, setViewMode] = useState<TodayViewMode>(() =>
     normalizeViewMode(window.localStorage.getItem('babyflow.today.viewMode') ?? window.localStorage.getItem('babyflow.today.compactMode'))
@@ -296,7 +303,7 @@ export function TodayPage() {
 
   useEffect(() => {
     void fetch(eventsUrl())
-      .then((response) => response.json())
+      .then((response) => parseJsonResponse<{ events?: CycleEventDTO[] }>(response, 'cycle-events'))
       .then((payload: { events?: CycleEventDTO[] }) =>
         setEvents((current) => (current.length > 0 ? current : payload.events ?? []))
       )
@@ -305,7 +312,7 @@ export function TodayPage() {
 
   useEffect(() => {
     void fetch(feedsUrl())
-      .then((response) => response.json())
+      .then((response) => parseJsonResponse<{ sessions?: FeedSessionDTO[] }>(response, 'feed-sessions'))
       .then((payload: { sessions?: FeedSessionDTO[] }) =>
         setFeedSessions((current) => (current.length > 0 ? current : payload.sessions ?? []))
       )
@@ -314,7 +321,7 @@ export function TodayPage() {
 
   useEffect(() => {
     void fetch(interventionsUrl())
-      .then((response) => response.json())
+      .then((response) => parseJsonResponse<{ interventions?: InterventionAttemptDTO[] }>(response, 'interventions'))
       .then((payload: { interventions?: InterventionAttemptDTO[] }) =>
         setInterventionAttempts((current) => (current.length > 0 ? current : payload.interventions ?? []))
       )
@@ -327,7 +334,7 @@ export function TodayPage() {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ kind, label: kind.toLowerCase().replaceAll('_', ' '), babyId: 'current-baby' })
     });
-    const payload = (await response.json()) as { event?: CycleEventDTO };
+    const payload = await parseJsonResponse<{ event?: CycleEventDTO }>(response, 'cycle-events');
     if (payload.event) {
       setEvents((current) => [payload.event!, ...current]);
     }
@@ -881,7 +888,7 @@ export function TodayPage() {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ mode, babyId: 'current-baby' })
     });
-    const payload = (await response.json()) as { session?: FeedSessionDTO };
+    const payload = await parseJsonResponse<{ session?: FeedSessionDTO }>(response, 'feed-sessions');
     if (payload.session) {
       setFeedSessions((current) => [payload.session!, ...current]);
     }
@@ -893,7 +900,7 @@ export function TodayPage() {
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ kind, label: kind.toLowerCase() })
     });
-    const payload = (await response.json()) as { session?: FeedSessionDTO };
+    const payload = await parseJsonResponse<{ session?: FeedSessionDTO }>(response, 'feed-session-segments');
     if (payload.session) {
       setFeedSessions((current) => current.map((session) => (session.id === payload.session!.id ? payload.session! : session)));
     }
@@ -903,7 +910,7 @@ export function TodayPage() {
     const response = await fetch(new URL(`/feed-sessions/${sessionId}`, window.location.origin), {
       method: 'PATCH'
     });
-    const payload = (await response.json()) as { session?: FeedSessionDTO };
+    const payload = await parseJsonResponse<{ session?: FeedSessionDTO }>(response, 'feed-sessions');
     if (payload.session) {
       setFeedSessions((current) => current.map((session) => (session.id === payload.session!.id ? payload.session! : session)));
     }
@@ -931,7 +938,7 @@ export function TodayPage() {
         context: 'today'
       })
     });
-    const payload = (await response.json()) as { intervention?: InterventionAttemptDTO };
+    const payload = await parseJsonResponse<{ intervention?: InterventionAttemptDTO }>(response, 'interventions');
     if (payload.intervention) {
       setInterventionAttempts((current) =>
         current.map((attempt) => (attempt.id === optimisticIntervention.id ? payload.intervention! : attempt))
