@@ -19,7 +19,8 @@ describe('HelpPage', () => {
     expect(screen.getByText('Stage 1')).toBeTruthy();
     expect(screen.getByText('Stage 5')).toBeTruthy();
     expect(screen.getByAltText('Top of Today')).toBeTruthy();
-    expect(screen.getByAltText('Review clusters and resolve ambiguous sequences')).toBeTruthy();
+    expect(screen.getByAltText('Needs checking')).toBeTruthy();
+    expect(screen.queryByText(/cluster/i)).toBeNull();
   });
 
   it('navigates to the guide from Today through the router', async () => {

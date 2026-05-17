@@ -133,11 +133,12 @@ describe('TodayPage', () => {
     expect(screen.getByRole('button', { name: 'Journal / 记录表' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Compact / 简洁' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Guide / 说明' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Review / 复盘' })).toBeTruthy();
     expect(screen.getByText('Timeline view active.')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
     expect(screen.getByTestId('journal-summary')).toBeTruthy();
     expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
-    expect(screen.getByTestId('cluster-review-panel')).toBeTruthy();
+    expect(screen.queryByText(/cluster/i)).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     expect(screen.getByText('Compact journal active.')).toBeTruthy();
@@ -279,7 +280,6 @@ describe('TodayPage', () => {
     await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));
     await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
     await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
-    await waitFor(() => expect(screen.getByTestId('cluster-review-list').textContent).toContain('EARLY_WAKE_EPISODE'));
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Soft delete' }));
@@ -297,7 +297,6 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
     await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
-    await waitFor(() => expect(screen.getByTestId('cluster-review-list').textContent).toContain('EARLY_WAKE_EPISODE'));
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Update time' }));
