@@ -11,10 +11,13 @@ describe('intervention repository', () => {
 
     const first = await recordIntervention({ babyId: 'baby_1', kind: 'WAIT', label: 'wait' });
     const second = await recordIntervention({ babyId: 'baby_1', kind: 'SOOTHE', label: 'soothe', outcome: 'FAILED' });
+    const third = await recordIntervention({ babyId: 'baby_1', kind: 'BURP', label: 'burp', outcome: 'SUCCESS' });
     const attempts = await listInterventions();
 
-    expect(attempts[0].id).toBe(second.id);
-    expect(attempts[1].id).toBe(first.id);
-    expect(attempts[0]).toMatchObject({ kind: 'SOOTHE', label: 'soothe', outcome: 'FAILED' });
+    expect(attempts[0].id).toBe(third.id);
+    expect(attempts[1].id).toBe(second.id);
+    expect(attempts[2].id).toBe(first.id);
+    expect(attempts[0]).toMatchObject({ kind: 'BURP', label: 'burp', outcome: 'SUCCESS' });
+    expect(attempts[1]).toMatchObject({ kind: 'SOOTHE', label: 'soothe', outcome: 'FAILED' });
   });
 });

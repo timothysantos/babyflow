@@ -218,6 +218,9 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('feed-session-status')).toContainText('Closed session');
   await page.getByRole('button', { name: 'Soothe' }).click();
   await expect(page.getByTestId('intervention-attempt-list')).toContainText('SOOTHE');
+  await page.getByRole('button', { name: 'Wait' }).click();
+  await expect(page.getByTestId('intervention-attempt-list')).toContainText('WAIT');
+  await expect.poll(() => interventions.length).toBe(2);
 
   await page.getByRole('button', { name: 'Journal / 记录表' }).click();
   await expect(page.getByTestId('paper-journal-view')).toBeVisible();

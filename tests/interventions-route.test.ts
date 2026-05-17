@@ -22,4 +22,31 @@ describe('interventions route', () => {
     const listed = (await listResponse.json()) as { interventions: Array<{ kind: string }> };
     expect(listed.interventions[0].kind).toBe('WAKE_ATTEMPT');
   });
+
+  it('preserves intervention outcomes in newest-first order', async () => {
+    await resetInterventionStoreForTests();
+
+    await interventionsRoute(
+      new Request('http://localhost/interventions', {
+        method: 'POST',
+        body: JSON.stringify({ babyId: 'baby_1', kind: 'WAIT', label: 'wait', outcome: 'FAILED' }),
+        headers: { 'content-type': 'application/json' }
+      })
+    );
+    await interventionsRoute(
+      new Request('http://localhost/interventions', {
+        method: 'POST',
+        body: JSON.stringify({ babyId: 'baby_1', kind: 'SOOTHE', label: 'soothe', outcome: 'SUCCESS' }),
+        headers: { 'content-type': 'application/json' }
+      })
+    );
+
+    const listResponse = await interventionsRoute(new Request('http://localhost/interventions'));
+    const listed = (await listResponse.json()) as {
+      interventions: Array<{ kind: string; outcome: string }>;
+    };
+
+    expect(listed.interventions[0]).toMatchObject({ kind: 'SOOTHE', outcome: 'SUCCESS' });
+    expect(listed.interventions[1]).toMatchObject({ kind: 'WAIT', outcome: 'FAILED' });
+  });
 });

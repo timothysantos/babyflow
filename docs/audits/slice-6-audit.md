@@ -18,6 +18,7 @@ The intervention-attempt foundation is now present and behaviorally proven acros
 - Intervention attempts load and render in the Today row details surface.
 - `Soothe`, `Wait`, `Sing`, `Pat`, `Burp`, and `Wake attempt` are available as first-class actions.
 - Recorded attempts appear newest-first in both repository and UI.
+- Repeated attempts and explicit outcomes remain part of the recorded intervention history.
 - The intervention flow is isolated from cycle events and feed sessions, but still joins the Today chronology surface cleanly.
 - The mobile smoke path proves the intervention panel works on the 390px layout.
 
@@ -32,6 +33,8 @@ Evidence levels used:
 ## Remaining Architectural Pressure
 
 The `TodayPage` route is now large and should be treated as an orchestration boundary, not a stable long-term home for all slice logic. The repo rule now explicitly says route coordinators must stay thin and should be split once they approach monolithic size.
+
+Intervention attempts are now also treated as caregiver reasoning, not just action logging, so repeated attempts and outcome ordering are part of the Slice 6 contract.
 
 That is maintenance pressure, not a Slice 6 blocker.
 
