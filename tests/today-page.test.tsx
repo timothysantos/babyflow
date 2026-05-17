@@ -118,6 +118,7 @@ describe('TodayPage', () => {
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
     expect(screen.getByTestId('journal-summary')).toBeTruthy();
     expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
+    expect(screen.getByTestId('cluster-review-panel')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     expect(screen.getByText('Compact journal active.')).toBeTruthy();
@@ -249,6 +250,7 @@ describe('TodayPage', () => {
     await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));
     await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
     await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('cluster-review-list').textContent).toContain('EARLY_WAKE_EPISODE'));
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Soft delete' }));
@@ -266,6 +268,7 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
     await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('cluster-review-list').textContent).toContain('EARLY_WAKE_EPISODE'));
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Update time' }));

@@ -19,6 +19,10 @@ import { CorrectionHistoryPanel } from '../components/timeline/CorrectionHistory
 import { TimelineDetailSheet } from '../components/timeline/TimelineDetailSheet';
 import { TimelineEditSheet } from '../components/timeline/TimelineEditSheet';
 import { buildTimelineItems } from '../components/timeline/timeline-view-model';
+import { buildTimelineClusters } from '../../domain/timeline-clustering/cluster-engine';
+import type { TimelineClusterDTO } from '../../domain/timeline-clustering/timeline-cluster.types';
+import { ClusterReviewPanel } from '../components/review/ClusterReviewPanel';
+import { NeedsReviewBanner } from '../components/review/NeedsReviewBanner';
 import type { TimelineItemDTO } from '../components/timeline/timeline.types';
 import type { CorrectionHistoryDTO } from '../../domain/correction/correction-history.types';
 import type { InterventionAttemptDTO, InterventionAttemptKind, InterventionAttemptOutcome } from '../../domain/intervention/intervention.types';
@@ -99,6 +103,7 @@ export function TodayPage() {
   const [correctionHistory, setCorrectionHistory] = useState<CorrectionHistoryDTO[]>([]);
   const [undoStack, setUndoStack] = useState<UndoRecord[]>([]);
   const [timelineEditReason, setTimelineEditReason] = useState<CorrectionReason | ''>('');
+  const [reviewedClusterIds, setReviewedClusterIds] = useState<string[]>([]);
   const correctionSnapshots = useRef(new Map<string, CorrectionSnapshot>());
 
   const derivedBabyStateTransitions = useMemo(
@@ -110,6 +115,14 @@ export function TodayPage() {
     [events, feedSessions, interventionAttempts, derivedBabyStateTransitions]
   );
   const timelineItems = useMemo(() => buildTimelineItems(events, feedSessions), [events, feedSessions]);
+  const timelineClusters = useMemo<TimelineClusterDTO[]>(
+    () =>
+      buildTimelineClusters(events, feedSessions, interventionAttempts, derivedBabyStateTransitions).map((cluster) =>
+        reviewedClusterIds.includes(cluster.id) ? { ...cluster, needsReview: false, status: 'COMPLETE' } : cluster
+      ),
+    [events, feedSessions, interventionAttempts, derivedBabyStateTransitions, reviewedClusterIds]
+  );
+  const needsReviewCount = timelineClusters.filter((cluster) => cluster.needsReview).length;
 
   function findDuplicateCycleEvent(kind: CycleEventKind, sourceId: string) {
     return events.find((event) => event.kind === kind && event.id !== sourceId) ?? null;
@@ -993,6 +1006,11 @@ export function TodayPage() {
               </p>
             </section>
             <LiveTimelineStream items={timelineItems} onSelect={(item) => setSelectedTimelineItem(item)} />
+            <NeedsReviewBanner count={needsReviewCount} />
+            <ClusterReviewPanel
+              clusters={timelineClusters}
+              onMarkReviewed={(clusterId) => setReviewedClusterIds((current) => (current.includes(clusterId) ? current : [...current, clusterId]))}
+            />
             <CorrectionHistoryPanel items={correctionHistory} onRestoreItem={restoreCorrectionFromHistory} />
             {selectedTimelineItem ? (
               <TimelineDetailSheet

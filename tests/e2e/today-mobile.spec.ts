@@ -203,6 +203,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Compact / 简洁' })).toBeVisible();
   await expect(page.getByTestId('live-timeline-stream')).toBeVisible();
+  await expect(page.getByTestId('cluster-review-panel')).toBeVisible();
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
@@ -246,6 +247,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('event-log')).toBeVisible();
   await expect(page.getByTestId('intervention-attempts-panel')).toBeVisible();
   await expect(page.getByTestId('feed-sessions')).toBeVisible();
+  await expect(page.getByTestId('cluster-review-list')).toBeVisible();
   const feedCardRadius = await page.getByTestId('feed-sessions').evaluate((node) => getComputedStyle(node).borderRadius);
   expect(Number.parseFloat(feedCardRadius)).toBeGreaterThanOrEqual(20);
   await expect(page.getByTestId('event-log-items')).toContainText('Wake stamp');

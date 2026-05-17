@@ -152,3 +152,4 @@ Avoid:
 53. Route coordinator pages must stay thin. If a page grows past about 800 lines, split the behavior into feature hooks or child components before adding more slice logic.
 54. Intervention flows must preserve caregiver reasoning, not just action logging. Audits should verify repeated attempts, outcomes, and ordering so the UI can support replay and interpretation later.
 55. Baby state transitions are a distinct semantic layer. Audits must verify that derived states preserve confidence, trigger linkage, and the distinction between observed sleep and drowsy-in-feed behavior.
+56. Timeline clustering is a distinct semantic layer above events, interventions, sessions, and state transitions. Audits must verify that clustering preserves source items, can mark NEEDS_REVIEW, and never deletes events during reclustering.

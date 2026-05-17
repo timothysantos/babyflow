@@ -3,6 +3,7 @@ import { babiesRoute } from './infrastructure/api/routes/babies';
 import { cycleEventsRoute } from './infrastructure/api/routes/events';
 import { interventionsRoute } from './infrastructure/api/routes/interventions';
 import { feedSessionsRoute } from './infrastructure/api/routes/feed-sessions';
+import { timelineClustersRoute } from './infrastructure/api/routes/timeline-clusters';
 import { createDbClient } from './infrastructure/db/client';
 
 export interface Env {
@@ -32,6 +33,10 @@ export default {
 
     if (url.pathname === '/interventions') {
       return interventionsRoute(request);
+    }
+
+    if (url.pathname === '/timeline-clusters') {
+      return timelineClustersRoute(request);
     }
 
     if (url.pathname.startsWith('/feed-sessions/') && url.pathname.endsWith('/segments')) {
