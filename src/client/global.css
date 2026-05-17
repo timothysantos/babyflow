@@ -253,6 +253,23 @@ button[aria-pressed='true'],
   z-index: 30;
 }
 
+@media (min-width: 1024px) {
+  .page-shell {
+    max-width: 1180px;
+    padding-inline: 24px;
+    padding-top: 20px;
+    padding-bottom: calc(268px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .quick-action-dock {
+    left: 50%;
+    right: auto;
+    width: min(1180px, calc(100vw - 48px));
+    transform: translateX(-50%);
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 .quick-action-heading {
   grid-column: 1 / -1;
   margin-bottom: 2px;

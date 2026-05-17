@@ -9,4 +9,12 @@ test('boots with the machine theme and renders the router root', async ({ page }
 
   expect(theme).toBe(prefersLight ? 'light' : 'night');
   expect(bodyBg).not.toBe('rgb(255, 255, 255)');
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.reload();
+  const appShell = await page.getByTestId('app-shell').boundingBox();
+  const dock = await page.getByTestId('quick-action-dock').boundingBox();
+  expect(appShell).not.toBeNull();
+  expect(dock).not.toBeNull();
+  expect(appShell!.width).toBeGreaterThanOrEqual(1100);
+  expect(dock!.width).toBeGreaterThanOrEqual(1100);
 });
