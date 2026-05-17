@@ -240,8 +240,6 @@ describe('TodayPage', () => {
   });
 
   it('applies timeline edits and undo keeps the selected item in sync', async () => {
-    const promptSpy = vi.spyOn(window, 'prompt').mockReturnValue('2026-05-16T01:00:00.000Z');
-
     render(
       <MemoryRouter>
         <TodayPage />
@@ -254,13 +252,14 @@ describe('TodayPage', () => {
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Update time' }));
+    await waitFor(() => expect(screen.getByTestId('timeline-edit-sheet')).toBeTruthy());
+    fireEvent.change(screen.getByTestId('timeline-edit-input'), { target: { value: '2026-05-16T01:00:00.000Z' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save update' }));
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('2026-05-16T01:00:00.000Z'));
     expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.update');
     fireEvent.click(screen.getByRole('button', { name: 'Undo last action' }));
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('2026-05-16T00:00:00.000Z'));
     expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.undo');
-
-    promptSpy.mockRestore();
   });
 
   it('merges duplicate timeline items into one visible entry', async () => {

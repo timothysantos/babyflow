@@ -147,3 +147,4 @@ Avoid:
 48. For correction-heavy slices, correction actions must remain projection-consistent across Timeline, Journal, Compact, and Correction History. Delete, merge, restore, and update must be verified across all visible projections, not just the initiating surface.
 49. Correction history should be actionable when the slice requires restore semantics, and audits should verify that restoration records a correction history entry rather than relying on an implicit sheet-local undo alone.
 50. Prompt-based edit flows are only temporary scaffolding. A slice cannot be marked complete if a required correction flow still depends on `window.prompt`, browser confirm dialogs, or other test-only shortcuts instead of first-class sheet or dialog surfaces.
+51. For correction-heavy UX, Timeline, Journal, and Compact should all use first-class edit surfaces for user-facing correction actions. Interaction-quality parity matters, not just data parity.

@@ -15,6 +15,7 @@ import { CompactBlockDetailSheet } from '../components/timeline/CompactBlockDeta
 import { LiveTimelineStream } from '../components/timeline/LiveTimelineStream';
 import { CorrectionHistoryPanel } from '../components/timeline/CorrectionHistoryPanel';
 import { TimelineDetailSheet } from '../components/timeline/TimelineDetailSheet';
+import { TimelineEditSheet } from '../components/timeline/TimelineEditSheet';
 import { buildTimelineItems } from '../components/timeline/timeline-view-model';
 import type { TimelineItemDTO } from '../components/timeline/timeline.types';
 import type { CorrectionHistoryDTO } from '../../domain/correction/correction-history.types';
@@ -69,6 +70,10 @@ export function TodayPage() {
   const [events, setEvents] = useState<CycleEventDTO[]>([]);
   const [feedSessions, setFeedSessions] = useState<FeedSessionDTO[]>([]);
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItemDTO | null>(null);
+  const [timelineEditor, setTimelineEditor] = useState<{
+    item: TimelineItemDTO;
+    mode: 'time' | 'details';
+  } | null>(null);
   const [paperJournalEditor, setPaperJournalEditor] = useState<CellEditorState>(null);
   const [compactBlockEditor, setCompactBlockEditor] = useState<CellEditorState>(null);
   const [correctionHistory, setCorrectionHistory] = useState<CorrectionHistoryDTO[]>([]);
@@ -619,9 +624,7 @@ export function TodayPage() {
     setSelectedTimelineItem((current) => (current?.id === item.id ? null : current));
   }
 
-  function updateTimelineItemTime(item: TimelineItemDTO) {
-    const nextRecordedAt = window.prompt('Update time', item.recordedAt);
-    if (!nextRecordedAt) return;
+  function updateTimelineItemTime(item: TimelineItemDTO, nextRecordedAt: string) {
     pushUndo({ action: 'UPDATE_TIME', item, previousValue: item.recordedAt });
     if (item.sourceType === 'cycle-event') {
       setEvents((current) =>
@@ -651,9 +654,7 @@ export function TodayPage() {
     recordCorrection('correction.update', item.sourceId, item.sourceType, `Updated time for ${item.title}`);
   }
 
-  function updateTimelineItemDetails(item: TimelineItemDTO) {
-    const nextDetails = window.prompt('Update details', item.details);
-    if (!nextDetails) return;
+  function updateTimelineItemDetails(item: TimelineItemDTO, nextDetails: string) {
     pushUndo({ action: 'UPDATE_DETAILS', item, previousValue: item.details });
     if (item.sourceType === 'cycle-event') {
       setEvents((current) => current.map((event) => (event.id === item.sourceId ? { ...event, label: nextDetails } : event)));
@@ -897,8 +898,8 @@ export function TodayPage() {
               <TimelineDetailSheet
                 item={selectedTimelineItem}
                 onClose={() => setSelectedTimelineItem(null)}
-                onEditTime={() => updateTimelineItemTime(selectedTimelineItem)}
-                onEditDetails={() => updateTimelineItemDetails(selectedTimelineItem)}
+                onEditTime={() => setTimelineEditor({ item: selectedTimelineItem, mode: 'time' })}
+                onEditDetails={() => setTimelineEditor({ item: selectedTimelineItem, mode: 'details' })}
                 onDelete={() => softDeleteTimelineItem(selectedTimelineItem)}
                 onMergeDuplicate={() => mergeDuplicateTimelineItem(selectedTimelineItem)}
                 onUndo={undoLastAction}
@@ -985,6 +986,22 @@ export function TodayPage() {
               setCompactBlockEditor(null);
             }}
             onClose={() => setCompactBlockEditor(null)}
+          />
+        ) : null}
+        {timelineEditor ? (
+          <TimelineEditSheet
+            title={timelineEditor.item.title}
+            label={timelineEditor.mode === 'time' ? 'Update time' : 'Update details'}
+            currentValue={timelineEditor.mode === 'time' ? timelineEditor.item.recordedAt : timelineEditor.item.details}
+            onSave={(nextValue) => {
+              if (timelineEditor.mode === 'time') {
+                updateTimelineItemTime(timelineEditor.item, nextValue);
+              } else {
+                updateTimelineItemDetails(timelineEditor.item, nextValue);
+              }
+              setTimelineEditor(null);
+            }}
+            onClose={() => setTimelineEditor(null)}
           />
         ) : null}
       </PageShell>
