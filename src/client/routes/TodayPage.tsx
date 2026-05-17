@@ -13,6 +13,7 @@ import { JournalRowSummary } from '../components/journal/JournalRowSummary';
 import { PaperJournalView } from '../components/journal/PaperJournalView';
 import { PaperJournalCellEditSheet } from '../components/timeline/PaperJournalCellEditSheet';
 import { CompactBlockDetailSheet } from '../components/timeline/CompactBlockDetailSheet';
+import { StateTransitionViewer } from '../components/state/StateTransitionViewer';
 import { LiveTimelineStream } from '../components/timeline/LiveTimelineStream';
 import { CorrectionHistoryPanel } from '../components/timeline/CorrectionHistoryPanel';
 import { TimelineDetailSheet } from '../components/timeline/TimelineDetailSheet';
@@ -21,6 +22,7 @@ import { buildTimelineItems } from '../components/timeline/timeline-view-model';
 import type { TimelineItemDTO } from '../components/timeline/timeline.types';
 import type { CorrectionHistoryDTO } from '../../domain/correction/correction-history.types';
 import type { InterventionAttemptDTO, InterventionAttemptKind, InterventionAttemptOutcome } from '../../domain/intervention/intervention.types';
+import { buildBabyStateTransitions } from '../../domain/baby-state/state-transition-engine';
 
 type TodayViewMode = 'timeline' | 'journal' | 'compact';
 type UndoRecord =
@@ -99,7 +101,14 @@ export function TodayPage() {
   const [timelineEditReason, setTimelineEditReason] = useState<CorrectionReason | ''>('');
   const correctionSnapshots = useRef(new Map<string, CorrectionSnapshot>());
 
-  const rowViewModel = useMemo(() => buildPaperJournalRowViewModel(events, feedSessions, interventionAttempts), [events, feedSessions, interventionAttempts]);
+  const derivedBabyStateTransitions = useMemo(
+    () => buildBabyStateTransitions(events, feedSessions, interventionAttempts),
+    [events, feedSessions, interventionAttempts]
+  );
+  const rowViewModel = useMemo(
+    () => buildPaperJournalRowViewModel(events, feedSessions, interventionAttempts, derivedBabyStateTransitions),
+    [events, feedSessions, interventionAttempts, derivedBabyStateTransitions]
+  );
   const timelineItems = useMemo(() => buildTimelineItems(events, feedSessions), [events, feedSessions]);
 
   function findDuplicateCycleEvent(kind: CycleEventKind, sourceId: string) {
@@ -1028,6 +1037,7 @@ export function TodayPage() {
               <section className="panel-stack" aria-label="Row details" data-testid="row-details">
                 <EventLog events={events} />
                 <InterventionAttemptsPanel attempts={interventionAttempts} onRecordAttempt={(kind, outcome) => void recordIntervention(kind, outcome)} />
+                <StateTransitionViewer transitions={derivedBabyStateTransitions} />
                 <FeedSessionsPanel
                   sessions={feedSessions}
                   onStartSession={startFeedSession}

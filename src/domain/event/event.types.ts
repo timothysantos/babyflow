@@ -1,4 +1,4 @@
-export type CycleEventKind = 'WAKE' | 'FEED' | 'PLAY' | 'BURP' | 'DIAPER' | 'PUT_DOWN' | 'ASLEEP' | 'NOTE' | 'MORE';
+export type CycleEventKind = 'WAKE' | 'CRY' | 'FEED' | 'PLAY' | 'BURP' | 'DIAPER' | 'PUT_DOWN' | 'ASLEEP' | 'SLEEP_OBSERVED' | 'NOTE' | 'MORE';
 
 export type CycleEventDraft = {
   kind: CycleEventKind;

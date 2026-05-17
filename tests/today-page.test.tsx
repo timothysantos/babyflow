@@ -7,12 +7,22 @@ beforeEach(() => {
   window.localStorage.clear();
   vi.stubGlobal(
     'fetch',
-    vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
-      const method = init?.method ?? 'GET';
-      const url = typeof input === 'string' ? input : input.toString();
-      if (method === 'GET' && url.includes('/cycle-events')) {
-        return Response.json({ events: [] });
-      }
+      vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+        const method = init?.method ?? 'GET';
+        const url = typeof input === 'string' ? input : input.toString();
+        if (method === 'GET' && url.includes('/cycle-events')) {
+          return Response.json({
+            events: [
+              {
+                id: 'event_cry',
+                kind: 'CRY',
+                label: 'cry',
+                babyId: 'current-baby',
+                recordedAt: '2026-05-15T23:55:00.000Z'
+              }
+            ]
+          });
+        }
       if (method === 'GET' && url.includes('/feed-sessions')) {
         return Response.json({ sessions: [] });
       }
@@ -118,6 +128,7 @@ describe('TodayPage', () => {
     expect(screen.getByTestId('row-details')).toBeTruthy();
     expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
     expect(screen.getByTestId('correction-history-panel')).toBeTruthy();
+    expect(screen.getByTestId('state-transition-viewer')).toBeTruthy();
     expect(screen.getByTestId('intervention-attempts-panel')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
@@ -127,6 +138,7 @@ describe('TodayPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Start Nurse' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed · current-baby'));
+    expect(screen.getByTestId('state-transition-list').textContent).toContain('AWAKE_CALM → FEEDING');
 
     fireEvent.click(screen.getByRole('button', { name: 'Add Left latch' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('LEFT'));

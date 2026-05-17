@@ -6,12 +6,14 @@ type Props = {
 
 const labels: Record<CycleEventKind, string> = {
   WAKE: 'Wake stamp',
+  CRY: 'Cry stamp',
   FEED: 'Feed stamp',
   PLAY: 'Play stamp',
   BURP: 'Burp stamp',
   DIAPER: 'Diaper stamp',
   PUT_DOWN: 'Put down stamp',
   ASLEEP: 'Asleep stamp',
+  SLEEP_OBSERVED: 'Sleep observed stamp',
   NOTE: 'Note stamp',
   MORE: 'More stamp'
 };

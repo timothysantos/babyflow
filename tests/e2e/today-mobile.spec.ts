@@ -9,7 +9,17 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ events: recordedEvents })
+        body: JSON.stringify({
+          events: [
+            {
+              id: 'event_cry',
+              kind: 'CRY',
+              label: 'cry',
+              recordedAt: '2026-05-15T23:55:00.000Z'
+            },
+            ...recordedEvents
+          ]
+        })
       });
       return;
     }
@@ -140,6 +150,40 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
 
     await route.fulfill({ status: 405, body: 'Method Not Allowed' });
   });
+  const stateTransitions: Array<any> = [];
+  await page.route('**/baby-state-transitions', async (route) => {
+    const request = route.request();
+    if (request.method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ transitions: stateTransitions })
+      });
+      return;
+    }
+
+    if (request.method() === 'POST') {
+      const body = JSON.parse(request.postData() ?? '{}') as { fromState: string; toState: string; triggerLabel: string; triggerKind: string };
+      const transition = {
+        id: `state_transition_${stateTransitions.length + 1}`,
+        babyId: 'current-baby',
+        ...body,
+        confidence: 'CONFIRMED',
+        sourceType: 'cycle-event',
+        sourceId: `transition_source_${stateTransitions.length + 1}`,
+        recordedAt: '2026-05-16T00:20:00.000Z'
+      };
+      stateTransitions.unshift(transition);
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ transition })
+      });
+      return;
+    }
+
+    await route.fulfill({ status: 405, body: 'Method Not Allowed' });
+  });
   await page.goto('/');
 
   await expect(page.getByTestId('today-page')).toBeVisible();
@@ -221,6 +265,9 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await page.getByRole('button', { name: 'Wait' }).click();
   await expect(page.getByTestId('intervention-attempt-list')).toContainText('WAIT');
   await expect.poll(() => interventions.length).toBe(2);
+  await expect(page.getByTestId('state-transition-viewer')).toBeVisible();
+  await expect(page.getByTestId('state-transition-list')).toContainText('AWAKE_CALM');
+  await expect(page.getByTestId('state-transition-list')).toContainText('FEEDING');
 
   await page.getByRole('button', { name: 'Journal / 记录表' }).click();
   await expect(page.getByTestId('paper-journal-view')).toBeVisible();

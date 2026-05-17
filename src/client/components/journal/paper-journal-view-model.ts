@@ -1,5 +1,6 @@
 import type { CycleEventDTO } from '../../../domain/event/event.types';
 import type { InterventionAttemptDTO } from '../../../domain/intervention/intervention.types';
+import type { BabyStateTransitionDTO } from '../../../domain/baby-state/baby-state.types';
 import type { FeedSessionDTO } from '../../../domain/feed/feed.types';
 import type { JournalCellValue, PaperJournalRowViewModel } from './paper-journal.types';
 
@@ -30,7 +31,8 @@ function joinLabels(values: string[]) {
 export function buildPaperJournalRowViewModel(
   events: CycleEventDTO[],
   sessions: FeedSessionDTO[],
-  interventions: InterventionAttemptDTO[] = []
+  interventions: InterventionAttemptDTO[] = [],
+  stateTransitions: BabyStateTransitionDTO[] = []
 ): PaperJournalRowViewModel {
   const wakeEvent = events.find((event) => event.kind === 'WAKE');
   const playEvent = events.find((event) => event.kind === 'PLAY');
@@ -96,7 +98,10 @@ export function buildPaperJournalRowViewModel(
       feedSessionIds: sessions.map((session) => session.id),
       interventionAttemptIds: interventions.map((attempt) => attempt.id),
       diaperEventIds: diaperEvents.map((event) => event.id),
-      stateTransitionIds: events.filter((event) => event.kind === 'PUT_DOWN' || event.kind === 'ASLEEP').map((event) => event.id)
+      stateTransitionIds:
+        stateTransitions.length > 0
+          ? stateTransitions.map((transition) => transition.id)
+          : events.filter((event) => event.kind === 'PUT_DOWN' || event.kind === 'ASLEEP' || event.kind === 'SLEEP_OBSERVED').map((event) => event.id)
     }
   };
 }

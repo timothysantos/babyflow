@@ -151,3 +151,4 @@ Avoid:
 52. For correction-heavy UX, audits should also look for assistive correction affordances such as suggested reasons, duplicate warnings, and context-aware guidance. Manual correction tools alone are not the end state once chronology integrity exists.
 53. Route coordinator pages must stay thin. If a page grows past about 800 lines, split the behavior into feature hooks or child components before adding more slice logic.
 54. Intervention flows must preserve caregiver reasoning, not just action logging. Audits should verify repeated attempts, outcomes, and ordering so the UI can support replay and interpretation later.
+55. Baby state transitions are a distinct semantic layer. Audits must verify that derived states preserve confidence, trigger linkage, and the distinction between observed sleep and drowsy-in-feed behavior.

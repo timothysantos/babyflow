@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { BabyStateTransitionDTO } from '../src/domain/baby-state/baby-state.types';
 import type { CycleEventDTO } from '../src/domain/event/event.types';
 import type { FeedSessionDTO } from '../src/domain/feed/feed.types';
 import { buildPaperJournalRowViewModel } from '../src/client/components/journal/paper-journal-view-model';
@@ -22,8 +23,22 @@ describe('paper journal view model', () => {
         ]
       }
     ];
+    const transitions: BabyStateTransitionDTO[] = [
+      {
+        id: 'transition_1',
+        babyId: 'baby_1',
+        fromState: 'AWAKE_CALM',
+        toState: 'CRYING',
+        confidence: 'CONFIRMED',
+        recordedAt: '2026-05-16T00:00:00.000Z',
+        sourceType: 'cycle-event',
+        sourceId: 'event_1',
+        triggerLabel: 'cry',
+        triggerKind: 'CRY'
+      }
+    ];
 
-    const row = buildPaperJournalRowViewModel(events, sessions);
+    const row = buildPaperJournalRowViewModel(events, sessions, [], transitions);
 
     expect(row.wakeUpTime.display).not.toBe('—');
     expect(row.startOfFeedTime.display).not.toBe('—');
@@ -34,5 +49,6 @@ describe('paper journal view model', () => {
     expect(row.remarks.display).toContain('settled quickly');
     expect(row.details.timelineEventIds).toEqual(['event_2', 'event_1', 'event_3']);
     expect(row.details.feedSessionIds).toEqual(['feed_session_1']);
+    expect(row.details.stateTransitionIds).toEqual(['transition_1']);
   });
 });
