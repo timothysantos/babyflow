@@ -248,6 +248,7 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));
     await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Soft delete' }));
@@ -264,6 +265,7 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Update time' }));
