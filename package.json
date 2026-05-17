@@ -13,6 +13,8 @@
     "dev:test:api": "sh -c 'PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH wrangler dev --config wrangler.test.jsonc --port ${TEST_WORKER_PORT:-8788}'",
     "dev:test:ui": "sh -c 'PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH BABYFLOW_API_PORT=${TEST_WORKER_PORT:-8788} vite --port ${TEST_UI_PORT:-5174} --host 127.0.0.1'",
     "dev:test": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH TEST_WORKER_PORT=8788 TEST_UI_PORT=5174 concurrently -k -n API,UI \"npm:dev:test:api\" \"npm:dev:test:ui\"",
+    "db:wipe:local": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH wrangler d1 execute DB --local --config wrangler.jsonc --file scripts/wipe-local-db.sql",
+    "db:wipe:test": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH wrangler d1 execute DB --local --config wrangler.test.jsonc --file scripts/wipe-local-db.sql",
     "build": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH vite build",
     "preview": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH vite preview",
     "test": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH vitest run",

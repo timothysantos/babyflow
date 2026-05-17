@@ -35,3 +35,5 @@ Current slice trail:
   - Uses the separate test DB defined in [`wrangler.test.jsonc`](/Users/tim/22m/ai-projects/babyflow/wrangler.test.jsonc)
 - Worker smoke check against the test DB: `npm run test:worker-runtime`
 - Playwright against the isolated test runtime: `npm run test:playwright`
+- Wipe the manual local DB: `npm run db:wipe:local`
+- Wipe the isolated test DB: `npm run db:wipe:test`
