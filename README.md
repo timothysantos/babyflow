@@ -10,6 +10,8 @@ The previous v8 paper-journal parity spec remains available at [`docs/spec/babyf
 
 The current UI design language lives in [`docs/spec/ui-design-language-2026.md`](/Users/tim/22m/ai-projects/babyflow/docs/spec/ui-design-language-2026.md).
 
+The live user guide lives in [`docs/user-guide.md`](/Users/tim/22m/ai-projects/babyflow/docs/user-guide.md).
+
 Slice audits live under [`docs/audits/`](/Users/tim/22m/ai-projects/babyflow/docs/audits) and are updated after each slice with the proof-level report used to verify the implementation.
 
 Current slice trail:
