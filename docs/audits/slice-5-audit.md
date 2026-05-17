@@ -44,6 +44,8 @@ Slice 5 also inherits the repo-wide 2026 UI design language:
 - breathable mobile spacing
 - thumb-safe controls
 
+Under the v8a canonical spec, Slice 5 is the feed-session foundation only. The later `LiveTimelineStream`, correction/update/delete/undo, and `CorrectionHistoryDTO` layers are additive and are audited separately in the later slice reports.
+
 ## What Is Verified
 
 - A feed session can be started from the Today surface.
@@ -56,6 +58,7 @@ Slice 5 also inherits the repo-wide 2026 UI design language:
 - The theme follows machine preference by default and still supports explicit toggling.
 - The mobile shell is full-width with zero outer padding and internal page gutters.
 - Button language is calmer and more journal-like, reducing duplicate plain verbs.
+- The v8a correction-history and live-timeline layers sit above this feed foundation and now have their own audited proof path.
 
 ## What Is Not Yet Verified
 

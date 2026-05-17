@@ -54,10 +54,12 @@ Verdict: COMPLETE
 ## Final Notes
 
 - Slice 4 establishes the cycle-event foundation on the Today screen, not just a generic event log.
+- Under the v8a canonical spec, Slice 4 remains the cycle-event foundation slice; the later LiveTimelineStream and correction/update/delete/undo flows are additive and do not alter the core Slice 4 verdict.
 - The event repository is transitional but behaviorally verified through a file-backed per-worker store. It does not prove production D1 durability.
-- The repo keeps the canonical spec in [`docs/spec/babyflow-canonical-master-spec-v7-full.md`](/Users/tim/22m/ai-projects/babyflow/docs/spec/babyflow-canonical-master-spec-v7-full.md) and the slice proofs in [`docs/audits/`](/Users/tim/22m/ai-projects/babyflow/docs/audits).
+- The repo keeps the canonical spec in [`docs/spec/babyflow-canonical-master-spec-v8a-full.md`](/Users/tim/22m/ai-projects/babyflow/docs/spec/babyflow-canonical-master-spec-v8a-full.md) and the slice proofs in [`docs/audits/`](/Users/tim/22m/ai-projects/babyflow/docs/audits).
 - Slice 4 validates the cycle-event foundation only. It does not yet validate clustering, recovery-regulation episode reconstruction, intervention causality, replay interpretation, evidence-graph generation, offline queueing, reconnect reconciliation, or multi-caregiver conflict resolution.
 - Event continuity is explicitly guarded by tests for delayed GET preservation and deterministic newest-first ordering.
 - UI ordering is verified against the API response so the user-facing event log preserves newest-first ordering, not just the repository layer.
+- The v8a `LiveTimelineStream` and correction panel are layered above this foundation and are now tested separately in later slice audits.
 - Slice commits:
   - [`82d5977`](https://github.com/timothysantos/babyflow/commit/82d5977) `feat: add today event log slice`

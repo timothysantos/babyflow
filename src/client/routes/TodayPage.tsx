@@ -11,9 +11,11 @@ import { buildPaperJournalRowViewModel } from '../components/journal/paper-journ
 import { JournalRowSummary } from '../components/journal/JournalRowSummary';
 import { PaperJournalView } from '../components/journal/PaperJournalView';
 import { LiveTimelineStream } from '../components/timeline/LiveTimelineStream';
+import { CorrectionHistoryPanel } from '../components/timeline/CorrectionHistoryPanel';
 import { TimelineDetailSheet } from '../components/timeline/TimelineDetailSheet';
 import { buildTimelineItems } from '../components/timeline/timeline-view-model';
 import type { TimelineItemDTO } from '../components/timeline/timeline.types';
+import type { CorrectionHistoryDTO } from '../../domain/correction/correction-history.types';
 
 type TodayViewMode = 'timeline' | 'journal' | 'compact';
 type UndoRecord =
@@ -43,7 +45,7 @@ export function TodayPage() {
   const [events, setEvents] = useState<CycleEventDTO[]>([]);
   const [feedSessions, setFeedSessions] = useState<FeedSessionDTO[]>([]);
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItemDTO | null>(null);
-  const [correctionHistory, setCorrectionHistory] = useState<Array<{ action: string; sourceId: string }>>([]);
+  const [correctionHistory, setCorrectionHistory] = useState<CorrectionHistoryDTO[]>([]);
   const [undoStack, setUndoStack] = useState<UndoRecord[]>([]);
 
   const rowViewModel = useMemo(() => buildPaperJournalRowViewModel(events, feedSessions), [events, feedSessions]);
@@ -88,8 +90,18 @@ export function TodayPage() {
     }
   }
 
-  function recordCorrection(action: string, sourceId: string) {
-    setCorrectionHistory((current) => [{ action, sourceId }, ...current]);
+  function recordCorrection(action: CorrectionHistoryDTO['action'], sourceId: string, sourceType: CorrectionHistoryDTO['sourceType'], summary: string) {
+    setCorrectionHistory((current) => [
+      {
+        id: `${action}:${sourceId}:${current.length + 1}`,
+        action,
+        sourceId,
+        sourceType,
+        createdAt: new Date().toISOString(),
+        summary
+      },
+      ...current
+    ]);
   }
 
   function pushUndo(record: UndoRecord) {
@@ -120,8 +132,8 @@ export function TodayPage() {
         }))
       );
     }
-    recordCorrection('SOFT_DELETE', item.sourceId);
-    setSelectedTimelineItem(null);
+    recordCorrection('correction.soft_delete', item.sourceId, item.sourceType, `Soft deleted ${item.title}`);
+    setSelectedTimelineItem((current) => (current?.id === item.id ? null : current));
   }
 
   function updateTimelineItemTime(item: TimelineItemDTO) {
@@ -150,7 +162,10 @@ export function TodayPage() {
         }))
       );
     }
-    recordCorrection('UPDATE_TIME', item.sourceId);
+    setSelectedTimelineItem((current) =>
+      current?.id === item.id ? { ...item, recordedAt: nextRecordedAt } : current
+    );
+    recordCorrection('correction.update', item.sourceId, item.sourceType, `Updated time for ${item.title}`);
   }
 
   function updateTimelineItemDetails(item: TimelineItemDTO) {
@@ -170,7 +185,10 @@ export function TodayPage() {
         }))
       );
     }
-    recordCorrection('UPDATE_DETAILS', item.sourceId);
+    setSelectedTimelineItem((current) =>
+      current?.id === item.id ? { ...item, details: nextDetails } : current
+    );
+    recordCorrection('correction.update', item.sourceId, item.sourceType, `Updated details for ${item.title}`);
   }
 
   function mergeDuplicateTimelineItem(item: TimelineItemDTO) {
@@ -181,7 +199,7 @@ export function TodayPage() {
     }
     pushUndo({ action: 'SOFT_DELETE', item: duplicate });
     softDeleteTimelineItem(duplicate);
-    recordCorrection('MERGE_DUPLICATE', duplicate.sourceId);
+    recordCorrection('correction.merge', duplicate.sourceId, duplicate.sourceType, `Merged duplicate ${duplicate.title}`);
   }
 
   function undoLastAction() {
@@ -249,8 +267,19 @@ export function TodayPage() {
         );
       }
     }
+    setSelectedTimelineItem((current) => (current?.id === last.item.id ? last.item : current));
     setUndoStack((current) => current.slice(1));
-    setCorrectionHistory((current) => current.slice(1));
+    setCorrectionHistory((current) => [
+      {
+        id: `correction.undo:${last.item.sourceId}:${current.length + 1}`,
+        action: 'correction.undo',
+        sourceId: last.item.sourceId,
+        sourceType: last.item.sourceType,
+        createdAt: new Date().toISOString(),
+        summary: `Undid ${last.action.toLowerCase().replaceAll('_', ' ')} for ${last.item.title}`
+      },
+      ...current
+    ]);
   }
 
   async function startFeedSession(mode: FeedSessionMode) {
@@ -336,6 +365,7 @@ export function TodayPage() {
               </p>
             </section>
             <LiveTimelineStream items={timelineItems} onSelect={(item) => setSelectedTimelineItem(item)} />
+            <CorrectionHistoryPanel items={correctionHistory} />
             {selectedTimelineItem ? (
               <TimelineDetailSheet
                 item={selectedTimelineItem}

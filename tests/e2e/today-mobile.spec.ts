@@ -195,6 +195,9 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await page.getByTestId('live-timeline-items').getByRole('button').first().click();
   await expect(page.getByTestId('timeline-detail-sheet')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Soft delete' })).toBeVisible();
+  await page.getByRole('button', { name: 'Soft delete' }).click();
+  await expect(page.getByTestId('correction-history-panel')).toBeVisible();
+  await expect(page.getByTestId('correction-history-items')).toContainText('correction.soft_delete');
 
   await page.getByRole('link', { name: 'Profile / 资料' }).click();
   await expect(page.getByRole('heading', { name: 'Baby profile / 宝宝资料' })).toBeVisible();

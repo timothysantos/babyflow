@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import { TodayPage } from '../src/client/routes/TodayPage';
@@ -117,6 +117,7 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     expect(screen.getByTestId('row-details')).toBeTruthy();
     expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
+    expect(screen.getByTestId('correction-history-panel')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
     await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));
@@ -219,5 +220,94 @@ describe('TodayPage', () => {
     expect(screen.getByTestId('feed-session-list').textContent?.indexOf('FORMULA feed · baby_1')).toBeLessThan(
       screen.getByTestId('feed-session-list').textContent?.indexOf('BREAST feed · baby_1') ?? 0
     );
+  });
+
+  it('renders correction history after a soft delete action', async () => {
+    render(
+      <MemoryRouter>
+        <TodayPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));
+    await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
+    fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
+    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Soft delete' }));
+    await waitFor(() => expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.soft_delete'));
+  });
+
+  it('applies timeline edits and undo keeps the selected item in sync', async () => {
+    const promptSpy = vi.spyOn(window, 'prompt').mockReturnValue('2026-05-16T01:00:00.000Z');
+
+    render(
+      <MemoryRouter>
+        <TodayPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
+    fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
+    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Update time' }));
+    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('2026-05-16T01:00:00.000Z'));
+    expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.update');
+    fireEvent.click(screen.getByRole('button', { name: 'Undo last action' }));
+    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('2026-05-16T00:00:00.000Z'));
+    expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.undo');
+
+    promptSpy.mockRestore();
+  });
+
+  it('merges duplicate timeline items into one visible entry', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+        const method = init?.method ?? 'GET';
+        const url = typeof input === 'string' ? input : input.toString();
+        if (method === 'GET' && url.includes('/cycle-events')) {
+          return Response.json({
+            events: [
+              {
+                id: 'event_2',
+                kind: 'WAKE',
+                label: 'wake',
+                babyId: 'baby_1',
+                recordedAt: '2026-05-16T00:10:00.000Z'
+              },
+              {
+                id: 'event_1',
+                kind: 'WAKE',
+                label: 'wake',
+                babyId: 'baby_1',
+                recordedAt: '2026-05-16T00:00:00.000Z'
+              }
+            ]
+          });
+        }
+        if (method === 'GET' && url.includes('/feed-sessions')) {
+          return Response.json({ sessions: [] });
+        }
+        return Response.json({ events: [], sessions: [] });
+      })
+    );
+
+    render(
+      <MemoryRouter>
+        <TodayPage />
+      </MemoryRouter>
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
+    fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
+    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Merge duplicate' }));
+    await waitFor(() => expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.merge'));
+    expect(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')).toHaveLength(1);
   });
 });
