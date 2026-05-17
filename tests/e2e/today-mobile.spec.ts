@@ -106,6 +106,40 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
     }
     await route.fulfill({ status: 404, body: 'Feed session not found' });
   });
+  const interventions: Array<any> = [];
+  await page.route('**/interventions', async (route) => {
+    const request = route.request();
+    if (request.method() === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ interventions })
+      });
+      return;
+    }
+
+    if (request.method() === 'POST') {
+      const body = JSON.parse(request.postData() ?? '{}') as { kind: string; label: string; outcome?: string };
+      const intervention = {
+        id: `intervention_${interventions.length + 1}`,
+        babyId: 'current-baby',
+        kind: body.kind,
+        label: body.label,
+        outcome: body.outcome ?? 'UNKNOWN',
+        context: 'today',
+        recordedAt: '2026-05-16T00:20:00.000Z'
+      };
+      interventions.unshift(intervention);
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ intervention })
+      });
+      return;
+    }
+
+    await route.fulfill({ status: 405, body: 'Method Not Allowed' });
+  });
   await page.goto('/');
 
   await expect(page.getByTestId('today-page')).toBeVisible();
@@ -166,6 +200,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await page.getByRole('button', { name: 'More' }).click();
   await expect(page.getByTestId('row-details')).toBeVisible();
   await expect(page.getByTestId('event-log')).toBeVisible();
+  await expect(page.getByTestId('intervention-attempts-panel')).toBeVisible();
   await expect(page.getByTestId('feed-sessions')).toBeVisible();
   const feedCardRadius = await page.getByTestId('feed-sessions').evaluate((node) => getComputedStyle(node).borderRadius);
   expect(Number.parseFloat(feedCardRadius)).toBeGreaterThanOrEqual(20);
@@ -181,6 +216,8 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('feed-session-list')).toContainText('RIGHT');
   await page.getByRole('button', { name: 'Close session' }).click();
   await expect(page.getByTestId('feed-session-status')).toContainText('Closed session');
+  await page.getByRole('button', { name: 'Soothe' }).click();
+  await expect(page.getByTestId('intervention-attempt-list')).toContainText('SOOTHE');
 
   await page.getByRole('button', { name: 'Journal / 记录表' }).click();
   await expect(page.getByTestId('paper-journal-view')).toBeVisible();

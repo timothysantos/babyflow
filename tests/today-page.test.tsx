@@ -118,9 +118,12 @@ describe('TodayPage', () => {
     expect(screen.getByTestId('row-details')).toBeTruthy();
     expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
     expect(screen.getByTestId('correction-history-panel')).toBeTruthy();
+    expect(screen.getByTestId('intervention-attempts-panel')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
     await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));
+    fireEvent.click(screen.getByRole('button', { name: 'Soothe' }));
+    await waitFor(() => expect(screen.getByTestId('intervention-attempt-list').textContent).toContain('SOOTHE'));
 
     fireEvent.click(screen.getByRole('button', { name: 'Start Nurse' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed · current-baby'));
@@ -288,12 +291,28 @@ describe('TodayPage', () => {
             ]
           });
         }
-        if (method === 'GET' && url.includes('/feed-sessions')) {
-          return Response.json({ sessions: [] });
-        }
-        return Response.json({ events: [], sessions: [] });
-      })
-    );
+      if (method === 'GET' && url.includes('/feed-sessions')) {
+        return Response.json({ sessions: [] });
+      }
+      if (method === 'GET' && url.includes('/interventions')) {
+        return Response.json({ interventions: [] });
+      }
+      if (method === 'POST' && url.includes('/interventions')) {
+        return Response.json({
+          intervention: {
+            id: 'intervention_1',
+            babyId: 'current-baby',
+            kind: 'SOOTHE',
+            label: 'soothe',
+            outcome: 'UNKNOWN',
+            context: 'today',
+            recordedAt: '2026-05-16T00:20:00.000Z'
+          }
+        });
+      }
+      return Response.json({ events: [], sessions: [] });
+    })
+  );
 
     render(
       <MemoryRouter>

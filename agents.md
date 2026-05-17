@@ -149,3 +149,4 @@ Avoid:
 50. Prompt-based edit flows are only temporary scaffolding. A slice cannot be marked complete if a required correction flow still depends on `window.prompt`, browser confirm dialogs, or other test-only shortcuts instead of first-class sheet or dialog surfaces.
 51. For correction-heavy UX, Timeline, Journal, and Compact should all use first-class edit surfaces for user-facing correction actions. Interaction-quality parity matters, not just data parity.
 52. For correction-heavy UX, audits should also look for assistive correction affordances such as suggested reasons, duplicate warnings, and context-aware guidance. Manual correction tools alone are not the end state once chronology integrity exists.
+53. Route coordinator pages must stay thin. If a page grows past about 800 lines, split the behavior into feature hooks or child components before adding more slice logic.

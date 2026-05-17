@@ -1,6 +1,7 @@
 import { healthResponse } from './infrastructure/api/routes/health';
 import { babiesRoute } from './infrastructure/api/routes/babies';
 import { cycleEventsRoute } from './infrastructure/api/routes/events';
+import { interventionsRoute } from './infrastructure/api/routes/interventions';
 import { feedSessionsRoute } from './infrastructure/api/routes/feed-sessions';
 import { createDbClient } from './infrastructure/db/client';
 
@@ -27,6 +28,10 @@ export default {
 
     if (url.pathname === '/feed-sessions') {
       return feedSessionsRoute(request);
+    }
+
+    if (url.pathname === '/interventions') {
+      return interventionsRoute(request);
     }
 
     if (url.pathname.startsWith('/feed-sessions/') && url.pathname.endsWith('/segments')) {

@@ -6,6 +6,7 @@ import { QuickActionDock } from '../components/actions/QuickActionDock';
 import { EventLog } from '../components/events/EventLog';
 import type { CycleEventDTO, CycleEventKind } from '../../domain/event/event.types';
 import { FeedSessionsPanel } from '../components/feed/FeedSessionsPanel';
+import { InterventionAttemptsPanel } from '../components/intervention/InterventionAttemptsPanel';
 import type { FeedSessionDTO, FeedSegmentDTO, FeedSessionMode } from '../../domain/feed/feed.types';
 import { buildPaperJournalRowViewModel } from '../components/journal/paper-journal-view-model';
 import { JournalRowSummary } from '../components/journal/JournalRowSummary';
@@ -19,6 +20,7 @@ import { TimelineEditSheet } from '../components/timeline/TimelineEditSheet';
 import { buildTimelineItems } from '../components/timeline/timeline-view-model';
 import type { TimelineItemDTO } from '../components/timeline/timeline.types';
 import type { CorrectionHistoryDTO } from '../../domain/correction/correction-history.types';
+import type { InterventionAttemptDTO, InterventionAttemptKind, InterventionAttemptOutcome } from '../../domain/intervention/intervention.types';
 
 type TodayViewMode = 'timeline' | 'journal' | 'compact';
 type UndoRecord =
@@ -71,6 +73,10 @@ function feedsUrl() {
   return new URL('/feed-sessions', window.location.origin);
 }
 
+function interventionsUrl() {
+  return new URL('/interventions', window.location.origin);
+}
+
 export function TodayPage() {
   const [viewMode, setViewMode] = useState<TodayViewMode>(() =>
     normalizeViewMode(window.localStorage.getItem('babyflow.today.viewMode') ?? window.localStorage.getItem('babyflow.today.compactMode'))
@@ -78,6 +84,7 @@ export function TodayPage() {
   const [detailsOpen, setDetailsOpen] = useState(() => window.localStorage.getItem('babyflow.today.rowDetailsOpen') === 'true');
   const [events, setEvents] = useState<CycleEventDTO[]>([]);
   const [feedSessions, setFeedSessions] = useState<FeedSessionDTO[]>([]);
+  const [interventionAttempts, setInterventionAttempts] = useState<InterventionAttemptDTO[]>([]);
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItemDTO | null>(null);
   const [timelineEditor, setTimelineEditor] = useState<{
     item: TimelineItemDTO;
@@ -92,7 +99,7 @@ export function TodayPage() {
   const [timelineEditReason, setTimelineEditReason] = useState<CorrectionReason | ''>('');
   const correctionSnapshots = useRef(new Map<string, CorrectionSnapshot>());
 
-  const rowViewModel = useMemo(() => buildPaperJournalRowViewModel(events, feedSessions), [events, feedSessions]);
+  const rowViewModel = useMemo(() => buildPaperJournalRowViewModel(events, feedSessions, interventionAttempts), [events, feedSessions, interventionAttempts]);
   const timelineItems = useMemo(() => buildTimelineItems(events, feedSessions), [events, feedSessions]);
 
   function findDuplicateCycleEvent(kind: CycleEventKind, sourceId: string) {
@@ -281,6 +288,15 @@ export function TodayPage() {
         setFeedSessions((current) => (current.length > 0 ? current : payload.sessions ?? []))
       )
       .catch(() => setFeedSessions([]));
+  }, []);
+
+  useEffect(() => {
+    void fetch(interventionsUrl())
+      .then((response) => response.json())
+      .then((payload: { interventions?: InterventionAttemptDTO[] }) =>
+        setInterventionAttempts((current) => (current.length > 0 ? current : payload.interventions ?? []))
+      )
+      .catch(() => setInterventionAttempts([]));
   }, []);
 
   async function recordEvent(kind: CycleEventKind) {
@@ -871,6 +887,36 @@ export function TodayPage() {
     }
   }
 
+  async function recordIntervention(kind: InterventionAttemptKind, outcome?: InterventionAttemptOutcome) {
+    const optimisticIntervention: InterventionAttemptDTO = {
+      id: `optimistic_intervention_${kind.toLowerCase()}_${Date.now()}`,
+      babyId: 'current-baby',
+      kind,
+      label: kind.toLowerCase().replaceAll('_', ' '),
+      outcome: outcome ?? 'UNKNOWN',
+      context: 'today',
+      recordedAt: new Date().toISOString()
+    };
+    setInterventionAttempts((current) => [optimisticIntervention, ...current]);
+    const response = await fetch(interventionsUrl(), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        kind,
+        label: kind.toLowerCase().replaceAll('_', ' '),
+        outcome,
+        babyId: 'current-baby',
+        context: 'today'
+      })
+    });
+    const payload = (await response.json()) as { intervention?: InterventionAttemptDTO };
+    if (payload.intervention) {
+      setInterventionAttempts((current) =>
+        current.map((attempt) => (attempt.id === optimisticIntervention.id ? payload.intervention! : attempt))
+      );
+    }
+  }
+
   return (
     <MobileShell>
       <PageShell
@@ -981,6 +1027,7 @@ export function TodayPage() {
             {detailsOpen ? (
               <section className="panel-stack" aria-label="Row details" data-testid="row-details">
                 <EventLog events={events} />
+                <InterventionAttemptsPanel attempts={interventionAttempts} onRecordAttempt={(kind, outcome) => void recordIntervention(kind, outcome)} />
                 <FeedSessionsPanel
                   sessions={feedSessions}
                   onStartSession={startFeedSession}
