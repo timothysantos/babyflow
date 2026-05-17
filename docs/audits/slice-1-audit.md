@@ -58,6 +58,7 @@ Verdict: COMPLETE
 - `/health` returns plain `OK`.
 - The browser smoke test now repeatably verifies the dark boot canvas and router root.
 - D1 proof is a mock-env worker test, not real local D1.
+- The current canonical spec is v8a, but it does not change the slice-1 verdict: shell, routing, providers, and boot/theme proof still satisfy the original slice-1 contract.
 - Slice commits:
   - [`b72a12f`](https://github.com/timothysantos/babyflow/commit/b72a12f) `feat: wire slice 1 router`
   - [`7b3d525`](https://github.com/timothysantos/babyflow/commit/7b3d525) `fix: align health tests with spec`
@@ -68,3 +69,15 @@ Verdict: COMPLETE
   - [`a0bc6bc`](https://github.com/timothysantos/babyflow/commit/a0bc6bc) `fix: prove slice 1 boot and theme`
   - [`74ecab7`](https://github.com/timothysantos/babyflow/commit/74ecab7) `docs: finalize slice 1 audit report`
   - [`147b9e4`](https://github.com/timothysantos/babyflow/commit/147b9e4) `docs: add reviewed proof level`
+
+## v8a Re-Audit Note
+
+Slice 1 remains COMPLETE under the v8a spec because v8a changes are scoped to later timeline and correction slices.
+
+Verified unchanged slice-1 contract:
+
+- shell composition
+- routing
+- provider wiring
+- non-white boot canvas
+- machine-following theme

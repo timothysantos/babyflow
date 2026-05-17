@@ -107,6 +107,7 @@ describe('TodayPage', () => {
     expect(screen.getByText('Timeline view active.')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
     expect(screen.getByTestId('journal-summary')).toBeTruthy();
+    expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     expect(screen.getByText('Compact journal active.')).toBeTruthy();
@@ -115,6 +116,7 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     expect(screen.getByTestId('row-details')).toBeTruthy();
+    expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
 
     fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
     await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));

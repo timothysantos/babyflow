@@ -324,10 +324,27 @@ button[aria-pressed='true'],
   border: 1px solid rgba(156, 178, 206, 0.15);
 }
 
+.timeline-item-button {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
 .timeline-item-label {
   display: block;
   color: var(--text);
   margin-top: 4px;
+}
+
+.timeline-item-meta {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-soft);
+  font-size: 0.8rem;
 }
 
 .form-grid {

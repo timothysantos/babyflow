@@ -124,6 +124,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(shellBg).not.toBe('rgb(255, 255, 255)');
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Compact / 简洁' })).toBeVisible();
+  await expect(page.getByTestId('live-timeline-stream')).toBeVisible();
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
@@ -191,6 +192,9 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
 
   await page.getByRole('button', { name: 'Timeline / 时间线' }).click();
   await expect(page.getByText('Timeline view active.')).toBeVisible();
+  await page.getByTestId('live-timeline-items').getByRole('button').first().click();
+  await expect(page.getByTestId('timeline-detail-sheet')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Soft delete' })).toBeVisible();
 
   await page.getByRole('link', { name: 'Profile / 资料' }).click();
   await expect(page.getByRole('heading', { name: 'Baby profile / 宝宝资料' })).toBeVisible();

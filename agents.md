@@ -139,3 +139,5 @@ Avoid:
 - Slice 2 and later tests must isolate repository state per worker or reset it explicitly before assertions.
 - Transitional infrastructure must never silently become the canonical architecture in an audit.
 - Scaffolded UI must never be reported as fully implemented interaction behavior without a runtime proof of the interaction itself.
+43. v8a requires Timeline View to render a visible CurrentCycleSummary plus a real chronological LiveTimelineStream, and correction/update/delete/undo/merge flows must be audited as visible behavior even when the persistence layer is still transitional.
+44. When v8a correction flows are implemented, audits must call out whether they are behaviorally verified in the client only or persisted through the backend, and must not blur the distinction.
