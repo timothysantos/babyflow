@@ -966,9 +966,14 @@ export function TodayPage() {
                 Compact / 简洁
               </button>
             </div>
-            <Link to="/profile" className="today-profile-link">
-              Profile / 资料
-            </Link>
+            <div className="page-hero-actions-row">
+              <Link to="/profile" className="today-profile-link">
+                Profile / 资料
+              </Link>
+              <Link to="/guide" className="today-guide-link">
+                Guide / 说明
+              </Link>
+            </div>
           </>
         }
       >

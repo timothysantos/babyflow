@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { BabySelectPage } from './routes/BabySelectPage';
+import { HelpPage } from './routes/HelpPage';
 import { TodayPage } from './routes/TodayPage';
 
 const router = createBrowserRouter([
@@ -10,6 +11,10 @@ const router = createBrowserRouter([
   {
     path: '/profile',
     element: <BabySelectPage />
+  },
+  {
+    path: '/guide',
+    element: <HelpPage />
   }
 ]);
 

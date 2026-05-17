@@ -35,7 +35,10 @@ export function BabySelectPage() {
       testId="baby-select-page"
       className="page-stack panel-stack"
       actions={
-        <Link to="/">Today / 今天</Link>
+        <div className="page-hero-actions-row">
+          <Link to="/">Today / 今天</Link>
+          <Link to="/guide">Guide / 说明</Link>
+        </div>
       }
     >
       <section className="timeline-card panel-stack">

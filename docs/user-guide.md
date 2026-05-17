@@ -1,5 +1,7 @@
 # BabyFlow Today User Guide
 
+Open the same guide inside the app at `Guide / 说明` or `/guide`.
+
 Today is one long working surface. On mobile, you usually do two things:
 
 1. Stay near the top when you are logging quickly.
@@ -263,4 +265,3 @@ Use this when the app says `NEEDS_REVIEW`.
 - If you are reviewing an episode, inspect `Timeline clusters`.
 - If you want the paper-journal layout, switch to `Journal`.
 - If you want the smallest one-handed layout, switch to `Compact`.
-
