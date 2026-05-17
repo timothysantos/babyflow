@@ -53,9 +53,23 @@ Verdict: COMPLETE
 ## Final Notes
 
 - Slice 2 was validated under Node 22 via `nvm use 22`.
-- The browser smoke test still verifies the dark boot canvas and root page render.
+- The browser smoke test still verifies the boot canvas and router root render.
 - D1 is not exercised with a real local database in this slice; the proof remains a mock-env worker test for the slice-1 worker boundary.
 - Repository tests use an isolated local data directory per Vitest worker.
 - Client bundle does not import Node-only persistence modules.
+- The current canonical spec is v8a, but Slice 2 remains COMPLETE because v8a only re-scopes later timeline, correction, and interpretation slices.
 - Slice commits:
   - [`6683c4b`](https://github.com/timothysantos/babyflow/commit/6683c4b) `fix: isolate slice 2 persistence and client bundle`
+
+## v8a Re-Audit Note
+
+Slice 2 remains COMPLETE under the v8a spec.
+
+Verified unchanged slice-2 contract:
+
+- create baby
+- select baby
+- age-week calculation
+- locale toggle
+- bilingual preview labels
+- DTO-only baby API responses
