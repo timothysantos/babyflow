@@ -48,6 +48,15 @@ type CellEditorState = {
   duplicateSourceId?: string | null;
 } | null;
 
+type CorrectionReason =
+  | 'wrong_time'
+  | 'accidental_tap'
+  | 'duplicate'
+  | 'late_entry'
+  | 'paper_journal'
+  | 'facilitator_advice'
+  | 'other';
+
 function normalizeViewMode(value: string | null): TodayViewMode {
   if (value === 'timeline' || value === 'journal' || value === 'compact') return value;
   if (value === 'true') return 'compact';
@@ -75,9 +84,12 @@ export function TodayPage() {
     mode: 'time' | 'details';
   } | null>(null);
   const [paperJournalEditor, setPaperJournalEditor] = useState<CellEditorState>(null);
+  const [paperJournalReason, setPaperJournalReason] = useState<CorrectionReason | ''>('');
   const [compactBlockEditor, setCompactBlockEditor] = useState<CellEditorState>(null);
+  const [compactBlockReason, setCompactBlockReason] = useState<CorrectionReason | ''>('');
   const [correctionHistory, setCorrectionHistory] = useState<CorrectionHistoryDTO[]>([]);
   const [undoStack, setUndoStack] = useState<UndoRecord[]>([]);
+  const [timelineEditReason, setTimelineEditReason] = useState<CorrectionReason | ''>('');
   const correctionSnapshots = useRef(new Map<string, CorrectionSnapshot>());
 
   const rowViewModel = useMemo(() => buildPaperJournalRowViewModel(events, feedSessions), [events, feedSessions]);
@@ -227,6 +239,23 @@ export function TodayPage() {
     );
   }
 
+  function suggestedReasonForTimelineEdit(item: TimelineItemDTO): CorrectionReason {
+    if (item.kind === 'CYCLE_EVENT' && item.title === 'play') {
+      return 'wrong_time';
+    }
+    if (item.kind === 'FEED_SESSION_START' || item.kind === 'FEED_SEGMENT') {
+      return 'late_entry';
+    }
+    return 'other';
+  }
+
+  function suggestedReasonForCell(editor: NonNullable<CellEditorState>): CorrectionReason {
+    if (editor.duplicateSourceId) return 'duplicate';
+    if (editor.key === 'wakeUpTime' || editor.key === 'startOfPlayTime' || editor.key === 'startOfSleepTime') return 'wrong_time';
+    if (editor.key === 'startOfFeedTime') return 'late_entry';
+    return 'other';
+  }
+
   useEffect(() => {
     window.localStorage.setItem('babyflow.today.viewMode', viewMode);
     window.localStorage.setItem('babyflow.today.compactMode', String(viewMode === 'compact'));
@@ -266,7 +295,13 @@ export function TodayPage() {
     }
   }
 
-  function recordCorrection(action: CorrectionHistoryDTO['action'], sourceId: string, sourceType: CorrectionHistoryDTO['sourceType'], summary: string) {
+  function recordCorrection(
+    action: CorrectionHistoryDTO['action'],
+    sourceId: string,
+    sourceType: CorrectionHistoryDTO['sourceType'],
+    summary: string,
+    reason?: CorrectionHistoryDTO['reason']
+  ) {
     setCorrectionHistory((current) => [
       {
         id: `${action}:${sourceId}:${current.length + 1}`,
@@ -274,7 +309,8 @@ export function TodayPage() {
         sourceId,
         sourceType,
         createdAt: new Date().toISOString(),
-        summary
+        summary,
+        reason
       },
       ...current
     ]);
@@ -310,7 +346,7 @@ export function TodayPage() {
     setUndoStack((current) => [record, ...current]);
   }
 
-  function updateJournalProjectionCell(key: CellEditorState['key'], nextValue: string) {
+  function updateJournalProjectionCell(key: CellEditorState['key'], nextValue: string, reason?: CorrectionReason | '') {
     if (key === 'wakeUpTime') {
       const wake = events.find((event) => event.kind === 'WAKE');
       if (wake) {
@@ -344,7 +380,7 @@ export function TodayPage() {
           ...current
         ]);
       }
-      recordCorrection('correction.update', wake?.id ?? 'manual-wake', 'cycle-event', `Updated ${key}`);
+      recordCorrection('correction.update', wake?.id ?? 'manual-wake', 'cycle-event', `Updated ${key}`, reason || undefined);
       return;
     }
     if (key === 'startOfFeedTime') {
@@ -380,7 +416,7 @@ export function TodayPage() {
           ...current
         ]);
       }
-      recordCorrection('correction.update', session?.id ?? 'manual-feed', 'feed-session', `Updated ${key}`);
+      recordCorrection('correction.update', session?.id ?? 'manual-feed', 'feed-session', `Updated ${key}`, reason || undefined);
       return;
     }
     if (key === 'startOfPlayTime') {
@@ -416,7 +452,7 @@ export function TodayPage() {
           ...current
         ]);
       }
-      recordCorrection('correction.update', play?.id ?? 'manual-play', 'cycle-event', `Updated ${key}`);
+      recordCorrection('correction.update', play?.id ?? 'manual-play', 'cycle-event', `Updated ${key}`, reason || undefined);
       return;
     }
     if (key === 'startOfSleepTime') {
@@ -452,7 +488,7 @@ export function TodayPage() {
           ...current
         ]);
       }
-      recordCorrection('correction.update', sleep?.id ?? 'manual-sleep', 'cycle-event', `Updated ${key}`);
+      recordCorrection('correction.update', sleep?.id ?? 'manual-sleep', 'cycle-event', `Updated ${key}`, reason || undefined);
       return;
     }
     if (key === 'urine') {
@@ -488,7 +524,7 @@ export function TodayPage() {
           ...current
         ]);
       }
-      recordCorrection('correction.update', diaper?.id ?? 'manual-diaper', 'cycle-event', `Updated ${key}`);
+      recordCorrection('correction.update', diaper?.id ?? 'manual-diaper', 'cycle-event', `Updated ${key}`, reason || undefined);
       return;
     }
     if (key === 'stool') {
@@ -524,7 +560,7 @@ export function TodayPage() {
           ...current
         ]);
       }
-      recordCorrection('correction.update', diaper?.id ?? 'manual-diaper', 'cycle-event', `Updated ${key}`);
+      recordCorrection('correction.update', diaper?.id ?? 'manual-diaper', 'cycle-event', `Updated ${key}`, reason || undefined);
       return;
     }
     if (key === 'remarks') {
@@ -560,11 +596,11 @@ export function TodayPage() {
           ...current
         ]);
       }
-      recordCorrection('correction.update', note?.id ?? 'manual-note', 'cycle-event', 'Updated remarks');
+      recordCorrection('correction.update', note?.id ?? 'manual-note', 'cycle-event', 'Updated remarks', reason || undefined);
     }
   }
 
-  function deleteJournalProjectionCell(editor: NonNullable<CellEditorState>) {
+  function deleteJournalProjectionCell(editor: NonNullable<CellEditorState>, reason?: CorrectionReason | '') {
     rememberProjectionSnapshot(editor.sourceType, editor.sourceId);
     pushUndo({
       action: 'PROJECT_CELL',
@@ -575,10 +611,10 @@ export function TodayPage() {
       created: editor.value === '—'
     });
     removeProjectionSource(editor.sourceType, editor.sourceId);
-    recordCorrection('correction.soft_delete', editor.sourceId, editor.sourceType, `Deleted ${editor.label}`);
+    recordCorrection('correction.soft_delete', editor.sourceId, editor.sourceType, `Deleted ${editor.label}`, reason || undefined);
   }
 
-  function mergeJournalProjectionCell(editor: NonNullable<CellEditorState>) {
+  function mergeJournalProjectionCell(editor: NonNullable<CellEditorState>, reason?: CorrectionReason | '') {
     if (!editor.duplicateSourceId) {
       return;
     }
@@ -592,10 +628,10 @@ export function TodayPage() {
       created: false
     });
     removeProjectionSource(editor.sourceType, editor.duplicateSourceId);
-    recordCorrection('correction.merge', editor.duplicateSourceId, editor.sourceType, `Merged duplicate ${editor.label}`);
+    recordCorrection('correction.merge', editor.duplicateSourceId, editor.sourceType, `Merged duplicate ${editor.label}`, reason || undefined);
   }
 
-  function softDeleteTimelineItem(item: TimelineItemDTO) {
+  function softDeleteTimelineItem(item: TimelineItemDTO, reason?: CorrectionReason | '') {
     rememberProjectionSnapshot(item.sourceType, item.sourceId);
     if (item.sourceType === 'cycle-event') {
       const deleted = events.find((event) => event.id === item.sourceId);
@@ -620,11 +656,11 @@ export function TodayPage() {
         }))
       );
     }
-    recordCorrection('correction.soft_delete', item.sourceId, item.sourceType, `Soft deleted ${item.title}`);
+    recordCorrection('correction.soft_delete', item.sourceId, item.sourceType, `Soft deleted ${item.title}`, reason || undefined);
     setSelectedTimelineItem((current) => (current?.id === item.id ? null : current));
   }
 
-  function updateTimelineItemTime(item: TimelineItemDTO, nextRecordedAt: string) {
+  function updateTimelineItemTime(item: TimelineItemDTO, nextRecordedAt: string, reason?: CorrectionReason | '') {
     pushUndo({ action: 'UPDATE_TIME', item, previousValue: item.recordedAt });
     if (item.sourceType === 'cycle-event') {
       setEvents((current) =>
@@ -651,10 +687,10 @@ export function TodayPage() {
     setSelectedTimelineItem((current) =>
       current?.id === item.id ? { ...item, recordedAt: nextRecordedAt } : current
     );
-    recordCorrection('correction.update', item.sourceId, item.sourceType, `Updated time for ${item.title}`);
+    recordCorrection('correction.update', item.sourceId, item.sourceType, `Updated time for ${item.title}`, reason || undefined);
   }
 
-  function updateTimelineItemDetails(item: TimelineItemDTO, nextDetails: string) {
+  function updateTimelineItemDetails(item: TimelineItemDTO, nextDetails: string, reason?: CorrectionReason | '') {
     pushUndo({ action: 'UPDATE_DETAILS', item, previousValue: item.details });
     if (item.sourceType === 'cycle-event') {
       setEvents((current) => current.map((event) => (event.id === item.sourceId ? { ...event, label: nextDetails } : event)));
@@ -672,10 +708,10 @@ export function TodayPage() {
     setSelectedTimelineItem((current) =>
       current?.id === item.id ? { ...item, details: nextDetails } : current
     );
-    recordCorrection('correction.update', item.sourceId, item.sourceType, `Updated details for ${item.title}`);
+    recordCorrection('correction.update', item.sourceId, item.sourceType, `Updated details for ${item.title}`, reason || undefined);
   }
 
-  function mergeDuplicateTimelineItem(item: TimelineItemDTO) {
+  function mergeDuplicateTimelineItem(item: TimelineItemDTO, reason?: CorrectionReason | '') {
     const duplicate = timelineItems.find((entry) => entry.id !== item.id && entry.title === item.title && entry.details === item.details);
     if (!duplicate) {
       return;
@@ -683,7 +719,7 @@ export function TodayPage() {
     rememberProjectionSnapshot(duplicate.sourceType, duplicate.sourceId);
     pushUndo({ action: 'SOFT_DELETE', item: duplicate });
     softDeleteTimelineItem(duplicate);
-    recordCorrection('correction.merge', duplicate.sourceId, duplicate.sourceType, `Merged duplicate ${duplicate.title}`);
+    recordCorrection('correction.merge', duplicate.sourceId, duplicate.sourceType, `Merged duplicate ${duplicate.title}`, reason || undefined);
   }
 
   function undoLastAction() {
@@ -864,14 +900,20 @@ export function TodayPage() {
         {viewMode === 'journal' ? (
           <PaperJournalView
             rows={[rowViewModel]}
-            onEditCell={(key, label, value) => setPaperJournalEditor(resolveCellEditorState(key, label, value))}
+            onEditCell={(key, label, value) => {
+              setPaperJournalReason('');
+              setPaperJournalEditor(resolveCellEditorState(key, label, value));
+            }}
           />
         ) : viewMode === 'compact' ? (
           <section className="timeline-card panel-stack" data-testid="compact-journal">
             <p className="paper-heading">Compact journal</p>
             <JournalRowSummary
               row={rowViewModel}
-              onEditCell={(key, label, value) => setCompactBlockEditor(resolveCellEditorState(key, label, value))}
+              onEditCell={(key, label, value) => {
+                setCompactBlockReason('');
+                setCompactBlockEditor(resolveCellEditorState(key, label, value));
+              }}
             />
             <p className="status-chip compact-mode" data-testid="compact-mode" data-compact-mode="on">
               Compact journal active.
@@ -883,7 +925,10 @@ export function TodayPage() {
               <p className="paper-heading">Current cycle summary</p>
               <JournalRowSummary
                 row={rowViewModel}
-                onEditCell={(key, label, value) => setPaperJournalEditor({ key, label, value })}
+                onEditCell={(key, label, value) => {
+                  setPaperJournalReason('');
+                  setPaperJournalEditor(resolveCellEditorState(key, label, value));
+                }}
               />
               <button type="button" onClick={() => setDetailsOpen((value) => !value)} aria-expanded={detailsOpen}>
                 {detailsOpen ? 'Hide row details' : 'View row details'}
@@ -898,10 +943,16 @@ export function TodayPage() {
               <TimelineDetailSheet
                 item={selectedTimelineItem}
                 onClose={() => setSelectedTimelineItem(null)}
-                onEditTime={() => setTimelineEditor({ item: selectedTimelineItem, mode: 'time' })}
-                onEditDetails={() => setTimelineEditor({ item: selectedTimelineItem, mode: 'details' })}
-                onDelete={() => softDeleteTimelineItem(selectedTimelineItem)}
-                onMergeDuplicate={() => mergeDuplicateTimelineItem(selectedTimelineItem)}
+                onEditTime={() => {
+                  setTimelineEditReason('');
+                  setTimelineEditor({ item: selectedTimelineItem, mode: 'time' });
+                }}
+                onEditDetails={() => {
+                  setTimelineEditReason('');
+                  setTimelineEditor({ item: selectedTimelineItem, mode: 'details' });
+                }}
+                onDelete={() => softDeleteTimelineItem(selectedTimelineItem, timelineEditReason)}
+                onMergeDuplicate={() => mergeDuplicateTimelineItem(selectedTimelineItem, timelineEditReason)}
                 onUndo={undoLastAction}
               />
             ) : null}
@@ -945,21 +996,29 @@ export function TodayPage() {
             title={paperJournalEditor.label}
             currentValue={paperJournalEditor.value}
             currentSource={rowViewModel[paperJournalEditor.key].source}
+            suggestedReason={suggestedReasonForCell(paperJournalEditor)}
+            selectedReason={paperJournalReason}
+            onUseSuggestedReason={() => setPaperJournalReason(suggestedReasonForCell(paperJournalEditor))}
+            onReasonChange={(reason) => setPaperJournalReason(reason as CorrectionReason)}
             onSave={(nextValue) => {
-              updateJournalProjectionCell(paperJournalEditor.key, nextValue);
+              updateJournalProjectionCell(paperJournalEditor.key, nextValue, paperJournalReason);
               setPaperJournalEditor(null);
+              setPaperJournalReason('');
             }}
             onDelete={() => {
-              deleteJournalProjectionCell(paperJournalEditor);
+              deleteJournalProjectionCell(paperJournalEditor, paperJournalReason);
               setPaperJournalEditor(null);
+              setPaperJournalReason('');
             }}
             onMergeDuplicate={() => {
-              mergeJournalProjectionCell(paperJournalEditor);
+              mergeJournalProjectionCell(paperJournalEditor, paperJournalReason);
               setPaperJournalEditor(null);
+              setPaperJournalReason('');
             }}
             onRestore={() => {
               undoLastAction();
               setPaperJournalEditor(null);
+              setPaperJournalReason('');
             }}
             onClose={() => setPaperJournalEditor(null)}
           />
@@ -969,21 +1028,29 @@ export function TodayPage() {
             title={compactBlockEditor.label}
             currentValue={compactBlockEditor.value}
             currentSource={rowViewModel[compactBlockEditor.key].source}
+            suggestedReason={suggestedReasonForCell(compactBlockEditor)}
+            selectedReason={compactBlockReason}
+            onUseSuggestedReason={() => setCompactBlockReason(suggestedReasonForCell(compactBlockEditor))}
+            onReasonChange={(reason) => setCompactBlockReason(reason as CorrectionReason)}
             onSave={(nextValue) => {
-              updateJournalProjectionCell(compactBlockEditor.key, nextValue);
+              updateJournalProjectionCell(compactBlockEditor.key, nextValue, compactBlockReason);
               setCompactBlockEditor(null);
+              setCompactBlockReason('');
             }}
             onDelete={() => {
-              deleteJournalProjectionCell(compactBlockEditor);
+              deleteJournalProjectionCell(compactBlockEditor, compactBlockReason);
               setCompactBlockEditor(null);
+              setCompactBlockReason('');
             }}
             onMergeDuplicate={() => {
-              mergeJournalProjectionCell(compactBlockEditor);
+              mergeJournalProjectionCell(compactBlockEditor, compactBlockReason);
               setCompactBlockEditor(null);
+              setCompactBlockReason('');
             }}
             onRestore={() => {
               undoLastAction();
               setCompactBlockEditor(null);
+              setCompactBlockReason('');
             }}
             onClose={() => setCompactBlockEditor(null)}
           />
@@ -993,15 +1060,23 @@ export function TodayPage() {
             title={timelineEditor.item.title}
             label={timelineEditor.mode === 'time' ? 'Update time' : 'Update details'}
             currentValue={timelineEditor.mode === 'time' ? timelineEditor.item.recordedAt : timelineEditor.item.details}
+            suggestedReason={suggestedReasonForTimelineEdit(timelineEditor.item)}
+            selectedReason={timelineEditReason}
+            onUseSuggestedReason={() => setTimelineEditReason(suggestedReasonForTimelineEdit(timelineEditor.item))}
+            onReasonChange={(reason) => setTimelineEditReason(reason as CorrectionReason)}
             onSave={(nextValue) => {
               if (timelineEditor.mode === 'time') {
-                updateTimelineItemTime(timelineEditor.item, nextValue);
+                updateTimelineItemTime(timelineEditor.item, nextValue, timelineEditReason);
               } else {
-                updateTimelineItemDetails(timelineEditor.item, nextValue);
+                updateTimelineItemDetails(timelineEditor.item, nextValue, timelineEditReason);
               }
               setTimelineEditor(null);
+              setTimelineEditReason('');
             }}
-            onClose={() => setTimelineEditor(null)}
+            onClose={() => {
+              setTimelineEditor(null);
+              setTimelineEditReason('');
+            }}
           />
         ) : null}
       </PageShell>

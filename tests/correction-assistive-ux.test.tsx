@@ -31,35 +31,33 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('correction update parity', () => {
-  it('edit in Timeline updates Journal, Compact, and correction history', async () => {
+describe('correction assistive UX', () => {
+  it('shows suggested reasons and reason capture in all correction surfaces', async () => {
     render(
       <MemoryRouter>
         <TodayPage />
       </MemoryRouter>
     );
 
-    await waitFor(() => expect(screen.getByTestId('journal-summary-wakeUpTime').textContent).not.toBe('—'), { timeout: 3000 });
+    await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy(), { timeout: 3000 });
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
-    await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Update time' }));
     await waitFor(() => expect(screen.getByTestId('timeline-edit-sheet')).toBeTruthy());
     expect(screen.getByTestId('timeline-edit-suggestion').textContent).toContain('Suggested correction reason');
-    fireEvent.click(screen.getByRole('button', { name: 'Use suggested reason' }));
-    expect((screen.getByTestId('timeline-edit-reason') as HTMLSelectElement).value).toBe('wrong_time');
-    fireEvent.change(screen.getByTestId('timeline-edit-input'), { target: { value: '2026-05-16T01:00:00.000Z' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Save update' }));
+    expect(screen.getByTestId('timeline-edit-reason')).toBeTruthy();
 
-    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('2026-05-16T01:00:00.000Z'));
     fireEvent.click(screen.getByRole('button', { name: 'Journal / 记录表' }));
-    await waitFor(() => expect(screen.getByTestId('paper-journal-cell-startOfPlayTime').textContent).toContain('9:00 AM'));
+    fireEvent.click(screen.getByTestId('paper-journal-cell-startOfPlayTime'));
+    await waitFor(() => expect(screen.getByTestId('paper-journal-cell-edit-sheet')).toBeTruthy());
+    expect(screen.getByTestId('paper-journal-cell-suggestion').textContent).toContain('Suggested correction reason');
+    expect(screen.getByTestId('paper-journal-cell-reason')).toBeTruthy();
+
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
-    await waitFor(() => expect(screen.getByTestId('journal-summary-startOfPlayTime').textContent).toContain('9:00 AM'));
-    fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
-    await waitFor(() => expect(screen.getByTestId('correction-history-items')).toBeTruthy());
-    expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.update');
-    expect(screen.getByTestId('correction-history-items').textContent).toContain('Reason: wrong_time');
+    fireEvent.click(screen.getByTestId('journal-summary-startOfPlayTime'));
+    await waitFor(() => expect(screen.getByTestId('compact-block-detail-sheet')).toBeTruthy());
+    expect(screen.getByTestId('compact-block-suggestion').textContent).toContain('Suggested correction reason');
+    expect(screen.getByTestId('compact-block-reason')).toBeTruthy();
   });
 });

@@ -16,6 +16,7 @@ export function CorrectionHistoryPanel({ items, onRestoreItem }: Props) {
               <div className="history-item-body">
                 <span className="paper-heading">{item.action}</span>
                 <span className="timeline-item-label">{item.summary}</span>
+                {item.reason ? <span className="timeline-item-label">Reason: {item.reason}</span> : null}
                 <span className="timeline-item-meta">{item.createdAt}</span>
               </div>
               {onRestoreItem ? (

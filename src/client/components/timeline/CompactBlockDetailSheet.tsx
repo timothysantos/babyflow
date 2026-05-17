@@ -5,6 +5,10 @@ type Props = {
   currentValue: string;
   currentSource: JournalCellValue['source'];
   onSave: (nextValue: string) => void;
+  onReasonChange?: (reason: string) => void;
+  suggestedReason?: string | null;
+  selectedReason?: string;
+  onUseSuggestedReason?: () => void;
   onDelete: () => void;
   onMergeDuplicate: () => void;
   onRestore: () => void;
@@ -16,6 +20,10 @@ export function CompactBlockDetailSheet({
   currentValue,
   currentSource,
   onSave,
+  onReasonChange,
+  suggestedReason,
+  selectedReason,
+  onUseSuggestedReason,
   onDelete,
   onMergeDuplicate,
   onRestore,
@@ -34,6 +42,29 @@ export function CompactBlockDetailSheet({
       </div>
       <p className="ui-quiet">Source: {currentSource}</p>
       <input aria-label={`${title} value`} defaultValue={currentValue} data-testid="compact-block-edit-input" />
+      <label className="panel-stack">
+        <span className="paper-heading">Correction reason</span>
+        <select aria-label={`${title} correction reason`} data-testid="compact-block-reason" value={selectedReason ?? ''} onChange={(event) => onReasonChange?.(event.target.value)}>
+          <option value="">Choose a reason</option>
+          <option value="wrong_time">Wrong time</option>
+          <option value="accidental_tap">Accidental tap</option>
+          <option value="duplicate">Duplicate</option>
+          <option value="late_entry">Late entry</option>
+          <option value="paper_journal">Corrected from paper journal</option>
+          <option value="facilitator_advice">Facilitator advice</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+      {suggestedReason ? (
+        <div className="status-chip" data-testid="compact-block-suggestion">
+          <span>Suggested correction reason: {suggestedReason}</span>
+          {onUseSuggestedReason ? (
+            <button type="button" onClick={onUseSuggestedReason}>
+              Use suggested reason
+            </button>
+          ) : null}
+        </div>
+      ) : null}
       <div className="panel-stack">
         <button
           type="button"

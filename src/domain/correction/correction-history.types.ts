@@ -14,4 +14,5 @@ export type CorrectionHistoryDTO = {
   sourceType: 'cycle-event' | 'feed-session' | 'feed-segment';
   createdAt: string;
   summary: string;
+  reason?: 'wrong_time' | 'accidental_tap' | 'duplicate' | 'late_entry' | 'paper_journal' | 'facilitator_advice' | 'other';
 };
