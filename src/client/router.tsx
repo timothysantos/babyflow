@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { BabySelectPage } from './routes/BabySelectPage';
 import { HelpPage } from './routes/HelpPage';
+import { ReviewPage } from './routes/ReviewPage';
 import { TodayPage } from './routes/TodayPage';
 
 const router = createBrowserRouter([
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: '/guide',
     element: <HelpPage />
+  },
+  {
+    path: '/review',
+    element: <ReviewPage />
   }
 ]);
 

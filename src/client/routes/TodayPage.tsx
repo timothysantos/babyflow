@@ -19,10 +19,6 @@ import { CorrectionHistoryPanel } from '../components/timeline/CorrectionHistory
 import { TimelineDetailSheet } from '../components/timeline/TimelineDetailSheet';
 import { TimelineEditSheet } from '../components/timeline/TimelineEditSheet';
 import { buildTimelineItems } from '../components/timeline/timeline-view-model';
-import { buildTimelineClusters } from '../../domain/timeline-clustering/cluster-engine';
-import type { TimelineClusterDTO } from '../../domain/timeline-clustering/timeline-cluster.types';
-import { ClusterReviewPanel } from '../components/review/ClusterReviewPanel';
-import { NeedsReviewBanner } from '../components/review/NeedsReviewBanner';
 import type { TimelineItemDTO } from '../components/timeline/timeline.types';
 import type { CorrectionHistoryDTO } from '../../domain/correction/correction-history.types';
 import type { InterventionAttemptDTO, InterventionAttemptKind, InterventionAttemptOutcome } from '../../domain/intervention/intervention.types';
@@ -111,7 +107,6 @@ export function TodayPage() {
   const [correctionHistory, setCorrectionHistory] = useState<CorrectionHistoryDTO[]>([]);
   const [undoStack, setUndoStack] = useState<UndoRecord[]>([]);
   const [timelineEditReason, setTimelineEditReason] = useState<CorrectionReason | ''>('');
-  const [reviewedClusterIds, setReviewedClusterIds] = useState<string[]>([]);
   const correctionSnapshots = useRef(new Map<string, CorrectionSnapshot>());
 
   const derivedBabyStateTransitions = useMemo(
@@ -123,14 +118,19 @@ export function TodayPage() {
     [events, feedSessions, interventionAttempts, derivedBabyStateTransitions, now]
   );
   const timelineItems = useMemo(() => buildTimelineItems(events, feedSessions, new Date(now)), [events, feedSessions, now]);
-  const timelineClusters = useMemo<TimelineClusterDTO[]>(
-    () =>
-      buildTimelineClusters(events, feedSessions, interventionAttempts, derivedBabyStateTransitions).map((cluster) =>
-        reviewedClusterIds.includes(cluster.id) ? { ...cluster, needsReview: false, status: 'COMPLETE' } : cluster
-      ),
-    [events, feedSessions, interventionAttempts, derivedBabyStateTransitions, reviewedClusterIds]
-  );
-  const needsReviewCount = timelineClusters.filter((cluster) => cluster.needsReview).length;
+  const feedWindowSummary = useMemo(() => {
+    const currentSession = feedSessions[0];
+    if (!currentSession) return 'No feed yet · Next likely window appears after the first feed.';
+    if (!currentSession.endedAt) {
+      const elapsedMinutes = Math.max(1, Math.round((now - new Date(currentSession.startedAt).getTime()) / 60000));
+      return `Feed active · ${elapsedMinutes}m · keep feeding or close when done.`;
+    }
+    const end = new Date(currentSession.endedAt).getTime();
+    const nextStart = new Date(end + 2.5 * 60 * 60 * 1000);
+    const nextEnd = new Date(end + 3 * 60 * 60 * 1000);
+    const formatter = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' });
+    return `Last feed ${formatter.format(end)} · Next likely ${formatter.format(nextStart)}–${formatter.format(nextEnd)}`;
+  }, [feedSessions, now]);
 
   function findDuplicateCycleEvent(kind: CycleEventKind, sourceId: string) {
     return events.find((event) => event.kind === kind && event.id !== sourceId) ?? null;
@@ -991,6 +991,9 @@ export function TodayPage() {
               <Link to="/guide" className="today-guide-link">
                 Guide / 说明
               </Link>
+              <Link to="/review" className="today-review-link">
+                Review / 复盘
+              </Link>
             </div>
           </>
         }
@@ -1019,10 +1022,11 @@ export function TodayPage() {
           </section>
         ) : (
           <>
-            <section className="timeline-card panel-stack">
-              <p className="paper-heading">Current cycle summary</p>
-              <JournalRowSummary
-                row={rowViewModel}
+          <section className="timeline-card panel-stack">
+            <p className="paper-heading">Current cycle summary</p>
+            <p className="ui-quiet" data-testid="feed-window-summary">{feedWindowSummary}</p>
+            <JournalRowSummary
+              row={rowViewModel}
                 onEditCell={(key, label, value) => {
                   setPaperJournalReason('');
                   setPaperJournalEditor(resolveCellEditorState(key, label, value));
@@ -1036,11 +1040,6 @@ export function TodayPage() {
               </p>
             </section>
             <LiveTimelineStream items={timelineItems} onSelect={(item) => setSelectedTimelineItem(item)} />
-            <NeedsReviewBanner count={needsReviewCount} />
-            <ClusterReviewPanel
-              clusters={timelineClusters}
-              onMarkReviewed={(clusterId) => setReviewedClusterIds((current) => (current.includes(clusterId) ? current : [...current, clusterId]))}
-            />
             <CorrectionHistoryPanel items={correctionHistory} onRestoreItem={restoreCorrectionFromHistory} />
             {selectedTimelineItem ? (
               <TimelineDetailSheet

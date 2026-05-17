@@ -17,7 +17,7 @@ The bottom action dock stays pinned, so you do not need to scroll to the top jus
 - Scroll down to see `Timeline stamps`, `Intervention attempts`, `State transitions`, and `Feed session details`.
 - Tap a timeline item to open the correction sheet.
 - Use `Correction history` to restore something you edited or deleted.
-- Use `Timeline clusters` when the app flags a sequence as `NEEDS_REVIEW`.
+- Use `Review / 复盘` when the app flags a cycle as needing checking.
 - On a feed card, watch the live timer while the session is open, or tap `Import duration` if you are entering the feed later.
 
 ## What The Main Areas Do
@@ -32,7 +32,7 @@ The bottom action dock stays pinned, so you do not need to scroll to the top jus
 | `Current cycle summary` | Short top-level row summary | Read this first to understand the current cycle |
 | `View row details` / `Hide row details` | Toggle for the lower detail panels | Tap it when you need the deeper logs, then tap again to close them |
 | `Live timeline stream` | The actual chronology of items | Tap an item when you want to correct or inspect it |
-| `Timeline clusters` | Automatically grouped episodes | Check this when the app is asking you to review a sequence |
+| `Review / 复盘` | Automatically grouped cycles and review ranges | Check this when the app is asking you to review a cycle |
 | `Correction history` | Audit trail of updates, deletes, merges, and restores | Use this when you want to undo or verify a correction |
 | `Timeline stamps` | Raw event list | Use this to see the simple stamps you added from the dock |
 | `Intervention attempts` | Caregiver attempts like soothe, wait, or wake attempt | Use this when you want to log what you tried |
@@ -171,15 +171,15 @@ Use it when you need to:
 - verify a correction
 - see what changed and why
 
-### Timeline Clusters
+### Review
 
-This section groups related items into an episode.
+This section groups related items into a needs checking surface.
 
-If you see `NEEDS_REVIEW`, the app is telling you the sequence is ambiguous or incomplete enough to inspect manually.
+If you see `needs checking`, the app is telling you the cycle is ambiguous or incomplete enough to inspect manually.
 
 Screenshots for this route:
 
-![Needs review cluster](./user-guide/05-mobile-review.png)
+![Needs checking review screen](./user-guide/05-mobile-review.png)
 
 ## Correction Route: Fix Something You Logged Wrong
 
@@ -203,18 +203,18 @@ Screenshots for this route:
 6. After saving, check `Correction history`.
 7. Confirm the Journal and Compact views match the correction.
 
-## Review Route: When The App Flags A Cluster
+## Review Route: When The App Flags A Cycle
 
-1. Scroll to `Timeline clusters`.
-2. Read the cluster type and reason.
-3. If the sequence looks right, tap the cluster to mark it reviewed.
+1. Open `Review / 复盘`.
+2. Read the cycle type and reason.
+3. If the sequence looks right, tap the cycle to mark it reviewed.
 4. If it looks wrong, inspect the items above it:
    - the live timeline
    - the intervention attempts
    - the state transitions
    - the feed sessions
 
-This route is what you use when the app is asking, “Is this episode grouped correctly?”
+This route is what you use when the app is asking, “Is this cycle grouped correctly?”
 
 ## Scenario Examples From The Tests
 
@@ -235,7 +235,7 @@ Use this when you are doing a normal wake/feed/play run.
 Use this when you want to log what you tried to calm or regulate the baby.
 
 1. Open `More`.
-2. Scroll to `Intervention attempts`.
+2. Scroll to `What you tried`.
 3. Tap `Soothe`, `Wait`, or `Wake attempt`.
 4. Check `State transitions` to see whether the attempt changed the baby state.
 
@@ -263,10 +263,10 @@ Use this when you need to fix a logged item.
 
 ### Scenario 5: Review Route
 
-Use this when the app says `NEEDS_REVIEW`.
+Use this when the app says `needs checking`.
 
-1. Scroll to `Timeline clusters`.
-2. Open the cluster.
+1. Open `Review / 复盘`.
+2. Open the cycle.
 3. Compare it against the live timeline, interventions, and feed sessions.
 4. Mark it reviewed once it looks right.
 
@@ -275,6 +275,6 @@ Use this when the app says `NEEDS_REVIEW`.
 - If you are logging quickly, stay near the top and use the sticky dock.
 - If you are verifying what happened, scroll down.
 - If you are correcting history, tap a timeline item.
-- If you are reviewing an episode, inspect `Timeline clusters`.
+- If you are reviewing a cycle, inspect `Review / 复盘`.
 - If you want the paper-journal layout, switch to `Journal`.
 - If you want the smallest one-handed layout, switch to `Compact`.

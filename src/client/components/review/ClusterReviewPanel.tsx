@@ -7,8 +7,8 @@ type Props = {
 
 export function ClusterReviewPanel({ clusters, onMarkReviewed }: Props) {
   return (
-    <section className="timeline-card panel-stack" data-testid="cluster-review-panel" aria-label="Cluster review">
-      <p className="paper-heading">Timeline clusters</p>
+    <section className="timeline-card panel-stack" data-testid="cluster-review-panel" aria-label="Needs checking">
+      <p className="paper-heading">Needs checking</p>
       {clusters.length > 0 ? (
         <ol className="timeline-list" data-testid="cluster-review-list">
           {clusters.map((cluster) => (
@@ -16,7 +16,7 @@ export function ClusterReviewPanel({ clusters, onMarkReviewed }: Props) {
               <button type="button" className="timeline-item-button" onClick={() => onMarkReviewed(cluster.id)}>
                 <span className="paper-heading">{cluster.clusterType}</span>
                 <span className="timeline-item-label">
-                  {cluster.needsReview ? 'NEEDS_REVIEW' : cluster.status} · {cluster.reason ?? 'clustered episode'}
+                  {cluster.needsReview ? 'Needs checking' : cluster.status} · {cluster.reason ?? 'grouped cycle'}
                 </span>
                 <span className="timeline-item-meta">
                   {cluster.startedAt} → {cluster.endedAt ?? cluster.startedAt}
@@ -27,7 +27,7 @@ export function ClusterReviewPanel({ clusters, onMarkReviewed }: Props) {
         </ol>
       ) : (
         <p className="ui-quiet" data-testid="cluster-review-empty">
-          No clusters yet.
+          No cycles need checking yet.
         </p>
       )}
     </section>

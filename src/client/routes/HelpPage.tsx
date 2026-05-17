@@ -39,13 +39,13 @@ export function HelpPage() {
         <h2 className="paper-title">Start at the top, then scroll down for evidence.</h2>
         <p className="ui-quiet">
           Stay at the top when you are logging quickly. Tap <strong>More</strong> or scroll down when you want
-          details, corrections, clusters, or review panels.
+          details, corrections, cycles, or review panels.
         </p>
         <ol className="help-step-list">
           <li>Tap Wake, Feed, Play, Diaper, or Note in the sticky dock to add a stamp.</li>
           <li>When you start a feed, watch the live timer or tap Import duration if you are entering it later.</li>
           <li>Tap More to open the lower panels.</li>
-          <li>Scroll down to inspect timeline stamps, interventions, state transitions, feeds, clusters, and correction history.</li>
+          <li>Scroll down to inspect timeline stamps, interventions, state transitions, feeds, cycles, and correction history.</li>
           <li>Tap a live timeline item to open its correction sheet.</li>
         </ol>
       </section>
@@ -73,7 +73,7 @@ export function HelpPage() {
           {
             label: 'View row details',
             detail: 'Tap this to reveal the lower evidence panels below the current summary.',
-            destination: 'Timeline stamps, interventions, transitions, feeds, clusters, correction history',
+            destination: 'Timeline stamps, interventions, transitions, feeds, cycles, correction history',
             x: 66,
             y: 63
           },
@@ -190,14 +190,14 @@ export function HelpPage() {
 
       <GuideSection
         stage="Stage 5"
-        title="Review clusters and resolve ambiguous sequences"
-        summary="When BabyFlow groups an episode as NEEDS_REVIEW, this is where you inspect it and decide whether the clustering looks right."
+        title="Needs checking"
+        summary="When BabyFlow marks something as needing checking, this is where you inspect it and decide whether the grouping looks right."
         screenshot="/user-guide/05-mobile-review.png"
         annotations={[
           {
-            label: 'Timeline clusters',
-            detail: 'This panel groups related items into one episode and marks uncertain sequences for review.',
-            destination: 'ClusterReviewPanel',
+            label: 'Needs checking',
+            detail: 'This panel groups related items into one episode and marks uncertain sequences for checking.',
+            destination: 'Needs checking panel',
             x: 47,
             y: 25
           },
@@ -209,7 +209,7 @@ export function HelpPage() {
             y: 82
           }
         ]}
-        footer={<p className="ui-quiet">If a cluster says NEEDS_REVIEW, scroll back to the live timeline and compare the supporting evidence above it.</p>}
+        footer={<p className="ui-quiet">If a cycle says needs checking, scroll back to the live timeline and compare the supporting evidence above it.</p>}
       />
 
       <section className="timeline-card panel-stack help-intro" id="happy-route">
