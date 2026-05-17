@@ -18,6 +18,7 @@ The bottom action dock stays pinned, so you do not need to scroll to the top jus
 - Tap a timeline item to open the correction sheet.
 - Use `Correction history` to restore something you edited or deleted.
 - Use `Timeline clusters` when the app flags a sequence as `NEEDS_REVIEW`.
+- On a feed card, watch the live timer while the session is open, or tap `Import duration` if you are entering the feed later.
 
 ## What The Main Areas Do
 
@@ -36,7 +37,7 @@ The bottom action dock stays pinned, so you do not need to scroll to the top jus
 | `Timeline stamps` | Raw event list | Use this to see the simple stamps you added from the dock |
 | `Intervention attempts` | Caregiver attempts like soothe, wait, or wake attempt | Use this when you want to log what you tried |
 | `State transitions` | Derived baby-state movement | Use this to understand how the baby changed state over time |
-| `Feed session details` | Feed sessions and left/right segments | Use this when you need feed structure, segments, or closure |
+| `Feed session details` | Feed sessions, left/right segments, and feed timers | Use this when you need feed structure, segments, closure, or to import the total duration manually |
 | Bottom sticky dock | Quick one-tap logging | Use this for the next Wake, Feed, Play, Diaper, or Note action |
 
 ## How To Read The Page
@@ -149,6 +150,16 @@ Use it when you need to see:
 - feed start
 - left/right latch segments
 - feed closure
+- live elapsed feed time
+- imported feed duration
+
+Feed control is intentionally flexible:
+
+- Tap `Feed` to start a session immediately.
+- Watch the live timer while the session is open.
+- Tap `Import duration` if you want to enter the total minutes manually.
+- Add left/right/bottle segments while the session is active.
+- Tap `Close session` when the feed is done.
 
 ### Correction History
 
@@ -235,8 +246,10 @@ Use this when a feed has multiple segments.
 1. Tap `Feed` in the sticky dock.
 2. Add the session.
 3. Add `LEFT` and `RIGHT` segments.
-4. Close the session.
-5. Scroll down to `Feed session details` and verify the segments.
+4. If the feed is still open, use the live timer to see how long it has been going.
+5. If you are importing a feed afterward, tap `Import duration` and enter the total minutes.
+6. Close the session.
+7. Scroll down to `Feed session details` and verify the segments and duration.
 
 ### Scenario 4: Correction Route
 

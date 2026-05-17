@@ -43,6 +43,7 @@ export function HelpPage() {
         </p>
         <ol className="help-step-list">
           <li>Tap Wake, Feed, Play, Diaper, or Note in the sticky dock to add a stamp.</li>
+          <li>When you start a feed, watch the live timer or tap Import duration if you are entering it later.</li>
           <li>Tap More to open the lower panels.</li>
           <li>Scroll down to inspect timeline stamps, interventions, state transitions, feeds, clusters, and correction history.</li>
           <li>Tap a live timeline item to open its correction sheet.</li>
@@ -117,7 +118,7 @@ export function HelpPage() {
           },
           {
             label: 'Feed session details',
-            detail: 'This shows feed sessions and their left/right segments.',
+            detail: 'This shows feed sessions, their left/right segments, and the live or imported duration.',
             destination: 'Feed session details section',
             x: 18,
             y: 87
@@ -231,6 +232,10 @@ export function HelpPage() {
           <article className="help-inline-card">
             <p className="help-callout-label">View buttons</p>
             <p className="help-callout-detail">Timeline shows the live chronology. Journal shows the paper row. Compact shows the condensed row.</p>
+          </article>
+          <article className="help-inline-card">
+            <p className="help-callout-label">Feed timer</p>
+            <p className="help-callout-detail">A feed can run live or be imported later with a manual duration. Use the feed card to see both.</p>
           </article>
           <article className="help-inline-card">
             <p className="help-callout-label">Details button</p>
