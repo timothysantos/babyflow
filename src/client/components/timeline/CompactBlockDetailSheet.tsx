@@ -5,11 +5,22 @@ type Props = {
   currentValue: string;
   currentSource: JournalCellValue['source'];
   onSave: (nextValue: string) => void;
+  onDelete: () => void;
+  onMergeDuplicate: () => void;
   onRestore: () => void;
   onClose: () => void;
 };
 
-export function CompactBlockDetailSheet({ title, currentValue, currentSource, onSave, onRestore, onClose }: Props) {
+export function CompactBlockDetailSheet({
+  title,
+  currentValue,
+  currentSource,
+  onSave,
+  onDelete,
+  onMergeDuplicate,
+  onRestore,
+  onClose
+}: Props) {
   return (
     <section className="timeline-card panel-stack" aria-label="Compact block detail" data-testid="compact-block-detail-sheet">
       <div className="page-row-header">
@@ -33,6 +44,12 @@ export function CompactBlockDetailSheet({ title, currentValue, currentSource, on
         >
           Save update
         </button>
+        <button type="button" onClick={onDelete}>
+          Delete block
+        </button>
+        <button type="button" onClick={onMergeDuplicate}>
+          Merge duplicate
+        </button>
         <button type="button" onClick={onRestore}>
           Restore
         </button>
@@ -40,4 +57,3 @@ export function CompactBlockDetailSheet({ title, currentValue, currentSource, on
     </section>
   );
 }
-

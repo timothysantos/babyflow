@@ -144,3 +144,6 @@ Avoid:
 45. For v8a, audits must explicitly distinguish `CurrentCycleSummary` from `LiveTimelineStream`; the summary is not the timeline, and later slice reports must not conflate the two.
 46. When the same caregiving episode appears in Timeline, Journal, Compact, replay, or correction flows, audits must verify cross-surface consistency: edits, deletes, merges, undo, chronology, and derived values must stay synchronized across surfaces.
 47. Slice 5D remains incomplete until dedicated Journal cell and Compact block edit surfaces exist, with restore semantics and consistency tests across Timeline/Journal/Compact.
+48. For correction-heavy slices, correction actions must remain projection-consistent across Timeline, Journal, Compact, and Correction History. Delete, merge, restore, and update must be verified across all visible projections, not just the initiating surface.
+49. Correction history should be actionable when the slice requires restore semantics, and audits should verify that restoration records a correction history entry rather than relying on an implicit sheet-local undo alone.
+50. Prompt-based edit flows are only temporary scaffolding. A slice cannot be marked complete if a required correction flow still depends on `window.prompt`, browser confirm dialogs, or other test-only shortcuts instead of first-class sheet or dialog surfaces.

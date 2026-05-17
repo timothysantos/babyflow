@@ -5,11 +5,22 @@ type Props = {
   currentValue: string;
   currentSource: JournalCellValue['source'];
   onSave: (nextValue: string) => void;
+  onDelete: () => void;
+  onMergeDuplicate: () => void;
   onRestore: () => void;
   onClose: () => void;
 };
 
-export function PaperJournalCellEditSheet({ title, currentValue, currentSource, onSave, onRestore, onClose }: Props) {
+export function PaperJournalCellEditSheet({
+  title,
+  currentValue,
+  currentSource,
+  onSave,
+  onDelete,
+  onMergeDuplicate,
+  onRestore,
+  onClose
+}: Props) {
   return (
     <section className="timeline-card panel-stack" aria-label="Paper journal cell edit" data-testid="paper-journal-cell-edit-sheet">
       <div className="page-row-header">
@@ -33,6 +44,12 @@ export function PaperJournalCellEditSheet({ title, currentValue, currentSource, 
         >
           Save update
         </button>
+        <button type="button" onClick={onDelete}>
+          Delete cell
+        </button>
+        <button type="button" onClick={onMergeDuplicate}>
+          Merge duplicate
+        </button>
         <button type="button" onClick={onRestore}>
           Restore
         </button>
@@ -40,4 +57,3 @@ export function PaperJournalCellEditSheet({ title, currentValue, currentSource, 
     </section>
   );
 }
-

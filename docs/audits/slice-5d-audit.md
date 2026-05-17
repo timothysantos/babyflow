@@ -4,9 +4,8 @@ Verdict: INCOMPLETE
 
 ## Blocking Gaps
 
-- `PaperJournalCellEditSheet` and `CompactBlockDetailSheet` now exist and support update + restore, but delete and merge actions are still timeline-only.
-- Soft-delete restore now exists for sheet edits, but not for full cross-surface delete/merge flows.
-- Duplicate-merge still exists only for the timeline stream and is not yet surfaced on paper-journal/compact cells.
+- Timeline still uses `window.prompt` for edit-time and edit-details flows, so the final correction UX is still partially scaffolded.
+- The slice now proves delete/merge/restore parity across Timeline, Journal, Compact, and Correction History, but the timeline prompt-based edit path means the slice is not yet fully first-class for every correction surface.
 
 ## Required Files
 
@@ -15,8 +14,8 @@ Verdict: INCOMPLETE
 | `src/domain/correction/correction-history.types.ts` | EXISTS | `CorrectionHistoryDTO` is now checked into the repo. |
 | `src/client/components/timeline/CorrectionHistoryPanel.tsx` | WIRED | Correction history is visible in Timeline View. |
 | `src/client/components/timeline/TimelineDetailSheet.tsx` | WIRED | Timeline edit/delete/merge/undo actions exist. |
-| `src/client/components/timeline/PaperJournalCellEditSheet.tsx` | WIRED | Journal cell edit and restore surface exists. |
-| `src/client/components/timeline/CompactBlockDetailSheet.tsx` | WIRED | Compact block edit and restore surface exists. |
+| `src/client/components/timeline/PaperJournalCellEditSheet.tsx` | WIRED | Journal cell edit, delete, merge, and restore surface exists. |
+| `src/client/components/timeline/CompactBlockDetailSheet.tsx` | WIRED | Compact block edit, delete, merge, and restore surface exists. |
 | `src/client/routes/TodayPage.tsx` | WIRED | Timeline, Journal, and Compact correction flow is wired into Today and persists correction history in the UI. |
 | `docs/audits/slice-5d-audit.md` | EXISTS | Downloadable audit artifact exists. |
 
@@ -25,20 +24,20 @@ Verdict: INCOMPLETE
 | Criterion | Status | Proof |
 |---|---|---|
 | Wrong event time can be corrected. | VERIFIED | `tests/today-page.test.tsx` passed with sheet-driven update coverage. |
-| Soft delete removes event from normal views but preserves correction history. | VERIFIED | `tests/e2e/today-mobile.spec.ts` and `tests/today-page.test.tsx` passed; correction history shows `correction.soft_delete`. |
+| Soft delete removes event from normal views but preserves correction history. | VERIFIED | `tests/correction-cross-surface-delete.test.tsx` passed and correction history shows `correction.soft_delete` and `correction.restore`. |
 | Undo last fresh action works. | VERIFIED | `tests/today-page.test.tsx` passed and restored the prior value for both timeline and sheet-driven edits. |
-| Duplicate event can be merged/deleted/kept. | INCOMPLETE | `TimelineDetailSheet` still owns merge/delete; Journal and Compact do not yet expose those actions. |
-| Correction history is test-covered. | VERIFIED | `tests/today-page.test.tsx` and `tests/e2e/today-mobile.spec.ts` passed and assert visible correction history entries. |
+| Duplicate event can be merged/deleted/kept. | VERIFIED | `tests/correction-cross-surface-merge.test.tsx` passed and merge parity is now covered across timeline, journal, and compact projections. |
+| Correction history is test-covered. | VERIFIED | `tests/today-page.test.tsx`, `tests/correction-cross-surface-delete.test.tsx`, `tests/correction-cross-surface-merge.test.tsx`, and `tests/correction-cross-surface-restore.test.tsx` passed and assert visible correction history entries. |
 
 ## Audit Checklist
 
 | Item | Status | Proof |
 |---|---|---|
 | Correction history is visible in the app | VERIFIED | `CorrectionHistoryPanel` is rendered in Timeline View and is covered by tests. |
-| Update/delete/undo are visible behaviors, not just data mutations | PARTIALLY VERIFIED | Timeline actions are verified; Journal and Compact update + restore are verified; delete and merge remain timeline-only. |
+| Update/delete/undo are visible behaviors, not just data mutations | VERIFIED | Timeline, Journal, and Compact are all covered by cross-surface delete/merge/restore tests and the correction history panel now exposes restore actions. |
 | Timeline corrections keep the live stream and detail sheet in sync | VERIFIED | The selected timeline item now refreshes after edit/delete actions. |
 | Journal cell edit and compact block edit exist and are tested | VERIFIED | `PaperJournalCellEditSheet` and `CompactBlockDetailSheet` both render and update the shared row projection in `tests/today-page.test.tsx`. |
-| Journal and Compact delete/merge actions exist | INCOMPLETE | Those actions are still missing from the first-class sheet surfaces. |
+| Journal and Compact delete/merge actions exist | VERIFIED | `PaperJournalCellEditSheet` and `CompactBlockDetailSheet` both expose delete, merge, restore, and update actions. |
 
 ## Tests Run
 
@@ -50,10 +49,9 @@ Verdict: INCOMPLETE
 
 ## Final Notes
 
-- Slice 5D is now partially implemented as a visible correction surface across Timeline, Journal, and Compact.
-- The current implementation covers timeline corrections, undo, soft delete, merge, and history logging on Timeline plus update/restore for Journal and Compact sheets.
-- The remaining v8a work for this slice is to add first-class delete/merge actions to Journal and Compact and prove those flows remain synchronized with Timeline.
-- v8a scope clarification: correction behavior must stay synchronized across Timeline, Journal, and Compact. This audit proves update/restore cross-surface consistency only.
-- Recommended tests still to implement for Slice 5D: Journal delete/merge propagation, Compact delete/merge propagation, soft-delete restore across all surfaces, and cross-surface consistency after delete/merge.
+- Slice 5D now covers cross-surface correction parity for delete, merge, update, restore, and correction history exposure across Timeline, Journal, and Compact.
+- The remaining v8a work for this slice is the prompt-based timeline edit path: it still uses `window.prompt` for time/details edits and is therefore still scaffold-like rather than a fully first-class sheet flow.
+- v8a scope clarification: correction behavior must stay synchronized across Timeline, Journal, Compact, and Correction History. This audit now proves delete/merge/restore parity across all visible projections.
+- Recommended next tests to implement after Slice 5D: replace prompt-based timeline edits with a first-class sheet or dialog surface, then re-audit timeline edit parity under the same projection consistency rules.
 - Slice commits:
   - [`39345fa`](https://github.com/timothysantos/babyflow/commit/39345fa) `feat: add v8a timeline stream and correction scaffold`

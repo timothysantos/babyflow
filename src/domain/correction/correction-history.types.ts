@@ -3,6 +3,7 @@ export type CorrectionHistoryAction =
   | 'correction.update'
   | 'correction.delete'
   | 'correction.soft_delete'
+  | 'correction.restore'
   | 'correction.undo'
   | 'correction.merge';
 
@@ -14,4 +15,3 @@ export type CorrectionHistoryDTO = {
   createdAt: string;
   summary: string;
 };
-
