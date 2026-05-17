@@ -4,7 +4,9 @@ import { cycleEventsRoute } from './infrastructure/api/routes/events';
 import { interventionsRoute } from './infrastructure/api/routes/interventions';
 import { feedSessionsRoute } from './infrastructure/api/routes/feed-sessions';
 import { timelineClustersRoute } from './infrastructure/api/routes/timeline-clusters';
+import { babyStateTransitionsRoute } from './infrastructure/api/routes/baby-state-transitions';
 import { createDbClient } from './infrastructure/db/client';
+import { setRuntimeDb } from './infrastructure/db/runtime-db';
 
 export interface Env {
   DB?: unknown;
@@ -13,7 +15,7 @@ export interface Env {
 export default {
   fetch(request: Request, env: Env): Response {
     const url = new URL(request.url);
-    createDbClient(env.DB);
+    setRuntimeDb(createDbClient(env.DB));
 
     if (url.pathname === '/health') {
       return healthResponse();
@@ -37,6 +39,10 @@ export default {
 
     if (url.pathname === '/timeline-clusters') {
       return timelineClustersRoute(request);
+    }
+
+    if (url.pathname === '/baby-state-transitions') {
+      return babyStateTransitionsRoute(request);
     }
 
     if (url.pathname.startsWith('/feed-sessions/') && url.pathname.endsWith('/segments')) {

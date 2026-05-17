@@ -1,6 +1,5 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import type { CycleEventDTO, CycleEventDraft } from '../../domain/event/event.types';
+import { all, ensureRuntimeTable, exec, runtimeDb } from '../db/d1-runtime';
 
 type EventRow = CycleEventDTO;
 
@@ -8,9 +7,25 @@ type EventStore = {
   events: EventRow[];
 };
 
-const workerKey = process.env.VITEST_WORKER_ID ?? 'main';
-const dataDir = process.env.BABYFLOW_DATA_DIR ?? join('.babyflow-data', workerKey);
-const storeFile = join(dataDir, 'cycle-events.json');
+const storeKey = '__babyflow_event_store__';
+const tableName = 'cycle_events';
+const createTableSql = `
+CREATE TABLE IF NOT EXISTS cycle_events (
+  id TEXT PRIMARY KEY,
+  kind TEXT NOT NULL,
+  label TEXT NOT NULL,
+  baby_id TEXT NOT NULL,
+  recorded_at TEXT NOT NULL
+);
+`;
+
+function getStore(): EventStore {
+  const globalStore = globalThis as typeof globalThis & { [storeKey]?: EventStore };
+  if (!globalStore[storeKey]) {
+    globalStore[storeKey] = { events: [] };
+  }
+  return globalStore[storeKey]!;
+}
 
 function nowIso() {
   return new Date().toISOString();
@@ -20,18 +35,8 @@ function makeId() {
   return `event_${Math.random().toString(36).slice(2, 10)}`;
 }
 
-async function ensureStore(): Promise<EventStore> {
-  try {
-    const raw = await readFile(storeFile, 'utf8');
-    return JSON.parse(raw) as EventStore;
-  } catch {
-    return { events: [] };
-  }
-}
-
-async function saveStore(store: EventStore) {
-  await mkdir(dataDir, { recursive: true });
-  await writeFile(storeFile, JSON.stringify(store, null, 2), 'utf8');
+async function ensureTable() {
+  await ensureRuntimeTable(tableName, createTableSql);
 }
 
 export async function recordEvent(draft: CycleEventDraft): Promise<CycleEventDTO> {
@@ -42,17 +47,29 @@ export async function recordEvent(draft: CycleEventDraft): Promise<CycleEventDTO
     babyId: draft.babyId,
     recordedAt: nowIso()
   };
-  const store = await ensureStore();
-  store.events.unshift(row);
-  await saveStore(store);
+  if (runtimeDb()) {
+    await ensureTable();
+    await exec(
+      'INSERT INTO cycle_events (id, kind, label, baby_id, recorded_at) VALUES (?, ?, ?, ?, ?)',
+      [row.id, row.kind, row.label, row.babyId, row.recordedAt]
+    );
+    return row;
+  }
+  getStore().events.unshift(row);
   return row;
 }
 
 export async function listEvents(): Promise<CycleEventDTO[]> {
-  const store = await ensureStore();
-  return store.events;
+  if (runtimeDb()) {
+    await ensureTable();
+    const rows = await all<EventRow>(
+      'SELECT id, kind, label, baby_id as babyId, recorded_at as recordedAt FROM cycle_events ORDER BY recorded_at DESC'
+    );
+    return rows;
+  }
+  return getStore().events;
 }
 
 export async function resetEventStoreForTests() {
-  await saveStore({ events: [] });
+  getStore().events = [];
 }
