@@ -6,6 +6,6 @@ export default defineConfig({
     environment: 'happy-dom',
     setupFiles: ['tests/setup.ts'],
     threads: false,
-    exclude: ['tests/e2e/**', 'node_modules/**']
+    exclude: ['tests/e2e/**', '**/worker-runtime.test.ts', 'node_modules/**']
   }
 });

@@ -7,11 +7,17 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "test:playwright": "node node_modules/@playwright/test/cli.js test --config=playwright.config.ts"
+    "dev:api": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH BABYFLOW_API_PORT=8787 wrangler dev --port 8787",
+    "dev:ui": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH BABYFLOW_API_PORT=8787 vite",
+    "dev": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH concurrently -k -n API,UI \"npm:dev:api\" \"npm:dev:ui\"",
+    "dev:test:api": "sh -c 'PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH wrangler dev --config wrangler.test.jsonc --port ${TEST_WORKER_PORT:-8788}'",
+    "dev:test:ui": "sh -c 'PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH BABYFLOW_API_PORT=${TEST_WORKER_PORT:-8788} vite --port ${TEST_UI_PORT:-5174} --host 127.0.0.1'",
+    "dev:test": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH TEST_WORKER_PORT=8788 TEST_UI_PORT=5174 concurrently -k -n API,UI \"npm:dev:test:api\" \"npm:dev:test:ui\"",
+    "build": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH vite build",
+    "preview": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH vite preview",
+    "test": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH vitest run",
+    "test:worker-runtime": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH TEST_WORKER_URL=http://127.0.0.1:8788 vitest run --config vitest.worker.config.ts",
+    "test:playwright": "PATH=/Users/tim/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin:$PATH node node_modules/@playwright/test/cli.js test --config=playwright.config.ts"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.80.7",
@@ -26,9 +32,11 @@
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^9.2.1",
     "happy-dom": "^13.8.0",
     "typescript": "^5.4.5",
     "vite": "^4.5.3",
-    "vitest": "^0.34.6"
+    "vitest": "^0.34.6",
+    "wrangler": "^4.11.1"
   }
 }

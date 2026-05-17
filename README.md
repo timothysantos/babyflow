@@ -22,3 +22,16 @@ Current slice trail:
 - Slice 5B: paper journal view parity
 - Slice 5C: real timeline stream
 - Slice 5D: correction, update, delete, undo
+
+## Local run modes
+
+- Manual user runtime: `npm run dev`
+  - UI: `http://localhost:5173`
+  - Worker/API: `http://127.0.0.1:8787`
+  - Uses the normal local DB
+- Isolated test runtime: `npm run dev:test`
+  - UI: `http://localhost:5174`
+  - Worker/API: `http://127.0.0.1:8788`
+  - Uses the separate test DB defined in [`wrangler.test.jsonc`](/Users/tim/22m/ai-projects/babyflow/wrangler.test.jsonc)
+- Worker smoke check against the test DB: `npm run test:worker-runtime`
+- Playwright against the isolated test runtime: `npm run test:playwright`
