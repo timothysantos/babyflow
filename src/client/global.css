@@ -233,6 +233,12 @@ button[aria-pressed='true'],
   border-color: rgba(111, 159, 235, 0.45);
 }
 
+.action-primary {
+  background: linear-gradient(135deg, rgba(111, 159, 235, 0.28), rgba(241, 178, 209, 0.18));
+  border-color: rgba(111, 159, 235, 0.56);
+  font-weight: 750;
+}
+
 .status-chip {
   display: inline-flex;
   align-items: center;
@@ -245,6 +251,45 @@ button[aria-pressed='true'],
 .panel-stack {
   display: grid;
   gap: 12px;
+}
+
+.active-feed-card {
+  background:
+    linear-gradient(135deg, rgba(111, 159, 235, 0.18), rgba(241, 178, 209, 0.12)),
+    var(--bg-elevated);
+}
+
+.active-feed-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.active-feed-header h2 {
+  margin: 2px 0 0;
+  font-size: clamp(1.5rem, 6vw, 2.4rem);
+  letter-spacing: -0.05em;
+}
+
+.active-feed-elapsed {
+  margin: 0;
+  font-size: clamp(2.2rem, 13vw, 4.8rem);
+  font-weight: 850;
+  letter-spacing: -0.08em;
+  line-height: 0.92;
+}
+
+.active-feed-actions,
+.active-feed-secondary-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.active-feed-actions button {
+  min-height: 56px;
+  font-weight: 750;
 }
 
 .quick-action-dock {

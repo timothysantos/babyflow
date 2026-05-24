@@ -188,8 +188,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
 
   await expect(page.getByTestId('today-page')).toBeVisible();
   await expect(page.getByTestId('today-page')).toHaveClass(/today-page/);
-  await expect(page.getByTestId('compact-mode')).toBeVisible();
-  await expect(page.getByTestId('compact-mode')).toHaveClass(/status-chip/);
+  await expect(page.getByTestId('today-now-panel')).toBeVisible();
   await expect(page.getByTestId('view-mode-switcher')).toBeVisible();
   const appShellBox = await page.getByTestId('app-shell').boundingBox();
   expect(appShellBox).not.toBeNull();
@@ -202,7 +201,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(shellBg).not.toBe('rgb(255, 255, 255)');
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Compact / 简洁' })).toBeVisible();
-  await expect(page.getByTestId('live-timeline-stream')).toBeVisible();
+  await expect(page.getByTestId('today-log-preview')).toBeVisible();
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
@@ -240,7 +239,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   });
   expect(Number.parseFloat(dockPaddingBottom)).toBeGreaterThanOrEqual(8);
 
-  await page.getByRole('button', { name: 'Wake' }).click();
+  await page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' }).click();
   await page.getByRole('button', { name: 'More' }).click();
   await expect(page.getByTestId('row-details')).toBeVisible();
   await expect(page.getByTestId('event-log')).toBeVisible();
@@ -259,7 +258,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(2);
   await expect(page.getByTestId('feed-session-list')).toContainText('RIGHT');
   await page.getByRole('button', { name: 'Close session' }).click();
-  await expect(page.getByTestId('feed-session-status')).toContainText('Closed session');
+  await expect(page.getByTestId('feed-sessions').getByTestId('feed-session-status')).toContainText('Closed session');
   await page.getByRole('button', { name: 'Soothe' }).click();
   await expect(page.getByTestId('intervention-attempt-list')).toContainText('SOOTHE');
   await page.getByRole('button', { name: 'Wait' }).click();
@@ -278,7 +277,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(rowBox!.width).toBeLessThanOrEqual(390);
 
   await page.getByRole('button', { name: 'Timeline / 时间线' }).click();
-  await expect(page.getByText('Timeline view active.')).toBeVisible();
+  await expect(page.getByTestId('today-log-preview')).toBeVisible();
   await page.getByTestId('live-timeline-items').getByRole('button').first().click();
   await expect(page.getByTestId('timeline-detail-sheet')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Soft delete' })).toBeVisible();
@@ -290,7 +289,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByRole('heading', { name: 'Baby profile / 宝宝资料' })).toBeVisible();
   await page.getByRole('link', { name: 'Today / 今天' }).click();
   await expect(page.getByTestId('today-page')).toBeVisible();
-  await expect(page.getByTestId('compact-mode')).toHaveAttribute('data-compact-mode', 'off');
+  await expect(page.getByTestId('today-now-panel')).toBeVisible();
 
   await page.evaluate(() => {
     window.scrollTo(0, document.body.scrollHeight);

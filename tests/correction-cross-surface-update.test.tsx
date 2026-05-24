@@ -41,7 +41,7 @@ describe('correction update parity', () => {
 
     await waitFor(() => expect(screen.getByTestId('journal-summary-wakeUpTime').textContent).not.toBe('—'), { timeout: 3000 });
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
-    await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('today-log-preview')).toBeTruthy());
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
     fireEvent.click(screen.getByRole('button', { name: 'Update time' }));

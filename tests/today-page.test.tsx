@@ -126,18 +126,16 @@ describe('TodayPage', () => {
     expect(screen.getByTestId('mobile-shell')).toBeTruthy();
     expect(screen.getByTestId('today-page')).toBeTruthy();
     expect(screen.getByTestId('today-page').className).toContain('today-page');
-    expect(screen.getByTestId('compact-mode')).toBeTruthy();
-    expect(screen.getByTestId('compact-mode').className).toContain('status-chip');
+    expect(screen.getByTestId('today-now-panel')).toBeTruthy();
     expect(screen.getByRole('group', { name: 'View mode switcher' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Timeline / 时间线' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Journal / 记录表' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Compact / 简洁' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Guide / 说明' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Review / 复盘' })).toBeTruthy();
-    expect(screen.getByText('Timeline view active.')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
     expect(screen.getByTestId('journal-summary')).toBeTruthy();
-    expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
+    expect(screen.getByTestId('today-log-preview')).toBeTruthy();
     expect(screen.queryByText(/cluster/i)).toBeNull();
 
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
@@ -147,7 +145,7 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     expect(screen.getByTestId('row-details')).toBeTruthy();
-    expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
+    expect(screen.getByTestId('today-log-preview')).toBeTruthy();
     expect(screen.getByTestId('correction-history-panel')).toBeTruthy();
     expect(screen.getByTestId('state-transition-viewer')).toBeTruthy();
     expect(screen.getByTestId('intervention-attempts-panel')).toBeTruthy();
@@ -160,16 +158,18 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Start Nurse' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('BREAST feed · current-baby'));
     expect(screen.getByTestId('state-transition-list').textContent).toContain('AWAKE_CALM → FEEDING');
-    expect(screen.getByTestId('feed-session-status').textContent).toContain('Live');
+    expect(screen.getAllByTestId('feed-session-status').some((node) => node.textContent?.includes('Live'))).toBe(true);
 
     fireEvent.click(screen.getByRole('button', { name: 'Add Left latch' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('LEFT'));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Import duration' }));
+    fireEvent.click(screen.getAllByRole('button', { name: 'Import duration' }).at(-1)!);
     await waitFor(() => expect(screen.getByTestId('feed-duration-editor')).toBeTruthy());
     fireEvent.change(screen.getByTestId('feed-duration-input'), { target: { value: '18' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save duration' }));
-    await waitFor(() => expect(screen.getByTestId('feed-session-status').textContent).toContain('Imported · 18m'));
+    await waitFor(() =>
+      expect(screen.getAllByTestId('feed-session-status').some((node) => node.textContent?.includes('Imported · 18m'))).toBe(true)
+    );
 
     fireEvent.click(screen.getByRole('button', { name: 'Close session' }));
     await waitFor(() => expect(screen.getByTestId('feed-session-list').textContent).toContain('Imported · 18m'));
@@ -278,7 +278,7 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
     await waitFor(() => expect(screen.getByTestId('event-log-items').textContent).toContain('Wake stamp'));
-    await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('today-log-preview')).toBeTruthy());
     await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());
@@ -295,7 +295,7 @@ describe('TodayPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Wake' }));
     fireEvent.click(screen.getByRole('button', { name: 'More' }));
-    await waitFor(() => expect(screen.getByTestId('live-timeline-stream')).toBeTruthy());
+    await waitFor(() => expect(screen.getByTestId('today-log-preview')).toBeTruthy());
     await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy());
     fireEvent.click(within(screen.getByTestId('live-timeline-items')).getAllByRole('button')[0]);
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet')).toBeTruthy());

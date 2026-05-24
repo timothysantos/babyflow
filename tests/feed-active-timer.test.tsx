@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { TodayPage } from '../src/client/routes/TodayPage';
@@ -54,14 +54,23 @@ afterEach(() => {
 });
 
 describe('feed active timer', () => {
-  it('shows a contextual feed timer and allows manual duration import', async () => {
+  it('makes a live feed the primary Today task and allows manual duration import', async () => {
     render(
       <MemoryRouter>
         <TodayPage />
       </MemoryRouter>
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'More' }));
+    await waitFor(() => expect(screen.getByTestId('active-feed-card')).toBeTruthy());
+    const activeFeedCard = within(screen.getByTestId('active-feed-card'));
+    expect(screen.getByText('Feeding now')).toBeTruthy();
+    expect(screen.getByTestId('active-feed-elapsed').textContent).toMatch(/\d/);
+    expect(activeFeedCard.getByRole('button', { name: 'Left' })).toBeTruthy();
+    expect(activeFeedCard.getByRole('button', { name: 'Right' })).toBeTruthy();
+    expect(activeFeedCard.getByRole('button', { name: 'Bottle' })).toBeTruthy();
+    expect(activeFeedCard.getByRole('button', { name: 'Note' })).toBeTruthy();
+    expect(activeFeedCard.getByRole('button', { name: 'Close feed' })).toBeTruthy();
+
     await waitFor(() => expect(screen.getByTestId('feed-session-status').textContent).toContain('Live'));
     expect(screen.getByTestId('feed-session-status').textContent).not.toContain('timer dashboard');
 

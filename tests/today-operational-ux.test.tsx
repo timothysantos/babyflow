@@ -23,7 +23,7 @@ afterEach(() => {
 });
 
 describe('Today operational UX', () => {
-  it('renders a minimal operational hierarchy without user-facing cluster language', () => {
+  it('renders a short caregiver-facing Today surface without architecture labels', () => {
     render(
       <MemoryRouter>
         <TodayPage />
@@ -32,10 +32,19 @@ describe('Today operational UX', () => {
 
     expect(screen.getByTestId('mobile-shell')).toBeTruthy();
     expect(screen.getByText('Today / 今天')).toBeTruthy();
-    expect(screen.getByText('Current cycle summary')).toBeTruthy();
-    expect(screen.getByTestId('live-timeline-stream')).toBeTruthy();
+    expect(screen.getByTestId('today-now-panel')).toBeTruthy();
+    expect(screen.getByText('Now')).toBeTruthy();
+    expect(screen.getByTestId('today-log-preview')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
     expect(screen.getByTestId('feed-window-summary')).toBeTruthy();
-    expect(screen.queryByText(/cluster/i)).toBeNull();
+
+    const visibleText = screen.getByTestId('today-page').textContent ?? '';
+    expect(visibleText).not.toMatch(/live timeline stream/i);
+    expect(visibleText).not.toMatch(/correction history/i);
+    expect(visibleText).not.toMatch(/state transitions/i);
+    expect(visibleText).not.toMatch(/feed session details/i);
+    expect(visibleText).not.toMatch(/intervention attempts/i);
+    expect(visibleText).not.toMatch(/timeline stamps/i);
+    expect(visibleText).not.toMatch(/cluster/i);
   });
 });

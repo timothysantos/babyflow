@@ -6,6 +6,7 @@ import { QuickActionDock } from '../components/actions/QuickActionDock';
 import { EventLog } from '../components/events/EventLog';
 import type { CycleEventDTO, CycleEventKind } from '../../domain/event/event.types';
 import { FeedSessionsPanel } from '../components/feed/FeedSessionsPanel';
+import { ActiveFeedTaskCard } from '../components/feed/ActiveFeedTaskCard';
 import { InterventionAttemptsPanel } from '../components/intervention/InterventionAttemptsPanel';
 import type { FeedSessionDTO, FeedSegmentDTO, FeedSessionMode } from '../../domain/feed/feed.types';
 import { buildPaperJournalRowViewModel } from '../components/journal/paper-journal-view-model';
@@ -118,6 +119,8 @@ export function TodayPage() {
     [events, feedSessions, interventionAttempts, derivedBabyStateTransitions, now]
   );
   const timelineItems = useMemo(() => buildTimelineItems(events, feedSessions, new Date(now)), [events, feedSessions, now]);
+  const activeFeedSession = useMemo(() => feedSessions.find((session) => !session.endedAt) ?? null, [feedSessions]);
+  const timelinePreviewItems = useMemo(() => timelineItems.slice(0, 3), [timelineItems]);
   const feedWindowSummary = useMemo(() => {
     const currentSession = feedSessions[0];
     if (!currentSession) return 'No feed yet · Next likely window appears after the first feed.';
@@ -1022,25 +1025,33 @@ export function TodayPage() {
           </section>
         ) : (
           <>
-          <section className="timeline-card panel-stack">
-            <p className="paper-heading">Current cycle summary</p>
-            <p className="ui-quiet" data-testid="feed-window-summary">{feedWindowSummary}</p>
-            <JournalRowSummary
-              row={rowViewModel}
+            {activeFeedSession ? (
+              <ActiveFeedTaskCard
+                session={activeFeedSession}
+                now={now}
+                onAddSegment={addFeedSegment}
+                onCloseSession={closeFeedSession}
+                onImportDuration={importFeedDuration}
+              />
+            ) : null}
+            <section className="timeline-card panel-stack today-now-panel" data-testid="today-now-panel">
+              <p className="paper-heading">Now</p>
+              <p className="ui-quiet" data-testid="feed-window-summary">{feedWindowSummary}</p>
+              <JournalRowSummary
+                row={rowViewModel}
                 onEditCell={(key, label, value) => {
                   setPaperJournalReason('');
                   setPaperJournalEditor(resolveCellEditorState(key, label, value));
                 }}
               />
               <button type="button" onClick={() => setDetailsOpen((value) => !value)} aria-expanded={detailsOpen}>
-                {detailsOpen ? 'Hide row details' : 'View row details'}
+                {detailsOpen ? 'Hide details' : 'Details'}
               </button>
-              <p className="status-chip compact-mode" data-testid="compact-mode" data-compact-mode={viewMode === 'compact' ? 'on' : 'off'}>
-                Timeline view active.
-              </p>
             </section>
-            <LiveTimelineStream items={timelineItems} onSelect={(item) => setSelectedTimelineItem(item)} />
-            <CorrectionHistoryPanel items={correctionHistory} onRestoreItem={restoreCorrectionFromHistory} />
+            <LiveTimelineStream items={timelinePreviewItems} onSelect={(item) => setSelectedTimelineItem(item)} />
+            {correctionHistory.length > 0 && !detailsOpen ? (
+              <CorrectionHistoryPanel items={correctionHistory} onRestoreItem={restoreCorrectionFromHistory} />
+            ) : null}
             {selectedTimelineItem ? (
               <TimelineDetailSheet
                 item={selectedTimelineItem}
@@ -1082,6 +1093,7 @@ export function TodayPage() {
             />
             {detailsOpen ? (
               <section className="panel-stack" aria-label="Row details" data-testid="row-details">
+                <CorrectionHistoryPanel items={correctionHistory} onRestoreItem={restoreCorrectionFromHistory} />
                 <EventLog events={events} />
                 <InterventionAttemptsPanel attempts={interventionAttempts} onRecordAttempt={(kind, outcome) => void recordIntervention(kind, outcome)} />
                 <StateTransitionViewer transitions={derivedBabyStateTransitions} />

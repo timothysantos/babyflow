@@ -3,12 +3,14 @@ import type { TimelineItemDTO } from './timeline.types';
 type Props = {
   items: TimelineItemDTO[];
   onSelect: (item: TimelineItemDTO) => void;
+  title?: string;
+  emptyCopy?: string;
 };
 
-export function LiveTimelineStream({ items, onSelect }: Props) {
+export function LiveTimelineStream({ items, onSelect, title = 'Today log', emptyCopy = 'No entries yet. Use a quick button when something happens.' }: Props) {
   return (
-    <section className="timeline-card panel-stack" aria-label="Live timeline stream" data-testid="live-timeline-stream">
-      <p className="paper-heading">Live timeline stream</p>
+    <section className="timeline-card panel-stack" aria-label={title} data-testid="today-log-preview">
+      <p className="paper-heading">{title}</p>
       {items.length > 0 ? (
         <ol className="timeline-list" data-testid="live-timeline-items">
           {items.map((item) => (
@@ -28,7 +30,7 @@ export function LiveTimelineStream({ items, onSelect }: Props) {
         </ol>
       ) : (
         <p className="ui-quiet" data-testid="live-timeline-empty">
-          No timeline items yet. Add a quick action to start the stream.
+          {emptyCopy}
         </p>
       )}
     </section>

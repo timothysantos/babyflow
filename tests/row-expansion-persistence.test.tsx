@@ -12,7 +12,7 @@ describe('row expansion persistence', () => {
         <TodayPage />
       </MemoryRouter>
     );
-    fireEvent.click(screen.getByRole('button', { name: 'View row details' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Details' }));
     expect(screen.getByTestId('row-details')).toBeTruthy();
     expect(window.localStorage.getItem('babyflow.today.rowDetailsOpen')).toBe('true');
 
