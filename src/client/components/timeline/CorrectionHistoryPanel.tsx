@@ -7,8 +7,8 @@ type Props = {
 
 export function CorrectionHistoryPanel({ items, onRestoreItem }: Props) {
   return (
-    <section className="timeline-card panel-stack" aria-label="Correction history" data-testid="correction-history-panel">
-      <p className="paper-heading">Correction history</p>
+    <section className="timeline-card panel-stack" aria-label="History" data-testid="correction-history-panel">
+      <p className="paper-heading">History</p>
       {items.length > 0 ? (
         <ol className="history-list" data-testid="correction-history-items">
           {items.map((item) => (
@@ -29,7 +29,7 @@ export function CorrectionHistoryPanel({ items, onRestoreItem }: Props) {
         </ol>
       ) : (
         <p className="ui-quiet" data-testid="correction-history-empty">
-          Timeline corrections will appear here.
+          Corrections will appear here.
         </p>
       )}
     </section>

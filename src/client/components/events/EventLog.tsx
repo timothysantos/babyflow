@@ -20,8 +20,8 @@ const labels: Record<CycleEventKind, string> = {
 
 export function EventLog({ events }: Props) {
   return (
-    <section className="timeline-card panel-stack" aria-label="Timeline stamps" data-testid="event-log">
-      <p className="paper-heading">Timeline stamps</p>
+    <section className="timeline-card panel-stack" aria-label="Stamps" data-testid="event-log">
+      <p className="paper-heading">Stamps</p>
       <ol className="timeline-list" data-testid="event-log-items">
         {events.map((event) => (
           <li key={event.id} className="timeline-item" data-testid="event-log-item">

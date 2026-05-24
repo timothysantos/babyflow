@@ -16,9 +16,9 @@ const kinds: Array<{ kind: InterventionAttemptKind; label: string }> = [
 
 export function InterventionAttemptsPanel({ attempts, onRecordAttempt }: Props) {
   return (
-    <section className="timeline-card panel-stack" aria-label="Intervention attempts" data-testid="intervention-attempts-panel">
-      <p className="paper-heading">Intervention attempts</p>
-      <div className="panel-stack" role="group" aria-label="Record intervention attempt">
+    <section className="timeline-card panel-stack" aria-label="Tried" data-testid="intervention-attempts-panel">
+      <p className="paper-heading">Tried</p>
+      <div className="panel-stack" role="group" aria-label="Record what you tried">
         {kinds.map((entry) => (
           <button key={entry.kind} type="button" onClick={() => onRecordAttempt(entry.kind)}>
             {entry.label}
@@ -40,7 +40,7 @@ export function InterventionAttemptsPanel({ attempts, onRecordAttempt }: Props) 
         </ol>
       ) : (
         <p className="ui-quiet" data-testid="intervention-attempt-empty">
-          No intervention attempts yet.
+          No caregiver attempts yet.
         </p>
       )}
     </section>

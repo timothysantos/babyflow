@@ -9,8 +9,8 @@ export function StateTransitionViewer({ transitions }: Props) {
   const mapped = transitions.map(mapBabyStateTransition);
 
   return (
-    <section className="timeline-card panel-stack" aria-label="State transitions" data-testid="state-transition-viewer">
-      <p className="paper-heading">State transitions</p>
+    <section className="timeline-card panel-stack" aria-label="Baby state" data-testid="state-transition-viewer">
+      <p className="paper-heading">Baby state</p>
       {mapped.length > 0 ? (
         <ol className="timeline-list" data-testid="state-transition-list">
           {mapped.map((transition) => (
@@ -25,7 +25,7 @@ export function StateTransitionViewer({ transitions }: Props) {
         </ol>
       ) : (
         <p className="ui-quiet" data-testid="state-transition-empty">
-          No state transitions yet.
+          No baby state movement yet.
         </p>
       )}
     </section>

@@ -53,7 +53,7 @@ export function FeedSessionsPanel({ sessions, now, onStartSession, onAddSegment,
 
   return (
     <section className="timeline-card panel-stack" aria-label="Feed sessions" data-testid="feed-sessions">
-      <p className="paper-heading">Feed session details</p>
+      <p className="paper-heading">Feeds</p>
       <p data-testid="feed-session-count">{activeSessionCount > 0 ? `${activeSessionCount} live session${activeSessionCount === 1 ? '' : 's'}` : 'No live feed sessions'}</p>
       <div role="group" aria-label="Start feed session" className="panel-stack">
         {modes.map((entry) => (

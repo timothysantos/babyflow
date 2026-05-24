@@ -36,17 +36,17 @@ export function HelpPage() {
     >
       <section className="timeline-card panel-stack help-intro" id="top">
         <p className="page-row-caption">How to read this page</p>
-        <h2 className="paper-title">Start at the top, then scroll down for evidence.</h2>
+        <h2 className="paper-title">Stay at the top for care. Open details only when you need evidence.</h2>
         <p className="ui-quiet">
-          Stay at the top when you are logging quickly. Tap <strong>More</strong> or scroll down when you want
-          details, corrections, cycles, or review panels.
+          Today is the fast logging surface. Tap <strong>Details</strong> only when you want the supporting logs,
+          correction history, caregiver attempts, baby state, or feed records.
         </p>
         <ol className="help-step-list">
           <li>Tap Wake, Feed, Play, Diaper, or Note in the sticky dock to add a stamp.</li>
-          <li>When you start a feed, watch the live timer or tap Import duration if you are entering it later.</li>
-          <li>Tap More to open the lower panels.</li>
-          <li>Scroll down to inspect timeline stamps, interventions, state transitions, feeds, cycles, and correction history.</li>
-          <li>Tap a live timeline item to open its correction sheet.</li>
+          <li>When a feed is active, use the Feeding now card for the live timer, left/right/bottle/note, import duration, or close feed.</li>
+          <li>Use Today log for the latest visible chronology.</li>
+          <li>Tap Details to inspect stamps, caregiver attempts, baby state, feeds, and correction history.</li>
+          <li>Tap a Today log item to open its correction sheet.</li>
         </ol>
       </section>
 
@@ -71,9 +71,9 @@ export function HelpPage() {
             y: 50
           },
           {
-            label: 'View row details',
-            detail: 'Tap this to reveal the lower evidence panels below the current summary.',
-            destination: 'Timeline stamps, interventions, transitions, feeds, cycles, correction history',
+            label: 'Details',
+            detail: 'Tap this to reveal the supporting logs below the current operational view.',
+            destination: 'Stamps, tried actions, baby state, feeds, and history',
             x: 66,
             y: 63
           },
@@ -91,35 +91,35 @@ export function HelpPage() {
       <GuideSection
         id="details"
         stage="Stage 2"
-        title="Scroll down for detail panels"
-        summary="This is where BabyFlow stops being just a summary and starts showing the supporting evidence for the cycle."
+        title="Open details when you need proof"
+        summary="This is where BabyFlow shows the supporting evidence for the current care sequence without crowding the default Today screen."
         screenshot="/user-guide/02-mobile-details.png"
         annotations={[
           {
-            label: 'Timeline stamps',
-            detail: 'This list shows the raw stamps you created from the dock and timeline actions.',
-            destination: 'Timeline stamps section',
+            label: 'Stamps',
+            detail: 'This list shows the raw entries you created from quick actions.',
+            destination: 'Stamps section',
             x: 18,
             y: 28
           },
           {
-            label: 'Intervention attempts',
+            label: 'Tried',
             detail: 'This shows what the caregiver tried, like Soothe, Wait, Pat, Sing, or Wake attempt.',
-            destination: 'Intervention attempts section',
+            destination: 'Tried section',
             x: 18,
             y: 48
           },
           {
-            label: 'State transitions',
-            detail: 'This shows the derived baby-state movement such as CRYING → FEEDING.',
-            destination: 'State transitions section',
+            label: 'Baby state',
+            detail: 'This shows derived movement such as CRYING → FEEDING.',
+            destination: 'Baby state section',
             x: 18,
             y: 68
           },
           {
-            label: 'Feed session details',
+            label: 'Feeds',
             detail: 'This shows feed sessions, their left/right segments, and the live or imported duration.',
-            destination: 'Feed session details section',
+            destination: 'Feeds section',
             x: 18,
             y: 87
           }
@@ -129,13 +129,13 @@ export function HelpPage() {
       <GuideSection
         id="corrections"
         stage="Stage 3"
-        title="Tap a timeline item to correct it"
-        summary="The live timeline stream is the actual chronology. Tap an item to open the correction sheet and update, delete, merge, or undo it."
+        title="Tap a Today log item to correct it"
+        summary="Today log is the visible chronology preview. Tap an item to open the correction sheet and update, delete, merge, or undo it."
         screenshot="/user-guide/03-mobile-timeline-sheet.png"
         annotations={[
           {
-            label: 'Live timeline item',
-            detail: 'Tap a row in the live stream to open the timeline detail sheet.',
+            label: 'Today log item',
+            detail: 'Tap a row in Today log to open the timeline detail sheet.',
             destination: 'TimelineDetailSheet',
             x: 39,
             y: 42
@@ -219,9 +219,10 @@ export function HelpPage() {
           <li>Open Today.</li>
           <li>Tap Wake in the sticky dock.</li>
           <li>Tap Feed in the sticky dock.</li>
-          <li>Tap More if you want the lower evidence panels.</li>
-          <li>Scroll down to read Timeline stamps, Intervention attempts, State transitions, and Feed session details.</li>
-          <li>Tap a live timeline item if you need to edit it.</li>
+          <li>If a feed is live, use the Feeding now card for left/right/bottle/note, import duration, or close feed.</li>
+          <li>Tap Details if you want the supporting panels.</li>
+          <li>Scroll down to read stamps, tried actions, baby state, and feed records.</li>
+          <li>Tap a Today log item if you need to edit it.</li>
         </ol>
       </section>
 
@@ -231,7 +232,7 @@ export function HelpPage() {
         <div className="help-inline-grid">
           <article className="help-inline-card">
             <p className="help-callout-label">View buttons</p>
-            <p className="help-callout-detail">Timeline shows the live chronology. Journal shows the paper row. Compact shows the condensed row.</p>
+            <p className="help-callout-detail">Timeline shows Today log. Journal shows the paper row. Compact shows the condensed row.</p>
           </article>
           <article className="help-inline-card">
             <p className="help-callout-label">Feed timer</p>
@@ -239,7 +240,7 @@ export function HelpPage() {
           </article>
           <article className="help-inline-card">
             <p className="help-callout-label">Details button</p>
-            <p className="help-callout-detail">View row details and Hide row details only open and close the evidence panels below the summary.</p>
+            <p className="help-callout-detail">Details and Hide details only open and close the supporting panels below Today.</p>
           </article>
           <article className="help-inline-card">
             <p className="help-callout-label">Sticky dock</p>
@@ -254,10 +255,10 @@ export function HelpPage() {
 
       <section className="timeline-card panel-stack help-intro" id="review">
         <p className="page-row-caption">Rule of thumb</p>
-        <h2 className="paper-title">Stay at the top to log, scroll down to inspect</h2>
+        <h2 className="paper-title">Stay near the top to log, open details to inspect</h2>
         <p className="ui-quiet">
-          The app is one continuous surface. You usually stay near the top for quick entry, then scroll down when you need
-          deeper evidence or correction work, then scroll back up to keep logging.
+          The app is one continuous surface, but Today is intentionally short. You usually stay near the top for quick entry,
+          then open Details or Review when you need deeper evidence or correction work.
         </p>
         <div className="page-hero-actions-row">
           <Link to="/">Open Today / 今天</Link>
