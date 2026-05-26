@@ -10,7 +10,7 @@ describe('QuickActionDock', () => {
     expect(screen.getByRole('button', { name: 'Left feed' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Right feed' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Formula' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Play' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Sleep' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Note' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'More' })).toBeTruthy();
   });

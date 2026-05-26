@@ -7,7 +7,7 @@ Today is one long working surface. On mobile, you usually do two things:
 1. Stay near the top when you are logging quickly.
 2. Scroll down when you want to inspect details, corrections, or review panels.
 
-The bottom action dock stays pinned, so you do not need to scroll to the top just to add a Wake, Left feed, Right feed, Formula, Play, Diaper, Note, or More stamp.
+The bottom action dock stays pinned, so you do not need to scroll to the top just to add a Wake, Left feed, Right feed, Formula, Diaper, Sleep, Note, or More stamp.
 
 ## Fast Answer
 
@@ -39,7 +39,7 @@ The bottom action dock stays pinned, so you do not need to scroll to the top jus
 | `Tried` | Caregiver attempts like soothe, wait, or wake attempt | Use this when you want to log what you tried |
 | `Baby state` | Derived baby-state movement | Use this to understand how the baby changed state over time |
 | `Feeds` | Feed sessions, left/right/formula segments, and feed timers | Use this when you need feed structure, segments, closure, or to correct the total duration manually |
-| Bottom sticky dock | Quick one-tap logging | Use this for Wake, Left feed, Right feed, Formula, Play, Diaper, Note, or More |
+| Bottom sticky dock | Quick one-tap logging | Use this for Wake, Left feed, Right feed, Formula, Diaper, Sleep, Note, or More |
 
 ## How To Read The Page
 
@@ -255,6 +255,39 @@ Use this when a feed has multiple segments.
 6. If you are importing or correcting a feed afterward, tap `Edit time` and enter the total minutes.
 7. Close the session.
 8. Scroll down to `Feeds` and verify the segments and duration.
+
+### Scenario 3A: Feed, Diaper, Sleep, Formula Top-Up
+
+Use this when feeding ends, you change the diaper, baby sleeps, then formula happens afterward.
+
+Important rule:
+
+- Formula before `Sleep` stays inside the current active feed.
+- Formula after `Sleep` starts a new feed section, because `Sleep` closes the prior active feed.
+
+1. Start on `Timeline`.
+
+![Step 1: Start on Today](./user-guide/generated-scenarios/feed-sleep-topup/01-start.png)
+
+2. Tap `Left feed`.
+
+![Step 2: Left feed starts one feed session](./user-guide/generated-scenarios/feed-sleep-topup/02-left-feed.png)
+
+3. Tap `Right breast` inside the active feed card when the side changes.
+
+![Step 3: Right breast becomes current segment](./user-guide/generated-scenarios/feed-sleep-topup/03-right-feed.png)
+
+4. Tap `Diaper`.
+
+![Step 4: Diaper is logged while feed can still be active](./user-guide/generated-scenarios/feed-sleep-topup/04-diaper-during-feed.png)
+
+5. Tap `Sleep`.
+
+![Step 5: Sleep closes the active feed](./user-guide/generated-scenarios/feed-sleep-topup/05-sleep-closes-feed.png)
+
+6. Tap `Formula`.
+
+![Step 6: Formula after sleep starts a new feed section](./user-guide/generated-scenarios/feed-sleep-topup/06-formula-top-up-new-feed.png)
 
 ### Scenario 4: Correction Route
 

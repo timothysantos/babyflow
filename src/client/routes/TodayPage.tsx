@@ -1103,11 +1103,16 @@ export function TodayPage() {
                 if (action === 'Formula') {
                   void startOrSwitchFeedSegment('BOTTLE');
                 }
-                if (action === 'Play') {
-                  void recordEvent('PLAY');
-                }
                 if (action === 'Diaper') {
                   void recordEvent('DIAPER');
+                }
+                if (action === 'Sleep') {
+                  void (async () => {
+                    if (activeFeedSession) {
+                      await closeFeedSession(activeFeedSession.id);
+                    }
+                    await recordEvent('ASLEEP');
+                  })();
                 }
                 if (action === 'Note') {
                   void recordEvent('NOTE');

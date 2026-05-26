@@ -42,7 +42,7 @@ export function HelpPage() {
           correction history, caregiver attempts, baby state, or feed records.
         </p>
         <ol className="help-step-list">
-          <li>Tap Wake, Left feed, Right feed, Formula, Play, Diaper, or Note in the sticky dock to add a stamp.</li>
+          <li>Tap Wake, Left feed, Right feed, Formula, Diaper, Sleep, or Note in the sticky dock to add a stamp.</li>
           <li>Left feed, Right feed, and Formula start or switch the active feed segment stopwatch.</li>
           <li>When a feed is active, use the Feeding now card for the live timer, left/right/formula/note, edit time, or close feed.</li>
           <li>Use Today log for the latest visible chronology.</li>
@@ -80,7 +80,7 @@ export function HelpPage() {
           },
           {
             label: 'Sticky dock',
-            detail: 'Use the pinned dock to stamp Wake, feed segments, Play, Diaper, Note, or More without scrolling back up.',
+            detail: 'Use the pinned dock to stamp Wake, feed segments, Diaper, Sleep, Note, or More without scrolling back up.',
             destination: 'Quick action dock',
             x: 49,
             y: 87
@@ -225,6 +225,26 @@ export function HelpPage() {
           <li>Scroll down to read stamps, tried actions, baby state, and feed records.</li>
           <li>Tap a Today log item if you need to edit it.</li>
         </ol>
+      </section>
+
+      <section className="timeline-card panel-stack help-intro" id="feed-sleep-topup-route">
+        <p className="page-row-caption">Scenario</p>
+        <h2 className="paper-title">Feed, diaper, sleep, then formula top-up</h2>
+        <p className="ui-quiet">
+          Formula before Sleep stays inside the active feed. Formula after Sleep starts a new feed section because Sleep closes the prior feed.
+        </p>
+        <ol className="help-step-list">
+          <li>Tap Left feed to start the first feed section.</li>
+          <li>Tap Right breast in the feed card when the side changes.</li>
+          <li>Tap Diaper if needed. The feed can still remain active.</li>
+          <li>Tap Sleep when the baby sleeps. This closes the active feed.</li>
+          <li>Tap Formula after Sleep if there is a top-up. This starts a new feed section.</li>
+        </ol>
+        <div className="help-inline-grid">
+          <img src="/user-guide/generated-scenarios/feed-sleep-topup/02-left-feed.png" alt="Left feed starts active feed section" />
+          <img src="/user-guide/generated-scenarios/feed-sleep-topup/05-sleep-closes-feed.png" alt="Sleep closes the active feed section" />
+          <img src="/user-guide/generated-scenarios/feed-sleep-topup/06-formula-top-up-new-feed.png" alt="Formula after sleep starts a new feed section" />
+        </div>
       </section>
 
       <section className="timeline-card panel-stack help-intro" id="journal">

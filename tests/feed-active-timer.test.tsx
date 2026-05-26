@@ -24,6 +24,37 @@ beforeEach(() => {
           ]
         });
       }
+      if (method === 'POST' && url.endsWith('/feed-sessions')) {
+        const body = init?.body ? (JSON.parse(init.body.toString()) as { mode?: string }) : {};
+        return Response.json({
+          session: {
+            id: body.mode === 'FORMULA' ? 'feed_session_formula' : 'feed_session_1',
+            babyId: 'current-baby',
+            mode: body.mode ?? 'BREAST',
+            startedAt: '2026-05-16T00:32:00.000Z',
+            segments: []
+          }
+        });
+      }
+      if (method === 'POST' && url.includes('/feed-sessions/feed_session_formula/segments')) {
+        const body = init?.body ? (JSON.parse(init.body.toString()) as { kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE' }) : { kind: 'BOTTLE' };
+        return Response.json({
+          session: {
+            id: 'feed_session_formula',
+            babyId: 'current-baby',
+            mode: 'FORMULA',
+            startedAt: '2026-05-16T00:32:00.000Z',
+            segments: [
+              {
+                id: 'feed_segment_formula',
+                kind: body.kind,
+                label: 'formula',
+                recordedAt: '2026-05-16T00:32:00.000Z'
+              }
+            ]
+          }
+        });
+      }
       if (method === 'POST' && url.includes('/feed-sessions/feed_session_1/segments')) {
         const body = init?.body ? (JSON.parse(init.body.toString()) as { kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE' }) : { kind: 'RIGHT' };
         const segmentIndex = segments.length;
@@ -68,6 +99,18 @@ beforeEach(() => {
             durationMinutes: body.durationMinutes ?? 18,
             durationSource: body.durationMinutes != null ? 'MANUAL' : 'LIVE',
             segments: []
+          }
+        });
+      }
+      if (method === 'POST' && url.includes('/cycle-events')) {
+        const body = init?.body ? (JSON.parse(init.body.toString()) as { kind?: string; label?: string }) : {};
+        return Response.json({
+          event: {
+            id: `event_${String(body.kind ?? 'event').toLowerCase()}`,
+            kind: body.kind ?? 'NOTE',
+            label: body.label ?? String(body.kind ?? 'note').toLowerCase(),
+            babyId: 'current-baby',
+            recordedAt: '2026-05-16T00:30:00.000Z'
           }
         });
       }
@@ -125,5 +168,22 @@ describe('feed active timer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Save duration' }));
     await waitFor(() => expect(screen.queryByTestId('active-feed-card')).toBeNull());
     expect(screen.getByTestId('today-log-preview').textContent).toContain('Imported 18m');
+  });
+
+  it('closes a running feed when Sleep is stamped so later formula starts a new feed section', async () => {
+    render(
+      <MemoryRouter>
+        <TodayPage />
+      </MemoryRouter>
+    );
+
+    await waitFor(() => expect(screen.getByTestId('active-feed-card')).toBeTruthy());
+    fireEvent.click(screen.getByRole('button', { name: 'Sleep' }));
+    await waitFor(() => expect(screen.queryByTestId('active-feed-card')).toBeNull());
+    expect(screen.getByTestId('today-log-preview').textContent).toContain('asleep');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Formula' }));
+    await waitFor(() => expect(screen.getByTestId('active-feed-card')).toBeTruthy());
+    expect(screen.getByTestId('active-feed-current-segment').textContent).toContain('Formula');
   });
 });
