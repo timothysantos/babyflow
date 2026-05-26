@@ -1,6 +1,6 @@
 import { QuickActionButton } from './QuickActionButton';
 
-const actions = ['Wake', 'Feed', 'Play', 'Diaper', 'Note', 'More'] as const;
+const actions = ['Wake', 'Left feed', 'Right feed', 'Formula', 'Play', 'Diaper', 'Note', 'More'] as const;
 
 type Props = {
   onAction: (action: (typeof actions)[number]) => void;

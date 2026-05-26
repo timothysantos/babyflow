@@ -33,6 +33,13 @@ function formatSessionLabel(session: FeedSessionDTO, now: Date) {
   return `${session.mode} feed · ${session.babyId} · ${durationLabel}`;
 }
 
+function formatFeedSegmentTitle(kind: string) {
+  if (kind === 'LEFT') return 'left breastfeeding';
+  if (kind === 'RIGHT') return 'right breastfeeding';
+  if (kind === 'BOTTLE') return 'formula';
+  return kind.toLowerCase().replaceAll('_', ' ');
+}
+
 export function buildTimelineItems(events: CycleEventDTO[], sessions: FeedSessionDTO[], now: Date = new Date()): TimelineItemDTO[] {
   const records: TimelineSourceRecord[] = [
     ...events.map((event) => ({ type: 'cycle-event', event }) as const),
@@ -84,7 +91,7 @@ export function buildTimelineItems(events: CycleEventDTO[], sessions: FeedSessio
       return {
         id: `feed-segment:${record.session.id}:${record.segment.id}`,
         kind: 'FEED_SEGMENT' as const,
-        title: record.segment.kind.toLowerCase().replaceAll('_', ' '),
+        title: formatFeedSegmentTitle(record.segment.kind),
         details: `${record.segment.label} · ${formatSessionLabel(record.session, now)}`,
         recordedAt: record.segment.recordedAt,
         sourceId: record.segment.id,

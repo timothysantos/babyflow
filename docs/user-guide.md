@@ -7,18 +7,19 @@ Today is one long working surface. On mobile, you usually do two things:
 1. Stay near the top when you are logging quickly.
 2. Scroll down when you want to inspect details, corrections, or review panels.
 
-The bottom action dock stays pinned, so you do not need to scroll to the top just to add a Wake, Feed, Play, Diaper, or Note stamp.
+The bottom action dock stays pinned, so you do not need to scroll to the top just to add a Wake, Left feed, Right feed, Formula, Play, Diaper, Note, or More stamp.
 
 ## Fast Answer
 
 - Use the top switcher to choose `Timeline`, `Journal`, or `Compact`.
 - Use the sticky dock at the bottom to add the next quick action.
+- Tap `Left feed`, `Right feed`, or `Formula` to start a feed with the correct first segment.
 - Tap `More` to open the lower details section.
-- Scroll down to see `Timeline stamps`, `Intervention attempts`, `State transitions`, and `Feed session details`.
-- Tap a timeline item to open the correction sheet.
-- Use `Correction history` to restore something you edited or deleted.
+- Scroll down to see `Stamps`, `Tried`, `Baby state`, and `Feeds`.
+- Tap a Today log item to open the correction sheet.
+- Use `History` to restore something you edited or deleted.
 - Use `Review / 复盘` when the app flags a cycle as needing checking.
-- On a feed card, watch the live timer while the session is open, or tap `Import duration` if you are entering the feed later.
+- On a feed card, watch the live timer while the session is open, switch Left/Right/Formula segments, or tap `Edit time` if you are entering or correcting the feed later.
 
 ## What The Main Areas Do
 
@@ -29,16 +30,16 @@ The bottom action dock stays pinned, so you do not need to scroll to the top jus
 | `Journal / 记录表` | Paper-journal style projection | Use this when you want the paper-compatible row layout |
 | `Compact / 简洁` | Condensed one-handed view | Use this when you want fewer words and tighter spacing |
 | `Profile / 资料` | Baby profile and language settings | Use this when you need to switch or inspect the baby profile |
-| `Current cycle summary` | Short top-level row summary | Read this first to understand the current cycle |
-| `View row details` / `Hide row details` | Toggle for the lower detail panels | Tap it when you need the deeper logs, then tap again to close them |
-| `Live timeline stream` | The actual chronology of items | Tap an item when you want to correct or inspect it |
+| `Now` | Short top-level row summary | Read this first to understand the current cycle |
+| `Details` / `Hide details` | Toggle for the lower detail panels | Tap it when you need the deeper logs, then tap again to close them |
+| `Today log` | The visible chronology preview | Tap an item when you want to correct or inspect it |
 | `Review / 复盘` | Automatically grouped cycles and review ranges | Check this when the app is asking you to review a cycle |
-| `Correction history` | Audit trail of updates, deletes, merges, and restores | Use this when you want to undo or verify a correction |
-| `Timeline stamps` | Raw event list | Use this to see the simple stamps you added from the dock |
-| `Intervention attempts` | Caregiver attempts like soothe, wait, or wake attempt | Use this when you want to log what you tried |
-| `State transitions` | Derived baby-state movement | Use this to understand how the baby changed state over time |
-| `Feed session details` | Feed sessions, left/right segments, and feed timers | Use this when you need feed structure, segments, closure, or to import the total duration manually |
-| Bottom sticky dock | Quick one-tap logging | Use this for the next Wake, Feed, Play, Diaper, or Note action |
+| `History` | Audit trail of updates, deletes, merges, and restores | Use this when you want to undo or verify a correction |
+| `Stamps` | Raw event list | Use this to see the simple stamps you added from the dock |
+| `Tried` | Caregiver attempts like soothe, wait, or wake attempt | Use this when you want to log what you tried |
+| `Baby state` | Derived baby-state movement | Use this to understand how the baby changed state over time |
+| `Feeds` | Feed sessions, left/right/formula segments, and feed timers | Use this when you need feed structure, segments, closure, or to correct the total duration manually |
+| Bottom sticky dock | Quick one-tap logging | Use this for Wake, Left feed, Right feed, Formula, Play, Diaper, Note, or More |
 
 ## How To Read The Page
 
@@ -57,15 +58,15 @@ This route is the most common one.
 
 1. Open `Timeline`.
 2. Tap `Wake` in the sticky dock.
-3. Tap `Feed` in the sticky dock.
-4. If needed, tap `Play`, `Diaper`, or `Note`.
+3. Tap `Left feed`, `Right feed`, or `Formula` in the sticky dock.
+4. If needed, switch feed segment, tap `Diaper`, or tap `More` for notes and details.
 5. Tap `More` to open the lower panels.
 6. Scroll down and review:
-   - `Timeline stamps`
-   - `Intervention attempts`
-   - `State transitions`
-   - `Feed session details`
-7. Tap any item in `Live timeline stream` if you want the correction sheet.
+   - `Stamps`
+   - `Tried`
+   - `Baby state`
+   - `Feeds`
+7. Tap any item in `Today log` if you want the correction sheet.
 8. Switch to `Journal` if you want the paper-style row.
 9. Switch to `Compact` if you want the condensed one-handed layout.
 
@@ -98,9 +99,9 @@ Screenshots for this route:
 
 ### Summary Controls
 
-- `View row details` shows the lower logs.
-- `Hide row details` hides the lower logs again.
-- `Timeline view active.` means you are in the live chronology mode.
+- `Details` shows the lower logs.
+- `Hide details` hides the lower logs again.
+- `Today log` is the visible chronology preview.
 - `Compact journal active.` means you are in the condensed mode.
 
 ## What The Lower Panels Are For
@@ -155,10 +156,11 @@ Use it when you need to see:
 
 Feed control is intentionally flexible:
 
-- Tap `Feed` to start a session immediately.
-- Watch the live timer while the session is open.
-- Tap `Import duration` if you want to enter the total minutes manually.
-- Add left/right/bottle segments while the session is active.
+- Tap `Left feed`, `Right feed`, or `Formula` to start a feed with the correct first segment.
+- Watch the full feed timer and the current segment stopwatch while the session is open.
+- Tap another feed segment to stop the previous current segment and start the next one.
+- Tap `Edit time` if you want to enter or correct the total minutes manually.
+- Add left/right/formula/note segments while the session is active.
 - Tap `Close session` when the feed is done.
 
 ### Correction History
@@ -184,7 +186,7 @@ Screenshots for this route:
 ## Correction Route: Fix Something You Logged Wrong
 
 1. Open `Timeline`.
-2. Tap a card in `Live timeline stream`.
+2. Tap a card in `Today log`.
 3. The timeline detail sheet opens.
 4. Choose one of these actions:
    - `Update time`
@@ -200,7 +202,7 @@ Screenshots for this route:
    - paper journal
    - facilitator advice
    - other
-6. After saving, check `Correction history`.
+6. After saving, check `History`.
 7. Confirm the Journal and Compact views match the correction.
 
 ## Review Route: When The App Flags A Cycle
@@ -224,8 +226,8 @@ Use this when you are doing a normal wake/feed/play run.
 
 1. Start on `Timeline`.
 2. Tap `Wake`.
-3. Tap `Feed`.
-4. Tap `Play`.
+3. Tap `Left feed`, `Right feed`, or `Formula`.
+4. Switch feed segments or tap `Diaper` when needed.
 5. Tap `More`.
 6. Scroll down and read the lower panels.
 7. Open one timeline item and correct it if needed.
@@ -237,29 +239,29 @@ Use this when you want to log what you tried to calm or regulate the baby.
 1. Open `More`.
 2. Scroll to `What you tried`.
 3. Tap `Soothe`, `Wait`, or `Wake attempt`.
-4. Check `State transitions` to see whether the attempt changed the baby state.
+4. Check `Baby state` to see whether the attempt changed the baby state.
 
 ### Scenario 3: Feed Session Route
 
 Use this when a feed has multiple segments.
 
-1. Tap `Feed` in the sticky dock.
-2. Add the session.
-3. Add `LEFT` and `RIGHT` segments.
+1. Tap `Left feed`, `Right feed`, or `Formula` in the sticky dock.
+2. The feed session starts and the first segment stopwatch begins.
+3. Tap another segment when the baby switches side or moves to formula.
 4. If the feed is still open, use the live timer to see how long it has been going.
-5. If you are importing a feed afterward, tap `Import duration` and enter the total minutes.
+5. If you are importing or correcting a feed afterward, tap `Edit time` and enter the total minutes.
 6. Close the session.
-7. Scroll down to `Feed session details` and verify the segments and duration.
+7. Scroll down to `Feeds` and verify the segments and duration.
 
 ### Scenario 4: Correction Route
 
 Use this when you need to fix a logged item.
 
-1. Tap a live timeline item.
+1. Tap a Today log item.
 2. Edit the time or details.
 3. If the item is a duplicate, merge it.
 4. If the item is wrong, delete it.
-5. Use `Correction history` to restore it if needed.
+5. Use `History` to restore it if needed.
 
 ### Scenario 5: Review Route
 

@@ -46,6 +46,12 @@ function minutesBetween(startedAt: string, endedAt: string) {
   return Math.max(0, Math.round((end - start) / 60000));
 }
 
+function addMinutes(startedAt: string, durationMinutes: number) {
+  const start = new Date(startedAt).getTime();
+  if (!Number.isFinite(start)) return nowIso();
+  return new Date(start + Math.max(0, durationMinutes) * 60000).toISOString();
+}
+
 function makeId(prefix: string) {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
 }
@@ -117,6 +123,7 @@ async function setSessionDuration(sessionId: string, durationMinutes: number) {
     const sessionDto = rowToSession(session);
     sessionDto.durationMinutes = durationMinutes;
     sessionDto.durationSource = 'MANUAL';
+    sessionDto.endedAt = addMinutes(sessionDto.startedAt, durationMinutes);
     await persistSession(sessionDto);
     return sessionDto;
   }
@@ -125,6 +132,7 @@ async function setSessionDuration(sessionId: string, durationMinutes: number) {
   if (!session) throw new Error('Feed session not found');
   session.durationMinutes = durationMinutes;
   session.durationSource = 'MANUAL';
+  session.endedAt = addMinutes(session.startedAt, durationMinutes);
   return session;
 }
 

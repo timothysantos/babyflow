@@ -42,8 +42,9 @@ export function HelpPage() {
           correction history, caregiver attempts, baby state, or feed records.
         </p>
         <ol className="help-step-list">
-          <li>Tap Wake, Feed, Play, Diaper, or Note in the sticky dock to add a stamp.</li>
-          <li>When a feed is active, use the Feeding now card for the live timer, left/right/bottle/note, import duration, or close feed.</li>
+          <li>Tap Wake, Left feed, Right feed, Formula, Play, Diaper, or Note in the sticky dock to add a stamp.</li>
+          <li>Left feed, Right feed, and Formula start or switch the active feed segment stopwatch.</li>
+          <li>When a feed is active, use the Feeding now card for the live timer, left/right/formula/note, edit time, or close feed.</li>
           <li>Use Today log for the latest visible chronology.</li>
           <li>Tap Details to inspect stamps, caregiver attempts, baby state, feeds, and correction history.</li>
           <li>Tap a Today log item to open its correction sheet.</li>
@@ -79,7 +80,7 @@ export function HelpPage() {
           },
           {
             label: 'Sticky dock',
-            detail: 'Use the pinned dock to stamp Wake, Feed, Play, Diaper, or Note without scrolling back up.',
+            detail: 'Use the pinned dock to stamp Wake, feed segments, Play, Diaper, Note, or More without scrolling back up.',
             destination: 'Quick action dock',
             x: 49,
             y: 87
@@ -218,8 +219,8 @@ export function HelpPage() {
         <ol className="help-step-list">
           <li>Open Today.</li>
           <li>Tap Wake in the sticky dock.</li>
-          <li>Tap Feed in the sticky dock.</li>
-          <li>If a feed is live, use the Feeding now card for left/right/bottle/note, import duration, or close feed.</li>
+          <li>Tap Left feed, Right feed, or Formula in the sticky dock to start the feed with the correct segment.</li>
+          <li>If a feed is live, use the Feeding now card to switch segments, edit time, or close feed.</li>
           <li>Tap Details if you want the supporting panels.</li>
           <li>Scroll down to read stamps, tried actions, baby state, and feed records.</li>
           <li>Tap a Today log item if you need to edit it.</li>

@@ -280,6 +280,27 @@ button[aria-pressed='true'],
   line-height: 0.92;
 }
 
+.active-feed-current-segment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid rgba(111, 159, 235, 0.28);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--ink);
+}
+
+.active-feed-current-segment span {
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.active-feed-current-segment strong {
+  font-size: 1.4rem;
+}
+
 .active-feed-actions,
 .active-feed-secondary-actions {
   display: grid;

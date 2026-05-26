@@ -76,6 +76,13 @@ function feedsUrl() {
   return new URL('/feed-sessions', window.location.origin);
 }
 
+function feedSegmentLabel(kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE') {
+  if (kind === 'LEFT') return 'left breastfeeding';
+  if (kind === 'RIGHT') return 'right breastfeeding';
+  if (kind === 'BOTTLE') return 'formula';
+  return 'feed note';
+}
+
 function interventionsUrl() {
   return new URL('/interventions', window.location.origin);
 }
@@ -119,7 +126,7 @@ export function TodayPage() {
     [events, feedSessions, interventionAttempts, derivedBabyStateTransitions, now]
   );
   const timelineItems = useMemo(() => buildTimelineItems(events, feedSessions, new Date(now)), [events, feedSessions, now]);
-  const activeFeedSession = useMemo(() => feedSessions.find((session) => !session.endedAt) ?? null, [feedSessions]);
+  const activeFeedSession = useMemo(() => feedSessions.find((session) => !session.endedAt && session.durationMinutes == null) ?? null, [feedSessions]);
   const timelinePreviewItems = useMemo(() => timelineItems.slice(0, 3), [timelineItems]);
   const feedWindowSummary = useMemo(() => {
     const currentSession = feedSessions[0];
@@ -900,18 +907,31 @@ export function TodayPage() {
     const payload = await parseJsonResponse<{ session?: FeedSessionDTO }>(response, 'feed-sessions');
     if (payload.session) {
       setFeedSessions((current) => [payload.session!, ...current]);
+      return payload.session;
     }
+    return null;
   }
 
   async function addFeedSegment(sessionId: string, kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE') {
     const response = await fetch(new URL(`/feed-sessions/${sessionId}/segments`, window.location.origin), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ kind, label: kind.toLowerCase() })
+      body: JSON.stringify({ kind, label: feedSegmentLabel(kind) })
     });
     const payload = await parseJsonResponse<{ session?: FeedSessionDTO }>(response, 'feed-session-segments');
     if (payload.session) {
-      setFeedSessions((current) => current.map((session) => (session.id === payload.session!.id ? payload.session! : session)));
+      setFeedSessions((current) =>
+        current.some((session) => session.id === payload.session!.id)
+          ? current.map((session) => (session.id === payload.session!.id ? payload.session! : session))
+          : [payload.session!, ...current]
+      );
+    }
+  }
+
+  async function startOrSwitchFeedSegment(kind: 'LEFT' | 'RIGHT' | 'BOTTLE') {
+    const currentSession = activeFeedSession ?? (await startFeedSession(kind === 'BOTTLE' ? 'FORMULA' : 'BREAST'));
+    if (currentSession) {
+      await addFeedSegment(currentSession.id, kind);
     }
   }
 
@@ -1074,8 +1094,14 @@ export function TodayPage() {
                 if (action === 'Wake') {
                   void recordEvent('WAKE');
                 }
-                if (action === 'Feed') {
-                  void startFeedSession('BREAST');
+                if (action === 'Left feed') {
+                  void startOrSwitchFeedSegment('LEFT');
+                }
+                if (action === 'Right feed') {
+                  void startOrSwitchFeedSegment('RIGHT');
+                }
+                if (action === 'Formula') {
+                  void startOrSwitchFeedSegment('BOTTLE');
                 }
                 if (action === 'Play') {
                   void recordEvent('PLAY');

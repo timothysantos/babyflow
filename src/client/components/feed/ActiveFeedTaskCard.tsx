@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { FeedSessionDTO } from '../../../domain/feed/feed.types';
+import type { FeedSegmentDTO, FeedSessionDTO } from '../../../domain/feed/feed.types';
 
 type Props = {
   session: FeedSessionDTO;
@@ -10,9 +10,9 @@ type Props = {
 };
 
 const segmentActions: Array<{ kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE'; label: string }> = [
-  { kind: 'LEFT', label: 'Left' },
-  { kind: 'RIGHT', label: 'Right' },
-  { kind: 'BOTTLE', label: 'Bottle' },
+  { kind: 'LEFT', label: 'Left breast' },
+  { kind: 'RIGHT', label: 'Right breast' },
+  { kind: 'BOTTLE', label: 'Formula' },
   { kind: 'NOTE', label: 'Note' }
 ];
 
@@ -38,9 +38,23 @@ function getDraftDurationMinutes(session: FeedSessionDTO, now: number) {
   return Math.max(1, Math.round((end - new Date(session.startedAt).getTime()) / 60000));
 }
 
+function getCurrentSegment(session: FeedSessionDTO): FeedSegmentDTO | null {
+  return [...session.segments].sort((left, right) => new Date(right.recordedAt).getTime() - new Date(left.recordedAt).getTime())[0] ?? null;
+}
+
+function formatSegmentLabel(segment: FeedSegmentDTO | null) {
+  if (!segment) return 'Feed started';
+  if (segment.kind === 'LEFT') return 'Left breastfeeding';
+  if (segment.kind === 'RIGHT') return 'Right breastfeeding';
+  if (segment.kind === 'BOTTLE') return 'Formula';
+  return 'Feed note';
+}
+
 export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession, onImportDuration }: Props) {
   const [durationEditorOpen, setDurationEditorOpen] = useState(false);
   const [durationDraft, setDurationDraft] = useState(() => String(getDraftDurationMinutes(session, now)));
+  const currentSegment = getCurrentSegment(session);
+  const currentSegmentStartedAt = currentSegment?.recordedAt ?? session.startedAt;
   const status =
     session.durationMinutes != null
       ? `${session.durationSource === 'MANUAL' ? 'Imported' : 'Closed'} · ${formatDuration(session.durationMinutes)}`
@@ -62,6 +76,10 @@ export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession,
       <p className="active-feed-elapsed" data-testid="active-feed-elapsed">
         {formatElapsed(session.startedAt, now)}
       </p>
+      <div className="active-feed-current-segment" data-testid="active-feed-current-segment">
+        <span>{formatSegmentLabel(currentSegment)}</span>
+        <strong data-testid="active-feed-segment-elapsed">{formatElapsed(currentSegmentStartedAt, now)}</strong>
+      </div>
       <div className="active-feed-actions" role="group" aria-label="Feed controls">
         {segmentActions.map((action) => (
           <button key={action.kind} type="button" onClick={() => onAddSegment(session.id, action.kind)}>
@@ -77,7 +95,7 @@ export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession,
             setDurationEditorOpen(true);
           }}
         >
-          Import duration
+          Edit time
         </button>
         <button type="button" className="action-primary" onClick={() => onCloseSession(session.id)}>
           Close feed
