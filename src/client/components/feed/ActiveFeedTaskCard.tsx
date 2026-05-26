@@ -50,11 +50,30 @@ function formatSegmentLabel(segment: FeedSegmentDTO | null) {
   return 'Feed note';
 }
 
+function nextActionGuidance(segment: FeedSegmentDTO | null) {
+  if (!segment) return 'Start with left, right, or formula. The card will keep the feed grouped as one session.';
+  if (segment.kind === 'LEFT') return 'Left is running. Tap Right breast, Formula, or Close feed when this part changes.';
+  if (segment.kind === 'RIGHT') return 'Right is running. Tap Left breast, Formula, or Close feed when this part changes.';
+  if (segment.kind === 'BOTTLE') return 'Formula is running. Tap Left breast, Right breast, or Close feed if feeding continues.';
+  return 'Note added. Tap the next feeding action when care continues.';
+}
+
+function getOrderedSegments(session: FeedSessionDTO) {
+  return [...session.segments].sort((left, right) => new Date(left.recordedAt).getTime() - new Date(right.recordedAt).getTime());
+}
+
+function segmentDuration(segment: FeedSegmentDTO, nextSegment: FeedSegmentDTO | undefined, session: FeedSessionDTO, now: number) {
+  const end = nextSegment?.recordedAt ?? session.endedAt ?? new Date(now).toISOString();
+  const duration = Math.max(0, Math.round((new Date(end).getTime() - new Date(segment.recordedAt).getTime()) / 60000));
+  return duration === 0 ? '<1m' : formatDuration(duration);
+}
+
 export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession, onImportDuration }: Props) {
   const [durationEditorOpen, setDurationEditorOpen] = useState(false);
   const [durationDraft, setDurationDraft] = useState(() => String(getDraftDurationMinutes(session, now)));
   const currentSegment = getCurrentSegment(session);
   const currentSegmentStartedAt = currentSegment?.recordedAt ?? session.startedAt;
+  const orderedSegments = getOrderedSegments(session);
   const status =
     session.durationMinutes != null
       ? `${session.durationSource === 'MANUAL' ? 'Imported' : 'Closed'} · ${formatDuration(session.durationMinutes)}`
@@ -80,6 +99,17 @@ export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession,
         <span>{formatSegmentLabel(currentSegment)}</span>
         <strong data-testid="active-feed-segment-elapsed">{formatElapsed(currentSegmentStartedAt, now)}</strong>
       </div>
+      <p className="active-feed-guidance" data-testid="active-feed-guidance">{nextActionGuidance(currentSegment)}</p>
+      {orderedSegments.length > 0 ? (
+        <ol className="active-feed-segments" data-testid="active-feed-segment-sequence" aria-label="Feed segment sequence">
+          {orderedSegments.map((segment, index) => (
+            <li key={segment.id}>
+              <span>{formatSegmentLabel(segment)}</span>
+              <strong>{segmentDuration(segment, orderedSegments[index + 1], session, now)}</strong>
+            </li>
+          ))}
+        </ol>
+      ) : null}
       <div className="active-feed-actions" role="group" aria-label="Feed controls">
         {segmentActions.map((action) => (
           <button key={action.kind} type="button" onClick={() => onAddSegment(session.id, action.kind)}>

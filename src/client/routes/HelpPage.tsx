@@ -220,7 +220,7 @@ export function HelpPage() {
           <li>Open Today.</li>
           <li>Tap Wake in the sticky dock.</li>
           <li>Tap Left feed, Right feed, or Formula in the sticky dock to start the feed with the correct segment.</li>
-          <li>If a feed is live, use the Feeding now card to switch segments, edit time, or close feed.</li>
+          <li>If a feed is live, use the Feeding now card to follow the guidance, switch segments, edit time, or close feed.</li>
           <li>Tap Details if you want the supporting panels.</li>
           <li>Scroll down to read stamps, tried actions, baby state, and feed records.</li>
           <li>Tap a Today log item if you need to edit it.</li>

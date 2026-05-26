@@ -301,6 +301,40 @@ button[aria-pressed='true'],
   font-size: 1.4rem;
 }
 
+.active-feed-guidance {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 650;
+}
+
+.active-feed-segments {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.active-feed-segments li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(111, 159, 235, 0.2);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.46);
+}
+
+.active-feed-segments span {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.active-feed-segments strong {
+  color: var(--muted);
+}
+
 .active-feed-actions,
 .active-feed-secondary-actions {
   display: grid;

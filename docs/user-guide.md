@@ -159,6 +159,8 @@ Feed control is intentionally flexible:
 - Tap `Left feed`, `Right feed`, or `Formula` to start a feed with the correct first segment.
 - Watch the full feed timer and the current segment stopwatch while the session is open.
 - Tap another feed segment to stop the previous current segment and start the next one.
+- Read the guidance line for the likely next action while the current segment is running.
+- Alternate segments as many times as needed, for example `Right → Left → Right → Left → Formula`.
 - Tap `Edit time` if you want to enter or correct the total minutes manually.
 - Add left/right/formula/note segments while the session is active.
 - Tap `Close session` when the feed is done.
@@ -248,10 +250,11 @@ Use this when a feed has multiple segments.
 1. Tap `Left feed`, `Right feed`, or `Formula` in the sticky dock.
 2. The feed session starts and the first segment stopwatch begins.
 3. Tap another segment when the baby switches side or moves to formula.
-4. If the feed is still open, use the live timer to see how long it has been going.
-5. If you are importing or correcting a feed afterward, tap `Edit time` and enter the total minutes.
-6. Close the session.
-7. Scroll down to `Feeds` and verify the segments and duration.
+4. Keep alternating segments if needed, such as `10m R → 10m L → 5m R → 4m L → Formula`.
+5. If the feed is still open, use the live timer and current segment stopwatch to see how long it has been going.
+6. If you are importing or correcting a feed afterward, tap `Edit time` and enter the total minutes.
+7. Close the session.
+8. Scroll down to `Feeds` and verify the segments and duration.
 
 ### Scenario 4: Correction Route
 
