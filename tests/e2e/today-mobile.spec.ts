@@ -289,14 +289,14 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('active-feed-card')).toBeVisible();
   await expect(page.getByTestId('active-feed-current-segment')).toContainText('Left breastfeeding');
   const activeFeedBox = await page.getByTestId('active-feed-card').boundingBox();
-  const feedElapsedBox = await page.getByTestId('active-feed-elapsed').boundingBox();
+  const feedStatusBox = await page.getByTestId('feed-session-status').boundingBox();
   const currentSegmentBox = await page.getByTestId('active-feed-current-segment').boundingBox();
   expect(activeFeedBox).not.toBeNull();
-  expect(feedElapsedBox).not.toBeNull();
+  expect(feedStatusBox).not.toBeNull();
   expect(currentSegmentBox).not.toBeNull();
   expect(activeFeedBox!.x).toBeGreaterThanOrEqual(0);
   expect(activeFeedBox!.x + activeFeedBox!.width).toBeLessThanOrEqual(390);
-  expect(feedElapsedBox!.x + feedElapsedBox!.width).toBeLessThanOrEqual(activeFeedBox!.x + activeFeedBox!.width);
+  expect(feedStatusBox!.x + feedStatusBox!.width).toBeLessThanOrEqual(activeFeedBox!.x + activeFeedBox!.width);
   expect(currentSegmentBox!.x + currentSegmentBox!.width).toBeLessThanOrEqual(activeFeedBox!.x + activeFeedBox!.width);
   await page.getByTestId('quick-action-dock').getByRole('button', { name: 'Sleep' }).click();
   await expect(page.getByTestId('active-feed-card')).toBeHidden();

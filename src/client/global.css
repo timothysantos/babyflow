@@ -320,9 +320,11 @@ button[aria-pressed='true'],
   display: inline-flex;
   align-items: center;
   min-height: 32px;
-  padding: 6px 10px;
+  padding: 7px 12px;
   border-radius: 999px;
-  font-size: 0.84rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .panel-stack {
@@ -348,14 +350,6 @@ button[aria-pressed='true'],
   margin: 2px 0 0;
   font-size: 1.22rem;
   letter-spacing: 0;
-}
-
-.active-feed-elapsed {
-  margin: 0;
-  font-size: 3.2rem;
-  font-weight: 850;
-  letter-spacing: 0;
-  line-height: 1;
 }
 
 .active-feed-current-segment {
@@ -505,10 +499,6 @@ button[aria-pressed='true'],
 
   .today-page .page-title {
     font-size: 1.28rem;
-  }
-
-  .active-feed-elapsed {
-    font-size: 2.35rem;
   }
 
   .today-page .page-subtitle {

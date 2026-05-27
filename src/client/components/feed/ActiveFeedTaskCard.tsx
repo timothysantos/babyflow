@@ -92,9 +92,6 @@ export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession,
           {status}
         </p>
       </div>
-      <p className="active-feed-elapsed" data-testid="active-feed-elapsed">
-        {formatElapsed(session.startedAt, now)}
-      </p>
       <div className="active-feed-current-segment" data-testid="active-feed-current-segment">
         <span>{formatSegmentLabel(currentSegment)}</span>
         <strong data-testid="active-feed-segment-elapsed">{formatElapsed(currentSegmentStartedAt, now)}</strong>

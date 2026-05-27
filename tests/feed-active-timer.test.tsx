@@ -135,7 +135,7 @@ describe('feed active timer', () => {
     await waitFor(() => expect(screen.getByTestId('active-feed-card')).toBeTruthy());
     const activeFeedCard = within(screen.getByTestId('active-feed-card'));
     expect(screen.getByText('Feeding now')).toBeTruthy();
-    expect(screen.getByTestId('active-feed-elapsed').textContent).toMatch(/\d/);
+    expect(screen.getByTestId('feed-session-status').textContent).toMatch(/Live|Closed|Imported/);
     expect(activeFeedCard.getByRole('button', { name: 'Left breast' })).toBeTruthy();
     expect(activeFeedCard.getByRole('button', { name: 'Right breast' })).toBeTruthy();
     expect(activeFeedCard.getByRole('button', { name: 'Formula' })).toBeTruthy();
