@@ -202,14 +202,31 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(shellBg).not.toBe('rgb(255, 255, 255)');
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Review / 复盘' })).toBeVisible();
+  const timelineTabBox = await page.getByRole('button', { name: 'Timeline / 时间线' }).boundingBox();
+  const journalTabBox = await page.getByRole('button', { name: 'Journal / 记录表' }).boundingBox();
+  const reviewTabBox = await page.getByRole('link', { name: 'Review / 复盘' }).boundingBox();
+  const overflowBox = await page.getByTestId('today-overflow-menu-toggle').boundingBox();
+  const titleBox = await page.getByRole('heading', { name: 'Today / 今天' }).boundingBox();
+  expect(timelineTabBox).not.toBeNull();
+  expect(journalTabBox).not.toBeNull();
+  expect(reviewTabBox).not.toBeNull();
+  expect(overflowBox).not.toBeNull();
+  expect(titleBox).not.toBeNull();
+  expect(Math.abs(timelineTabBox!.y - journalTabBox!.y)).toBeLessThanOrEqual(1);
+  expect(Math.abs(timelineTabBox!.y - reviewTabBox!.y)).toBeLessThanOrEqual(1);
+  expect(reviewTabBox!.x + reviewTabBox!.width).toBeLessThanOrEqual(390);
+  expect(overflowBox!.x).toBeGreaterThanOrEqual(titleBox!.x + titleBox!.width);
+  expect(Math.abs(overflowBox!.y - titleBox!.y)).toBeLessThanOrEqual(8);
   await page.getByTestId('today-overflow-menu-toggle').click();
   await expect(page.getByRole('button', { name: 'Compact / 简洁' })).toBeVisible();
+  await page.getByTestId('today-overflow-menu-toggle').click();
   await expect(page.getByTestId('today-log-preview')).toBeVisible();
 
   const dockBefore = await page.getByTestId('quick-action-dock').boundingBox();
   expect(dockBefore).not.toBeNull();
   expect(dockBefore!.x).toBeLessThanOrEqual(1);
   expect(dockBefore!.width).toBeGreaterThanOrEqual(388);
+  expect(Math.abs(dockBefore!.y + dockBefore!.height - 844)).toBeLessThanOrEqual(1);
   const dockRadius = await page.getByTestId('quick-action-dock').evaluate((node) => {
     const style = getComputedStyle(node);
     return {
@@ -242,6 +259,22 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   });
   expect(Number.parseFloat(dockPaddingBottom)).toBeGreaterThanOrEqual(8);
 
+  await page.getByTestId('quick-action-dock').getByRole('button', { name: 'Left feed' }).click();
+  await expect(page.getByTestId('active-feed-card')).toBeVisible();
+  await expect(page.getByTestId('active-feed-current-segment')).toContainText('Left breastfeeding');
+  const activeFeedBox = await page.getByTestId('active-feed-card').boundingBox();
+  const feedElapsedBox = await page.getByTestId('active-feed-elapsed').boundingBox();
+  const currentSegmentBox = await page.getByTestId('active-feed-current-segment').boundingBox();
+  expect(activeFeedBox).not.toBeNull();
+  expect(feedElapsedBox).not.toBeNull();
+  expect(currentSegmentBox).not.toBeNull();
+  expect(activeFeedBox!.x).toBeGreaterThanOrEqual(0);
+  expect(activeFeedBox!.x + activeFeedBox!.width).toBeLessThanOrEqual(390);
+  expect(feedElapsedBox!.x + feedElapsedBox!.width).toBeLessThanOrEqual(activeFeedBox!.x + activeFeedBox!.width);
+  expect(currentSegmentBox!.x + currentSegmentBox!.width).toBeLessThanOrEqual(activeFeedBox!.x + activeFeedBox!.width);
+  await page.getByTestId('quick-action-dock').getByRole('button', { name: 'Sleep' }).click();
+  await expect(page.getByTestId('active-feed-card')).toBeHidden();
+
   await page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' }).click();
   await page.getByRole('button', { name: 'More' }).click();
   await expect(page.getByTestId('row-details')).toBeVisible();
@@ -249,19 +282,19 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('intervention-attempts-panel')).toBeVisible();
   await expect(page.getByTestId('feed-sessions')).toBeVisible();
   const feedCardRadius = await page.getByTestId('feed-sessions').evaluate((node) => getComputedStyle(node).borderRadius);
-  expect(Number.parseFloat(feedCardRadius)).toBeGreaterThanOrEqual(20);
+  expect(Number.parseFloat(feedCardRadius)).toBeGreaterThanOrEqual(14);
   await expect(page.getByTestId('event-log-items')).toContainText('Wake stamp');
 
   await page.getByRole('button', { name: 'Start Nurse' }).click();
   await expect(page.getByTestId('feed-session-list')).toContainText('BREAST feed · current-baby');
-  await page.getByRole('button', { name: 'Add Left latch' }).click();
+  await page.getByTestId('feed-session-list').getByRole('button', { name: 'Add Left latch' }).first().click();
   await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(1);
   await expect(page.getByTestId('feed-session-list')).toContainText('LEFT');
-  await page.getByRole('button', { name: 'Add Right latch' }).click();
+  await page.getByTestId('feed-session-list').getByRole('button', { name: 'Add Right latch' }).first().click();
   await expect.poll(() => feedSessions[0]?.segments?.length ?? 0).toBe(2);
   await expect(page.getByTestId('feed-session-list')).toContainText('RIGHT');
-  await page.getByRole('button', { name: 'Close session' }).click();
-  await expect(page.getByTestId('feed-sessions').getByTestId('feed-session-status')).toContainText('Closed session');
+  await page.getByTestId('feed-session-list').getByRole('button', { name: 'Close session' }).first().click();
+  await expect(page.getByTestId('feed-sessions').getByTestId('feed-session-status').first()).toContainText('Closed session');
   await page.getByRole('button', { name: 'Soothe' }).click();
   await expect(page.getByTestId('intervention-attempt-list')).toContainText('SOOTHE');
   await page.getByRole('button', { name: 'Wait' }).click();
@@ -288,6 +321,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('correction-history-panel')).toBeVisible();
   await expect(page.getByTestId('correction-history-items')).toContainText('correction.soft_delete');
 
+  await page.getByTestId('today-overflow-menu-toggle').click();
   await page.getByRole('link', { name: 'Profile / 资料' }).click();
   await expect(page.getByRole('heading', { name: 'Baby profile / 宝宝资料' })).toBeVisible();
   await page.getByRole('link', { name: 'Today / 今天' }).click();
@@ -302,6 +336,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(dockAfter).not.toBeNull();
   expect(dockAfter!.x).toBeLessThanOrEqual(1);
   expect(dockAfter!.width).toBeGreaterThanOrEqual(388);
+  expect(Math.abs(dockAfter!.y + dockAfter!.height - 844)).toBeLessThanOrEqual(1);
   await expect(page.getByTestId('quick-action-dock')).toBeVisible();
 
 });
