@@ -2,6 +2,10 @@
 
 Date: 2026-05-27
 
+Commit:
+
+- [d9c473f repair today mobile workbench layout](https://github.com/timothysantos/babyflow/commit/d9c473fac759e3362b673d93ccc6281d7b10fd76)
+
 ## Verdict
 
 The Today UX repair passes the requested audit list.
