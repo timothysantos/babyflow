@@ -18,11 +18,11 @@ const labels = [
 export function JournalRowSummary({ row, onEditCell }: Props) {
   return (
     <section className="journal-summary" data-testid="journal-summary">
-      <div className="journal-summary-grid">
+      <ul className="journal-summary-list">
         {labels.map(([label, key]) => {
           const value = row[key];
           return (
-            <article className="journal-summary-cell" key={label}>
+            <li className="journal-summary-cell" key={label}>
               <p className="paper-heading">{label}</p>
               <button
                 type="button"
@@ -32,10 +32,10 @@ export function JournalRowSummary({ row, onEditCell }: Props) {
               >
                 {value.display}
               </button>
-            </article>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </section>
   );
 }
