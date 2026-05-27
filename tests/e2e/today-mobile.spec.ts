@@ -207,16 +207,42 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   const reviewTabBox = await page.getByRole('link', { name: 'Review / 复盘' }).boundingBox();
   const overflowBox = await page.getByTestId('today-overflow-menu-toggle').boundingBox();
   const titleBox = await page.getByRole('heading', { name: 'Today / 今天' }).boundingBox();
+  const heroBox = await page.locator('.today-page .page-hero').boundingBox();
   expect(timelineTabBox).not.toBeNull();
   expect(journalTabBox).not.toBeNull();
   expect(reviewTabBox).not.toBeNull();
   expect(overflowBox).not.toBeNull();
   expect(titleBox).not.toBeNull();
+  expect(heroBox).not.toBeNull();
   expect(Math.abs(timelineTabBox!.y - journalTabBox!.y)).toBeLessThanOrEqual(1);
   expect(Math.abs(timelineTabBox!.y - reviewTabBox!.y)).toBeLessThanOrEqual(1);
   expect(reviewTabBox!.x + reviewTabBox!.width).toBeLessThanOrEqual(390);
-  expect(overflowBox!.x).toBeGreaterThanOrEqual(titleBox!.x + titleBox!.width);
+  expect(overflowBox!.x + overflowBox!.width).toBeLessThanOrEqual(heroBox!.x + heroBox!.width);
+  expect(overflowBox!.x).toBeGreaterThanOrEqual(heroBox!.x + heroBox!.width - 64);
   expect(Math.abs(overflowBox!.y - titleBox!.y)).toBeLessThanOrEqual(8);
+  const topPills = [
+    page.getByRole('button', { name: 'Timeline / 时间线' }),
+    page.getByRole('button', { name: 'Journal / 记录表' }),
+    page.getByRole('link', { name: 'Review / 复盘' })
+  ];
+  for (const pill of topPills) {
+    const metrics = await pill.evaluate((node) => {
+      const style = getComputedStyle(node);
+      return {
+        clientWidth: node.clientWidth,
+        scrollWidth: node.scrollWidth,
+        overflow: style.overflow,
+        whiteSpace: style.whiteSpace,
+        textOverflow: style.textOverflow,
+        lineHeight: style.lineHeight
+      };
+    });
+    expect(metrics.scrollWidth).toBeLessThanOrEqual(metrics.clientWidth);
+    expect(metrics.overflow).toBe('hidden');
+    expect(metrics.whiteSpace).toBe('nowrap');
+    expect(metrics.textOverflow).toBe('ellipsis');
+    expect(Number.parseFloat(metrics.lineHeight)).toBeGreaterThan(0);
+  }
   await page.getByTestId('today-overflow-menu-toggle').click();
   await expect(page.getByRole('button', { name: 'Compact / 简洁' })).toBeVisible();
   await page.getByTestId('today-overflow-menu-toggle').click();

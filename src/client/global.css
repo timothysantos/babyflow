@@ -155,6 +155,12 @@ body {
   background: rgba(255, 255, 255, 0.72);
   text-decoration: none;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+  font-size: 0.82rem;
+  font-weight: 650;
+  min-width: 0;
 }
 
 .page-hero-actions-row {
@@ -202,7 +208,8 @@ body {
   z-index: 20;
   display: grid;
   gap: 8px;
-  min-width: 190px;
+  min-width: 182px;
+  max-width: min(220px, calc(100vw - 24px));
   padding: 10px;
   border-radius: 20px;
   background: var(--bg-elevated);
@@ -213,6 +220,7 @@ body {
 .today-overflow-menu-panel a,
 .today-overflow-menu-panel button {
   width: 100%;
+  justify-content: center;
 }
 
 .page-shell .page-eyebrow {
@@ -486,17 +494,17 @@ button[aria-pressed='true'],
 @media (max-width: 767px) {
   .page-shell {
     gap: 8px;
-    padding-inline: 6px;
+    padding-inline: 4px;
     padding-top: 6px;
     padding-bottom: calc(154px + env(safe-area-inset-bottom, 0px));
   }
 
   .today-page .page-hero {
-    padding: 8px 48px 8px 8px;
+    padding: 8px 46px 8px 6px;
   }
 
   .today-page .page-title {
-    font-size: 1.38rem;
+    font-size: 1.28rem;
   }
 
   .active-feed-elapsed {
@@ -512,14 +520,16 @@ button[aria-pressed='true'],
   }
 
   .view-mode-switcher {
-    gap: 5px;
+    gap: 4px;
   }
 
   .view-mode-switcher a,
   .view-mode-switcher button {
     min-height: 40px;
-    padding: 7px 5px;
-    font-size: 0.76rem;
+    padding: 6px 2px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
   }
 
   .today-overflow-menu {
@@ -614,11 +624,19 @@ button[aria-pressed='true'],
   }
 
   .today-overflow-menu-panel {
-    min-width: 170px;
+    min-width: 164px;
+    max-width: min(196px, calc(100vw - 16px));
+  }
+
+  .today-overflow-menu-panel a,
+  .today-overflow-menu-panel button {
+    font-size: 0.68rem;
+    padding-inline: 8px;
+    letter-spacing: -0.01em;
   }
 
   .page-title {
-    font-size: 1.38rem;
+    font-size: 1.28rem;
   }
 }
 
