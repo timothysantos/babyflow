@@ -102,6 +102,7 @@ export function TodayPage() {
   const [now, setNow] = useState(() => Date.now());
   const [events, setEvents] = useState<CycleEventDTO[]>([]);
   const [feedSessions, setFeedSessions] = useState<FeedSessionDTO[]>([]);
+  const [feedNoteComposer, setFeedNoteComposer] = useState<{ sessionId: string; draft: string } | null>(null);
   const [interventionAttempts, setInterventionAttempts] = useState<InterventionAttemptDTO[]>([]);
   const [selectedTimelineItem, setSelectedTimelineItem] = useState<TimelineItemDTO | null>(null);
   const [timelineEditor, setTimelineEditor] = useState<{
@@ -912,11 +913,11 @@ export function TodayPage() {
     return null;
   }
 
-  async function addFeedSegment(sessionId: string, kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE') {
+  async function addFeedSegment(sessionId: string, kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE', label?: string) {
     const response = await fetch(new URL(`/feed-sessions/${sessionId}/segments`, window.location.origin), {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ kind, label: feedSegmentLabel(kind) })
+      body: JSON.stringify({ kind, label: label?.trim() || feedSegmentLabel(kind) })
     });
     const payload = await parseJsonResponse<{ session?: FeedSessionDTO }>(response, 'feed-session-segments');
     if (payload.session) {
@@ -926,6 +927,14 @@ export function TodayPage() {
           : [payload.session!, ...current]
       );
     }
+  }
+
+  function openFeedNoteComposer(sessionId: string) {
+    setFeedNoteComposer({ sessionId, draft: '' });
+  }
+
+  function closeFeedNoteComposer() {
+    setFeedNoteComposer(null);
   }
 
   async function startOrSwitchFeedSegment(kind: 'LEFT' | 'RIGHT' | 'BOTTLE') {
@@ -1059,6 +1068,15 @@ export function TodayPage() {
                     onAddSegment={addFeedSegment}
                     onCloseSession={closeFeedSession}
                     onImportDuration={importFeedDuration}
+                    noteEditorOpen={feedNoteComposer?.sessionId === activeFeedSession.id}
+                    noteDraft={feedNoteComposer?.sessionId === activeFeedSession.id ? feedNoteComposer.draft : ''}
+                    onOpenNoteEditor={() => openFeedNoteComposer(activeFeedSession.id)}
+                    onNoteDraftChange={(value) =>
+                      setFeedNoteComposer((current) =>
+                        current?.sessionId === activeFeedSession.id ? { ...current, draft: value } : current
+                      )
+                    }
+                    onCloseNoteEditor={closeFeedNoteComposer}
                   />
                 </div>
               ) : null}
@@ -1128,6 +1146,10 @@ export function TodayPage() {
                   })();
                 }
                 if (action === 'Note') {
+                  if (activeFeedSession) {
+                    openFeedNoteComposer(activeFeedSession.id);
+                    return;
+                  }
                   void recordEvent('NOTE');
                 }
                 if (action === 'More') {

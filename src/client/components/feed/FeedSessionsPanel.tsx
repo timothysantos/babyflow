@@ -5,7 +5,7 @@ type Props = {
   sessions: FeedSessionDTO[];
   now: number;
   onStartSession: (mode: FeedSessionMode) => void;
-  onAddSegment: (sessionId: string, kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE') => void;
+  onAddSegment: (sessionId: string, kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE', label?: string) => void;
   onCloseSession: (sessionId: string) => void;
   onImportDuration: (sessionId: string, durationMinutes: number) => void;
 };
@@ -49,6 +49,8 @@ function getDraftDurationMinutes(session: FeedSessionDTO, now: number) {
 export function FeedSessionsPanel({ sessions, now, onStartSession, onAddSegment, onCloseSession, onImportDuration }: Props) {
   const [durationEditorSessionId, setDurationEditorSessionId] = useState<string | null>(null);
   const [durationDraft, setDurationDraft] = useState<string>('15');
+  const [noteEditorSessionId, setNoteEditorSessionId] = useState<string | null>(null);
+  const [noteDraft, setNoteDraft] = useState<string>('');
   const activeSessionCount = useMemo(() => sessions.filter((session) => !session.endedAt).length, [sessions]);
 
   return (
@@ -78,7 +80,18 @@ export function FeedSessionsPanel({ sessions, now, onStartSession, onAddSegment,
             </p>
             <div role="group" aria-label={`Feed segments for ${session.id}`} className="panel-stack">
               {segments.map((segment) => (
-                <button key={segment.kind} type="button" onClick={() => onAddSegment(session.id, segment.kind)}>
+                <button
+                  key={segment.kind}
+                  type="button"
+                  onClick={() => {
+                    if (segment.kind === 'NOTE') {
+                      setNoteEditorSessionId(session.id);
+                      setNoteDraft('');
+                      return;
+                    }
+                    onAddSegment(session.id, segment.kind);
+                  }}
+                >
                   Add {segment.label}
                 </button>
               ))}
@@ -117,6 +130,37 @@ export function FeedSessionsPanel({ sessions, now, onStartSession, onAddSegment,
                     Save duration
                   </button>
                   <button type="button" onClick={() => setDurationEditorSessionId(null)}>
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : null}
+            {noteEditorSessionId === session.id ? (
+              <div className="timeline-card panel-stack" data-testid="feed-note-editor">
+                <label htmlFor={`feed-note-${session.id}`} className="paper-heading">
+                  Feed note
+                </label>
+                <textarea
+                  id={`feed-note-${session.id}`}
+                  data-testid="feed-note-input"
+                  rows={4}
+                  value={noteDraft}
+                  onChange={(event) => setNoteDraft(event.target.value)}
+                  placeholder="What happened during this feed?"
+                />
+                <div className="panel-stack">
+                  <button
+                    type="button"
+                    className="action-primary"
+                    onClick={() => {
+                      const nextLabel = noteDraft.trim() || 'feed note';
+                      onAddSegment(session.id, 'NOTE', nextLabel);
+                      setNoteEditorSessionId(null);
+                    }}
+                  >
+                    Save note
+                  </button>
+                  <button type="button" onClick={() => setNoteEditorSessionId(null)}>
                     Cancel
                   </button>
                 </div>

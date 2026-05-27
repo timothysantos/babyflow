@@ -298,6 +298,11 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   expect(activeFeedBox!.x + activeFeedBox!.width).toBeLessThanOrEqual(390);
   expect(feedStatusBox!.x + feedStatusBox!.width).toBeLessThanOrEqual(activeFeedBox!.x + activeFeedBox!.width);
   expect(currentSegmentBox!.x + currentSegmentBox!.width).toBeLessThanOrEqual(activeFeedBox!.x + activeFeedBox!.width);
+  await page.getByTestId('quick-action-dock').getByRole('button', { name: 'Note' }).click();
+  await expect(page.getByTestId('feed-note-editor')).toBeVisible();
+  await page.getByTestId('feed-note-input').fill('baby drifted off, paused');
+  await page.getByRole('button', { name: 'Save note' }).click();
+  await expect(page.getByTestId('active-feed-segment-sequence')).toContainText('baby drifted off, paused');
   await page.getByTestId('quick-action-dock').getByRole('button', { name: 'Sleep' }).click();
   await expect(page.getByTestId('active-feed-card')).toBeHidden();
 

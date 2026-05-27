@@ -37,7 +37,9 @@ beforeEach(() => {
         });
       }
       if (method === 'POST' && url.includes('/feed-sessions/feed_session_formula/segments')) {
-        const body = init?.body ? (JSON.parse(init.body.toString()) as { kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE' }) : { kind: 'BOTTLE' };
+        const body = init?.body
+          ? (JSON.parse(init.body.toString()) as { kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE'; label?: string })
+          : { kind: 'BOTTLE' };
         return Response.json({
           session: {
             id: 'feed_session_formula',
@@ -48,7 +50,7 @@ beforeEach(() => {
               {
                 id: 'feed_segment_formula',
                 kind: body.kind,
-                label: 'formula',
+                label: body.kind === 'NOTE' ? body.label ?? 'feed note' : 'formula',
                 recordedAt: '2026-05-16T00:32:00.000Z'
               }
             ]
@@ -56,13 +58,17 @@ beforeEach(() => {
         });
       }
       if (method === 'POST' && url.includes('/feed-sessions/feed_session_1/segments')) {
-        const body = init?.body ? (JSON.parse(init.body.toString()) as { kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE' }) : { kind: 'RIGHT' };
+        const body = init?.body
+          ? (JSON.parse(init.body.toString()) as { kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE'; label?: string })
+          : { kind: 'RIGHT' };
         const segmentIndex = segments.length;
         segments.push({
           id: `feed_segment_${segmentIndex + 1}`,
           kind: body.kind,
           label:
-            body.kind === 'LEFT'
+            body.kind === 'NOTE'
+              ? body.label ?? 'feed note'
+              : body.kind === 'LEFT'
               ? 'left breastfeeding'
               : body.kind === 'RIGHT'
                 ? 'right breastfeeding'
@@ -133,32 +139,38 @@ describe('feed active timer', () => {
     );
 
     await waitFor(() => expect(screen.getByTestId('active-feed-card')).toBeTruthy());
-    const activeFeedCard = within(screen.getByTestId('active-feed-card'));
+    const activeFeedCard = () => within(screen.getByTestId('active-feed-card'));
     expect(screen.getByText('Feeding now')).toBeTruthy();
     expect(screen.getByTestId('feed-session-status').textContent).toMatch(/Live|Closed|Imported/);
-    expect(activeFeedCard.getByRole('button', { name: 'Left breast' })).toBeTruthy();
-    expect(activeFeedCard.getByRole('button', { name: 'Right breast' })).toBeTruthy();
-    expect(activeFeedCard.getByRole('button', { name: 'Formula' })).toBeTruthy();
-    expect(activeFeedCard.getByRole('button', { name: 'Note' })).toBeTruthy();
-    expect(activeFeedCard.getByRole('button', { name: 'Close feed' })).toBeTruthy();
+    expect(activeFeedCard().getByRole('button', { name: 'Left breast' })).toBeTruthy();
+    expect(activeFeedCard().getByRole('button', { name: 'Right breast' })).toBeTruthy();
+    expect(activeFeedCard().getByRole('button', { name: 'Formula' })).toBeTruthy();
+    expect(activeFeedCard().getByRole('button', { name: 'Note' })).toBeTruthy();
+    expect(activeFeedCard().getByRole('button', { name: 'Close feed' })).toBeTruthy();
     expect(screen.getByTestId('active-feed-current-segment').textContent).toContain('Feed started');
     expect(screen.getByTestId('active-feed-guidance').textContent).toContain('Start with left, right, or formula');
 
-    fireEvent.click(activeFeedCard.getByRole('button', { name: 'Right breast' }));
+    fireEvent.click(activeFeedCard().getByRole('button', { name: 'Right breast' }));
     await waitFor(() => expect(screen.getByTestId('active-feed-current-segment').textContent).toContain('Right breastfeeding'));
     expect(screen.getByTestId('active-feed-guidance').textContent).toContain('Right is running');
     expect(screen.getByTestId('active-feed-segment-elapsed').textContent).toMatch(/\d/);
 
-    fireEvent.click(activeFeedCard.getByRole('button', { name: 'Left breast' }));
+    fireEvent.click(activeFeedCard().getByRole('button', { name: 'Left breast' }));
     await waitFor(() => expect(screen.getByTestId('active-feed-current-segment').textContent).toContain('Left breastfeeding'));
-    fireEvent.click(activeFeedCard.getByRole('button', { name: 'Right breast' }));
+    fireEvent.click(activeFeedCard().getByRole('button', { name: 'Right breast' }));
     await waitFor(() => expect(screen.getByTestId('active-feed-current-segment').textContent).toContain('Right breastfeeding'));
-    fireEvent.click(activeFeedCard.getByRole('button', { name: 'Left breast' }));
+    fireEvent.click(activeFeedCard().getByRole('button', { name: 'Left breast' }));
     await waitFor(() => expect(screen.getByTestId('active-feed-current-segment').textContent).toContain('Left breastfeeding'));
-    fireEvent.click(activeFeedCard.getByRole('button', { name: 'Formula' }));
+    fireEvent.click(activeFeedCard().getByRole('button', { name: 'Formula' }));
     await waitFor(() => expect(screen.getByTestId('active-feed-current-segment').textContent).toContain('Formula'));
     const sequenceText = screen.getByTestId('active-feed-segment-sequence').textContent ?? '';
     expect(sequenceText).toMatch(/Right breastfeeding.*Left breastfeeding.*Right breastfeeding.*Left breastfeeding.*Formula/);
+
+    fireEvent.click(activeFeedCard().getByRole('button', { name: 'Note' }));
+    const noteEditor = await screen.findByTestId('feed-note-editor');
+    fireEvent.change(screen.getByTestId('feed-note-input'), { target: { value: 'baby got distracted' } });
+    fireEvent.click(within(noteEditor).getByRole('button', { name: 'Save note' }));
+    await waitFor(() => expect(screen.getByTestId('active-feed-segment-sequence').textContent).toContain('baby got distracted'));
 
     await waitFor(() => expect(screen.getByTestId('feed-session-status').textContent).toContain('Live'));
     expect(screen.getByTestId('feed-session-status').textContent).not.toContain('timer dashboard');
@@ -178,6 +190,7 @@ describe('feed active timer', () => {
     );
 
     await waitFor(() => expect(screen.getByTestId('active-feed-card')).toBeTruthy());
+    const activeFeedCard = () => within(screen.getByTestId('active-feed-card'));
     fireEvent.click(screen.getByRole('button', { name: 'Sleep' }));
     await waitFor(() => expect(screen.queryByTestId('active-feed-card')).toBeNull());
     expect(screen.getByTestId('today-log-preview').textContent).toContain('asleep');
@@ -185,5 +198,10 @@ describe('feed active timer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Formula' }));
     await waitFor(() => expect(screen.getByTestId('active-feed-card')).toBeTruthy());
     expect(screen.getByTestId('active-feed-current-segment').textContent).toContain('Formula');
+    fireEvent.click(activeFeedCard().getByRole('button', { name: 'Note' }));
+    const noteEditor = await screen.findByTestId('feed-note-editor');
+    fireEvent.change(screen.getByTestId('feed-note-input'), { target: { value: 'top up noted' } });
+    fireEvent.click(within(noteEditor).getByRole('button', { name: 'Save note' }));
+    await waitFor(() => expect(screen.getByTestId('active-feed-segment-sequence').textContent).toContain('top up noted'));
   });
 });

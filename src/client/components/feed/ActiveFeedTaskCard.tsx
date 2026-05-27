@@ -4,9 +4,14 @@ import type { FeedSegmentDTO, FeedSessionDTO } from '../../../domain/feed/feed.t
 type Props = {
   session: FeedSessionDTO;
   now: number;
-  onAddSegment: (sessionId: string, kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE') => void;
+  onAddSegment: (sessionId: string, kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE', label?: string) => void;
   onCloseSession: (sessionId: string) => void;
   onImportDuration: (sessionId: string, durationMinutes: number) => void;
+  noteEditorOpen: boolean;
+  noteDraft: string;
+  onOpenNoteEditor: () => void;
+  onNoteDraftChange: (value: string) => void;
+  onCloseNoteEditor: () => void;
 };
 
 const segmentActions: Array<{ kind: 'LEFT' | 'RIGHT' | 'BOTTLE' | 'NOTE'; label: string }> = [
@@ -47,7 +52,7 @@ function formatSegmentLabel(segment: FeedSegmentDTO | null) {
   if (segment.kind === 'LEFT') return 'Left breastfeeding';
   if (segment.kind === 'RIGHT') return 'Right breastfeeding';
   if (segment.kind === 'BOTTLE') return 'Formula';
-  return 'Feed note';
+  return segment.label ? `Note · ${segment.label}` : 'Note';
 }
 
 function nextActionGuidance(segment: FeedSegmentDTO | null) {
@@ -68,7 +73,18 @@ function segmentDuration(segment: FeedSegmentDTO, nextSegment: FeedSegmentDTO | 
   return duration === 0 ? '<1m' : formatDuration(duration);
 }
 
-export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession, onImportDuration }: Props) {
+export function ActiveFeedTaskCard({
+  session,
+  now,
+  onAddSegment,
+  onCloseSession,
+  onImportDuration,
+  noteEditorOpen,
+  noteDraft,
+  onOpenNoteEditor,
+  onNoteDraftChange,
+  onCloseNoteEditor
+}: Props) {
   const [durationEditorOpen, setDurationEditorOpen] = useState(false);
   const [durationDraft, setDurationDraft] = useState(() => String(getDraftDurationMinutes(session, now)));
   const currentSegment = getCurrentSegment(session);
@@ -109,7 +125,17 @@ export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession,
       ) : null}
       <div className="active-feed-actions" role="group" aria-label="Feed controls">
         {segmentActions.map((action) => (
-          <button key={action.kind} type="button" onClick={() => onAddSegment(session.id, action.kind)}>
+          <button
+            key={action.kind}
+            type="button"
+            onClick={() => {
+              if (action.kind === 'NOTE') {
+                onOpenNoteEditor();
+                return;
+              }
+              onAddSegment(session.id, action.kind);
+            }}
+          >
             {action.label}
           </button>
         ))}
@@ -154,6 +180,37 @@ export function ActiveFeedTaskCard({ session, now, onAddSegment, onCloseSession,
               Save duration
             </button>
             <button type="button" onClick={() => setDurationEditorOpen(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      ) : null}
+      {noteEditorOpen ? (
+        <div className="timeline-card panel-stack" data-testid="feed-note-editor">
+          <label htmlFor={`active-feed-note-${session.id}`} className="paper-heading">
+            Feed note
+          </label>
+          <textarea
+            id={`active-feed-note-${session.id}`}
+            data-testid="feed-note-input"
+            rows={4}
+            value={noteDraft}
+            onChange={(event) => onNoteDraftChange(event.target.value)}
+            placeholder="What happened during this feed?"
+          />
+          <div className="active-feed-secondary-actions">
+            <button
+              type="button"
+              className="action-primary"
+              onClick={() => {
+                const nextLabel = noteDraft.trim() || 'feed note';
+                onAddSegment(session.id, 'NOTE', nextLabel);
+                onCloseNoteEditor();
+              }}
+            >
+              Save note
+            </button>
+            <button type="button" onClick={onCloseNoteEditor}>
               Cancel
             </button>
           </div>
