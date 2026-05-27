@@ -1,6 +1,7 @@
 import type { CycleEventDTO } from '../../../domain/event/event.types';
 import type { FeedSessionDTO } from '../../../domain/feed/feed.types';
 import type { TimelineItemDTO, TimelineSourceRecord } from './timeline.types';
+import { formatSingaporeDateTime } from '../../lib/singapore-time';
 
 function parseTime(recordedAt: string) {
   return new Date(recordedAt).getTime();
@@ -113,5 +114,6 @@ export function buildTimelineItems(events: CycleEventDTO[], sessions: FeedSessio
         sourceType: 'feed-segment' as const
       };
     })
-    .sort((left, right) => parseTime(right.recordedAt) - parseTime(left.recordedAt));
+    .sort((left, right) => parseTime(right.recordedAt) - parseTime(left.recordedAt))
+    .map((item) => ({ ...item, recordedAt: formatSingaporeDateTime(item.recordedAt) }));
 }

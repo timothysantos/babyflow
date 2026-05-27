@@ -1,4 +1,5 @@
 import type { TimelineItemDTO } from './timeline.types';
+import { formatSingaporeDateTime } from '../../lib/singapore-time';
 
 type Props = {
   item: TimelineItemDTO;
@@ -23,7 +24,7 @@ export function TimelineDetailSheet({ item, onUndo, onDelete, onEditTime, onEdit
         </button>
       </div>
       <p className="ui-quiet">{item.details}</p>
-      <p className="timeline-item-meta">{item.recordedAt}</p>
+      <p className="timeline-item-meta">{formatSingaporeDateTime(item.recordedAt)}</p>
       <div className="panel-stack">
         <button type="button" onClick={onEditTime}>
           Update time

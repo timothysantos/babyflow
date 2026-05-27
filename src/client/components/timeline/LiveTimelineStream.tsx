@@ -1,4 +1,5 @@
 import type { TimelineItemDTO } from './timeline.types';
+import { formatSingaporeDateTime } from '../../lib/singapore-time';
 
 type Props = {
   items: TimelineItemDTO[];
@@ -25,7 +26,7 @@ export function LiveTimelineStream({ items, onSelect, title = 'Today log', empty
                   <span className="timeline-item-content">
                     <span className="paper-heading">{item.title}</span>
                     <span className="timeline-item-label">{item.details}</span>
-                    <span className="timeline-item-meta">{item.recordedAt}</span>
+                    <span className="timeline-item-meta">{formatSingaporeDateTime(item.recordedAt)}</span>
                   </span>
                 </button>
               </li>

@@ -1,4 +1,5 @@
 import type { InterventionAttemptDTO, InterventionAttemptKind, InterventionAttemptOutcome } from '../../../domain/intervention/intervention.types';
+import { formatSingaporeDateTime } from '../../lib/singapore-time';
 
 type Props = {
   attempts: InterventionAttemptDTO[];
@@ -34,7 +35,7 @@ export function InterventionAttemptsPanel({ attempts, onRecordAttempt }: Props) 
                 {attempt.label}
                 {attempt.outcome !== 'UNKNOWN' ? ` · ${attempt.outcome.toLowerCase()}` : ''}
               </span>
-              <span className="timeline-item-meta">{attempt.recordedAt}</span>
+              <span className="timeline-item-meta">{formatSingaporeDateTime(attempt.recordedAt)}</span>
             </li>
           ))}
         </ol>

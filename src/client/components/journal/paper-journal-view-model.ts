@@ -3,12 +3,11 @@ import type { InterventionAttemptDTO } from '../../../domain/intervention/interv
 import type { BabyStateTransitionDTO } from '../../../domain/baby-state/baby-state.types';
 import type { FeedSessionDTO } from '../../../domain/feed/feed.types';
 import type { JournalCellValue, PaperJournalRowViewModel } from './paper-journal.types';
+import { formatSingaporeTime } from '../../lib/singapore-time';
 
 function formatClock(timestamp?: string) {
   if (!timestamp) return '—';
-  const date = new Date(timestamp);
-  if (Number.isNaN(date.getTime())) return timestamp;
-  return new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' }).format(date);
+  return formatSingaporeTime(timestamp);
 }
 
 function cell(display: string, source: JournalCellValue['source'], needsReview = false): JournalCellValue {

@@ -1,4 +1,5 @@
 import type { CorrectionHistoryDTO } from '../../../domain/correction/correction-history.types';
+import { formatSingaporeDateTime } from '../../lib/singapore-time';
 
 type Props = {
   items: CorrectionHistoryDTO[];
@@ -17,7 +18,7 @@ export function CorrectionHistoryPanel({ items, onRestoreItem }: Props) {
                 <span className="paper-heading">{item.action}</span>
                 <span className="timeline-item-label">{item.summary}</span>
                 {item.reason ? <span className="timeline-item-label">Reason: {item.reason}</span> : null}
-                <span className="timeline-item-meta">{item.createdAt}</span>
+                <span className="timeline-item-meta">{formatSingaporeDateTime(item.createdAt)}</span>
               </div>
               {onRestoreItem ? (
                 <button type="button" onClick={() => onRestoreItem(item)}>

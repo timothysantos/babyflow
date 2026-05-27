@@ -1,4 +1,5 @@
 import type { TimelineClusterDTO } from '../../../domain/timeline-clustering/timeline-cluster.types';
+import { formatSingaporeDateTime } from '../../lib/singapore-time';
 
 type Props = {
   clusters: TimelineClusterDTO[];
@@ -19,8 +20,8 @@ export function ClusterReviewPanel({ clusters, onMarkReviewed }: Props) {
                   {cluster.needsReview ? 'Needs checking' : cluster.status} · {cluster.reason ?? 'grouped cycle'}
                 </span>
                 <span className="timeline-item-meta">
-                  {cluster.startedAt} → {cluster.endedAt ?? cluster.startedAt}
-                </span>
+                {formatSingaporeDateTime(cluster.startedAt)} → {formatSingaporeDateTime(cluster.endedAt ?? cluster.startedAt)}
+              </span>
               </button>
             </li>
           ))}

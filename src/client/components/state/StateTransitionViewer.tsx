@@ -1,5 +1,6 @@
 import type { BabyStateTransitionDTO } from '../../../domain/baby-state/baby-state.types';
 import { mapBabyStateTransition } from '../../../infrastructure/mappers/baby-state-mapper';
+import { formatSingaporeDateTime } from '../../lib/singapore-time';
 
 type Props = {
   transitions: BabyStateTransitionDTO[];
@@ -19,7 +20,7 @@ export function StateTransitionViewer({ transitions }: Props) {
               <span className="timeline-item-label">
                 {transition.confidence} · {transition.triggerLabel}
               </span>
-              <span className="timeline-item-meta">{transition.note || transition.recordedAt}</span>
+              <span className="timeline-item-meta">{transition.note || formatSingaporeDateTime(transition.recordedAt)}</span>
             </li>
           ))}
         </ol>
