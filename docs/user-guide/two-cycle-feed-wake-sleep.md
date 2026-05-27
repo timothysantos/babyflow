@@ -7,6 +7,12 @@ This scenario shows two real-world cycles in the Today page:
 
 It also shows how the active feed card keeps the current segment running while earlier segments stay visible in the same feed session.
 
+The refreshed screenshots match the tighter Today layout:
+
+- `Timeline / 时间线`, `Journal / 记录表`, and `Review / 复盘` stay visible in the top row.
+- `Compact / 简洁`, `Profile / 资料`, and `Guide / 说明` move into the small overflow menu.
+- The page splits into a left timeline column and a right now/workbench column on desktop, then stacks on mobile.
+
 Each step below includes a desktop screenshot and a mobile screenshot so you can compare the same state at both widths.
 
 ## Scenario Rules
@@ -21,7 +27,9 @@ Each step below includes a desktop screenshot and a mobile screenshot so you can
 What to look at:
 
 - `Timeline / 时间线` is selected.
-- The top summary shows the current cycle.
+- `Review / 复盘` is still visible in the top row.
+- The `⋮` menu hides the secondary page modes.
+- The page shows the timeline on the left and the current `Now` workbench on the right.
 - The sticky dock is pinned at the bottom.
 
 Button to press next:
