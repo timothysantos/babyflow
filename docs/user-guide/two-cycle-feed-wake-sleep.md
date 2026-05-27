@@ -7,6 +7,8 @@ This scenario shows two real-world cycles in the Today page:
 
 It also shows how the active feed card keeps the current segment running while earlier segments stay visible in the same feed session.
 
+Each step below includes a desktop screenshot and a mobile screenshot so you can compare the same state at both widths.
+
 ## Scenario Rules
 
 - `Left feed`, `Right feed`, and `Formula` start or switch the active feed segment stopwatch.
@@ -26,7 +28,9 @@ Button to press next:
 
 - `Wake`
 
-![Step 1: Start on Today](./generated-scenarios/two-cycle-feed-wake-sleep/01-start.png)
+![Step 1 desktop: Start on Today](./generated-scenarios/two-cycle-feed-wake-sleep/01-start.png)
+
+![Step 1 mobile: Start on Today](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/01-start.png)
 
 ## Step 2: Wake starts cycle 1
 
@@ -45,7 +49,9 @@ Button to press next:
 
 - `Left feed`
 
-![Step 2: Wake starts cycle 1](./generated-scenarios/two-cycle-feed-wake-sleep/02-wake.png)
+![Step 2 desktop: Wake starts cycle 1](./generated-scenarios/two-cycle-feed-wake-sleep/02-wake.png)
+
+![Step 2 mobile: Wake starts cycle 1](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/02-wake.png)
 
 ## Step 3: Left feed starts the active feed
 
@@ -66,7 +72,9 @@ Button to press next:
 
 - `Right feed`
 
-![Step 3: Left feed starts the active feed](./generated-scenarios/two-cycle-feed-wake-sleep/03-left-feed.png)
+![Step 3 desktop: Left feed starts the active feed](./generated-scenarios/two-cycle-feed-wake-sleep/03-left-feed.png)
+
+![Step 3 mobile: Left feed starts the active feed](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/03-left-feed.png)
 
 ## Step 4: Right feed switches the current segment
 
@@ -86,7 +94,9 @@ Button to press next:
 
 - `Diaper`
 
-![Step 4: Right feed switches the current segment](./generated-scenarios/two-cycle-feed-wake-sleep/04-right-feed.png)
+![Step 4 desktop: Right feed switches the current segment](./generated-scenarios/two-cycle-feed-wake-sleep/04-right-feed.png)
+
+![Step 4 mobile: Right feed switches the current segment](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/04-right-feed.png)
 
 ## Step 5: Diaper is stamped during the active feed
 
@@ -105,7 +115,9 @@ Button to press next:
 
 - `Sleep`
 
-![Step 5: Diaper is stamped during the active feed](./generated-scenarios/two-cycle-feed-wake-sleep/05-diaper.png)
+![Step 5 desktop: Diaper is stamped during the active feed](./generated-scenarios/two-cycle-feed-wake-sleep/05-diaper.png)
+
+![Step 5 mobile: Diaper is stamped during the active feed](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/05-diaper.png)
 
 ## Step 6: Sleep closes cycle 1
 
@@ -125,7 +137,9 @@ Button to press next:
 
 - `Wake`
 
-![Step 6: Sleep closes cycle 1](./generated-scenarios/two-cycle-feed-wake-sleep/06-sleep-ends-cycle-1.png)
+![Step 6 desktop: Sleep closes cycle 1](./generated-scenarios/two-cycle-feed-wake-sleep/06-sleep-ends-cycle-1.png)
+
+![Step 6 mobile: Sleep closes cycle 1](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/06-sleep-ends-cycle-1.png)
 
 ## Step 7: Wake starts cycle 2
 
@@ -144,7 +158,9 @@ Button to press next:
 
 - `Formula`
 
-![Step 7: Wake starts cycle 2](./generated-scenarios/two-cycle-feed-wake-sleep/07-wake-cycle-2.png)
+![Step 7 desktop: Wake starts cycle 2](./generated-scenarios/two-cycle-feed-wake-sleep/07-wake-cycle-2.png)
+
+![Step 7 mobile: Wake starts cycle 2](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/07-wake-cycle-2.png)
 
 ## Step 8: Formula starts a new feed section
 
@@ -164,7 +180,9 @@ Button to press next:
 
 - `Sleep`
 
-![Step 8: Formula starts a new feed section](./generated-scenarios/two-cycle-feed-wake-sleep/08-formula-top-up.png)
+![Step 8 desktop: Formula starts a new feed section](./generated-scenarios/two-cycle-feed-wake-sleep/08-formula-top-up.png)
+
+![Step 8 mobile: Formula starts a new feed section](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/08-formula-top-up.png)
 
 ## Step 9: Sleep closes cycle 2
 
@@ -180,7 +198,9 @@ Important components:
 - closed feed state
 - sticky dock for the next action
 
-![Step 9: Sleep closes cycle 2](./generated-scenarios/two-cycle-feed-wake-sleep/09-sleep-ends-cycle-2.png)
+![Step 9 desktop: Sleep closes cycle 2](./generated-scenarios/two-cycle-feed-wake-sleep/09-sleep-ends-cycle-2.png)
+
+![Step 9 mobile: Sleep closes cycle 2](./generated-scenarios/two-cycle-feed-wake-sleep-mobile/09-sleep-ends-cycle-2.png)
 
 ## What This Scenario Teaches
 
