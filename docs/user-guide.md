@@ -85,9 +85,11 @@ Screenshots for this route:
 ### Sticky Dock Buttons
 
 - `Wake` stamps the start of the current awake cycle.
-- `Feed` starts a feed session.
-- `Play` adds a play stamp.
+- `Left feed` starts or switches the left breast segment and opens a feed session if needed.
+- `Right feed` starts or switches the right breast segment and opens a feed session if needed.
+- `Formula` starts or switches the bottle segment and opens a feed session if needed.
 - `Diaper` adds a diaper stamp.
+- `Sleep` closes the current active feed and records sleep.
 - `Note` adds a note stamp.
 - `More` opens the lower detail panels.
 
@@ -96,6 +98,47 @@ Screenshots for this route:
 - `Timeline / 时间线` is the live chronology view.
 - `Journal / 记录表` is the paper-journal view.
 - `Compact / 简洁` is the condensed view for quick reading.
+
+## Two-Cycle Feed, Wake, Sleep Scenario
+
+Use this when you want to understand how BabyFlow handles two back-to-back cycles.
+
+1. Start on `Timeline`.
+2. Tap `Wake`.
+3. Tap `Left feed`.
+4. Tap `Right feed`.
+5. Tap `Diaper`.
+6. Tap `Sleep`.
+7. Tap `Wake` again.
+8. Tap `Formula`.
+9. Tap `Sleep` again.
+
+In this scenario:
+
+- the first cycle is wake, feed, diaper, sleep
+- the second cycle is wake, formula, sleep
+- formula before `Sleep` stays inside the active feed
+- formula after `Sleep` starts a new feed section
+
+Screenshots for this route:
+
+![Step 1: Start on Today](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/01-start.png)
+
+![Step 2: Wake starts cycle 1](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/02-wake.png)
+
+![Step 3: Left feed starts the active feed](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/03-left-feed.png)
+
+![Step 4: Right feed switches the current segment](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/04-right-feed.png)
+
+![Step 5: Diaper is stamped during the active feed](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/05-diaper.png)
+
+![Step 6: Sleep closes cycle 1](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/06-sleep-ends-cycle-1.png)
+
+![Step 7: Wake starts cycle 2](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/07-wake-cycle-2.png)
+
+![Step 8: Formula starts a new feed section](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/08-formula-top-up.png)
+
+![Step 9: Sleep closes cycle 2](./user-guide/generated-scenarios/two-cycle-feed-wake-sleep/09-sleep-ends-cycle-2.png)
 
 ### Summary Controls
 

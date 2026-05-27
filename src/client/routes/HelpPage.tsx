@@ -247,6 +247,29 @@ export function HelpPage() {
         </div>
       </section>
 
+      <section className="timeline-card panel-stack help-intro" id="two-cycle-feed-wake-sleep-route">
+        <p className="page-row-caption">Scenario</p>
+        <h2 className="paper-title">Two cycles: wake, feed, sleep, then wake, formula, sleep</h2>
+        <p className="ui-quiet">
+          This route shows how the Today page keeps the current feed session visible while the sticky dock keeps the next action one tap away. Formula after Sleep starts a new feed section.
+        </p>
+        <ol className="help-step-list">
+          <li>Tap Wake to begin cycle 1.</li>
+          <li>Tap Left feed, then Right feed to switch segments while the same feed session stays open.</li>
+          <li>Tap Diaper if needed.</li>
+          <li>Tap Sleep to close cycle 1.</li>
+          <li>Tap Wake again to begin cycle 2.</li>
+          <li>Tap Formula to start the second feed section.</li>
+          <li>Tap Sleep again to close cycle 2.</li>
+        </ol>
+        <div className="help-inline-grid">
+          <img src="/user-guide/generated-scenarios/two-cycle-feed-wake-sleep/01-start.png" alt="Start of the two-cycle scenario on Today" />
+          <img src="/user-guide/generated-scenarios/two-cycle-feed-wake-sleep/03-left-feed.png" alt="Left feed starts the active feed in cycle 1" />
+          <img src="/user-guide/generated-scenarios/two-cycle-feed-wake-sleep/06-sleep-ends-cycle-1.png" alt="Sleep closes the first cycle" />
+          <img src="/user-guide/generated-scenarios/two-cycle-feed-wake-sleep/08-formula-top-up.png" alt="Formula starts the second feed section" />
+        </div>
+      </section>
+
       <section className="timeline-card panel-stack help-intro" id="journal">
         <p className="page-row-caption">Button meaning</p>
         <h2 className="paper-title">What the labels mean</h2>
