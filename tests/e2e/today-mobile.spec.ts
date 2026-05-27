@@ -190,6 +190,7 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   await expect(page.getByTestId('today-page')).toHaveClass(/today-page/);
   await expect(page.getByTestId('today-now-panel')).toBeVisible();
   await expect(page.getByTestId('view-mode-switcher')).toBeVisible();
+  await expect(page.getByTestId('today-overflow-menu-toggle')).toBeVisible();
   const appShellBox = await page.getByTestId('app-shell').boundingBox();
   expect(appShellBox).not.toBeNull();
   expect(appShellBox!.width).toBeGreaterThanOrEqual(380);
@@ -200,6 +201,8 @@ test('today page stays mobile-friendly at 390px and keeps the dock visible while
   const shellBg = await page.getByTestId('app-shell').evaluate((node) => getComputedStyle(node).backgroundColor);
   expect(shellBg).not.toBe('rgb(255, 255, 255)');
   await expect(page.getByTestId('quick-action-dock').getByRole('button', { name: 'Wake' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Review / 复盘' })).toBeVisible();
+  await page.getByTestId('today-overflow-menu-toggle').click();
   await expect(page.getByRole('button', { name: 'Compact / 简洁' })).toBeVisible();
   await expect(page.getByTestId('today-log-preview')).toBeVisible();
 

@@ -69,7 +69,7 @@ body {
   width: 100%;
   max-width: 760px;
   margin-inline: auto;
-  padding: 12px 12px calc(240px + env(safe-area-inset-bottom, 0px));
+  padding: 10px 10px calc(192px + env(safe-area-inset-bottom, 0px));
   box-sizing: border-box;
 }
 
@@ -109,7 +109,7 @@ body {
   background: var(--bg-elevated);
   border-color: rgba(147, 180, 225, 0.34);
   box-shadow: var(--shadow);
-  padding: 18px 16px;
+  padding: 14px 14px 12px;
 }
 
 .page-surface {
@@ -127,13 +127,24 @@ body {
   gap: 8px;
 }
 
-.page-hero-actions-row {
-  display: flex;
-  flex-wrap: wrap;
+.today-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+}
+
+.view-mode-switcher {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 }
 
-.page-hero-actions-row a,
+.view-mode-switcher a,
+.view-mode-switcher button,
+.today-overflow-menu summary,
+.today-overflow-menu-panel a,
+.today-overflow-menu-panel button,
 .help-anchor-nav a {
   min-height: 44px;
   display: inline-flex;
@@ -146,6 +157,61 @@ body {
   text-decoration: none;
 }
 
+.page-hero-actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-hero-actions-row a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(125, 174, 240, 0.28);
+  background: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+}
+
+.today-overflow-menu {
+  position: relative;
+}
+
+.today-overflow-menu summary {
+  list-style: none;
+  width: 44px;
+  padding: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.today-overflow-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.today-overflow-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  display: grid;
+  gap: 8px;
+  min-width: 190px;
+  padding: 10px;
+  border-radius: 20px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.today-overflow-menu-panel a,
+.today-overflow-menu-panel button {
+  width: 100%;
+}
+
 .page-shell .page-eyebrow {
   margin: 0;
   color: var(--text-soft);
@@ -156,7 +222,7 @@ body {
 
 .page-title {
   margin: 0;
-  font-size: clamp(1.7rem, 4.8vw, 2.35rem);
+  font-size: clamp(1.35rem, 4vw, 2.05rem);
   line-height: 1;
   letter-spacing: -0.05em;
 }
@@ -376,8 +442,8 @@ button[aria-pressed='true'],
   .page-shell {
     max-width: 1180px;
     padding-inline: 24px;
-    padding-top: 20px;
-    padding-bottom: calc(268px + env(safe-area-inset-bottom, 0px));
+    padding-top: 16px;
+    padding-bottom: calc(216px + env(safe-area-inset-bottom, 0px));
   }
 
   .quick-action-dock {
@@ -386,6 +452,52 @@ button[aria-pressed='true'],
     width: min(1180px, calc(100vw - 48px));
     transform: translateX(-50%);
     bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .today-workbench {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    grid-template-areas: 'timeline now';
+    align-items: start;
+  }
+
+  .today-timeline-column {
+    grid-area: timeline;
+  }
+
+  .today-now-column {
+    grid-area: now;
+  }
+}
+
+@media (max-width: 767px) {
+  .page-shell {
+    padding: 8px 8px calc(168px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .page-hero {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .today-toolbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px;
+  }
+
+  .view-mode-switcher {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .view-mode-switcher a {
+    grid-column: 1 / -1;
+  }
+
+  .today-overflow-menu-panel {
+    min-width: 170px;
+  }
+
+  .page-title {
+    font-size: clamp(1.2rem, 7.5vw, 1.7rem);
   }
 }
 
@@ -416,6 +528,18 @@ button[aria-pressed='true'],
   min-width: 720px;
   color: var(--text-soft);
   letter-spacing: 0.01em;
+}
+
+.today-workbench {
+  display: grid;
+  gap: 12px;
+}
+
+.today-now-column,
+.today-timeline-column {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
 }
 
 .sheet {

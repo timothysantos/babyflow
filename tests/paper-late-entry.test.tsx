@@ -57,6 +57,7 @@ describe('paper late entry', () => {
     await waitFor(() => expect(screen.getByTestId('paper-journal-cell-wakeUpTime').textContent).toContain('8:15 AM'));
     fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
     await waitFor(() => expect(screen.getByTestId('journal-summary-wakeUpTime').textContent).toContain('8:15 AM'));
+    fireEvent.click(screen.getByTestId('today-overflow-menu-toggle'));
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     await waitFor(() => expect(screen.getByTestId('journal-summary-wakeUpTime').textContent).toContain('8:15 AM'));
   });

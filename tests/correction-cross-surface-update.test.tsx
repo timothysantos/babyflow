@@ -55,6 +55,7 @@ describe('correction update parity', () => {
     await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('2026-05-16T01:00:00.000Z'));
     fireEvent.click(screen.getByRole('button', { name: 'Journal / 记录表' }));
     await waitFor(() => expect(screen.getByTestId('paper-journal-cell-startOfPlayTime').textContent).toContain('9:00 AM'));
+    fireEvent.click(screen.getByTestId('today-overflow-menu-toggle'));
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     await waitFor(() => expect(screen.getByTestId('journal-summary-startOfPlayTime').textContent).toContain('9:00 AM'));
     fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));

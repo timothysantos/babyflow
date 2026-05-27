@@ -130,14 +130,14 @@ describe('TodayPage', () => {
     expect(screen.getByRole('group', { name: 'View mode switcher' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Timeline / 时间线' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Journal / 记录表' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Compact / 简洁' })).toBeTruthy();
-    expect(screen.getByRole('link', { name: 'Guide / 说明' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Review / 复盘' })).toBeTruthy();
+    expect(screen.getByTestId('today-overflow-menu-toggle')).toBeTruthy();
     expect(screen.getByTestId('quick-action-dock')).toBeTruthy();
     expect(screen.getByTestId('journal-summary')).toBeTruthy();
     expect(screen.getByTestId('today-log-preview')).toBeTruthy();
     expect(screen.queryByText(/cluster/i)).toBeNull();
 
+    fireEvent.click(screen.getByTestId('today-overflow-menu-toggle'));
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     expect(screen.getByText('Compact journal active.')).toBeTruthy();
     expect(window.localStorage.getItem('babyflow.today.viewMode')).toBe('compact');
@@ -433,6 +433,7 @@ describe('TodayPage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Timeline / 时间线' }));
     await waitFor(() => expect(screen.getByTestId('journal-summary-wakeUpTime').textContent).toContain('8:00 AM'));
 
+    fireEvent.click(screen.getByTestId('today-overflow-menu-toggle'));
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     fireEvent.click(screen.getByTestId('journal-summary-startOfPlayTime'));
     await waitFor(() => expect(screen.getByTestId('compact-block-detail-sheet')).toBeTruthy());

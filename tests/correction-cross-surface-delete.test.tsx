@@ -61,6 +61,7 @@ describe('correction delete parity', () => {
     );
 
     await waitFor(() => expect(screen.getByTestId('live-timeline-items')).toBeTruthy(), { timeout: 3000 });
+    fireEvent.click(screen.getByTestId('today-overflow-menu-toggle'));
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     fireEvent.click(screen.getByTestId('journal-summary-startOfPlayTime'));
     await waitFor(() => expect(screen.getByTestId('compact-block-detail-sheet')).toBeTruthy());

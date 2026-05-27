@@ -54,6 +54,7 @@ describe('correction assistive UX', () => {
     expect(screen.getByTestId('paper-journal-cell-suggestion').textContent).toContain('Suggested correction reason');
     expect(screen.getByTestId('paper-journal-cell-reason')).toBeTruthy();
 
+    fireEvent.click(screen.getByTestId('today-overflow-menu-toggle'));
     fireEvent.click(screen.getByRole('button', { name: 'Compact / 简洁' }));
     fireEvent.click(screen.getByTestId('journal-summary-startOfPlayTime'));
     await waitFor(() => expect(screen.getByTestId('compact-block-detail-sheet')).toBeTruthy());

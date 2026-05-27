@@ -996,27 +996,34 @@ export function TodayPage() {
         className="today-page"
         actions={
           <>
-            <div className="view-mode-switcher" role="group" aria-label="View mode switcher" data-testid="view-mode-switcher">
-              <button type="button" aria-pressed={viewMode === 'timeline'} onClick={() => setViewMode('timeline')}>
-                Timeline / 时间线
-              </button>
-              <button type="button" aria-pressed={viewMode === 'journal'} onClick={() => setViewMode('journal')}>
-                Journal / 记录表
-              </button>
-              <button type="button" aria-pressed={viewMode === 'compact'} onClick={() => setViewMode('compact')}>
-                Compact / 简洁
-              </button>
-            </div>
-            <div className="page-hero-actions-row">
-              <Link to="/profile" className="today-profile-link">
-                Profile / 资料
-              </Link>
-              <Link to="/guide" className="today-guide-link">
-                Guide / 说明
-              </Link>
-              <Link to="/review" className="today-review-link">
-                Review / 复盘
-              </Link>
+            <div className="today-toolbar">
+              <div className="view-mode-switcher" role="group" aria-label="View mode switcher" data-testid="view-mode-switcher">
+                <button type="button" aria-pressed={viewMode === 'timeline'} onClick={() => setViewMode('timeline')}>
+                  Timeline / 时间线
+                </button>
+                <button type="button" aria-pressed={viewMode === 'journal'} onClick={() => setViewMode('journal')}>
+                  Journal / 记录表
+                </button>
+                <Link to="/review" className="today-review-link">
+                  Review / 复盘
+                </Link>
+              </div>
+              <details className="today-overflow-menu">
+                <summary aria-label="More Today actions" data-testid="today-overflow-menu-toggle">
+                  ⋮
+                </summary>
+                <div className="today-overflow-menu-panel" role="menu" aria-label="More Today actions">
+                  <button type="button" aria-pressed={viewMode === 'compact'} onClick={() => setViewMode('compact')}>
+                    Compact / 简洁
+                  </button>
+                  <Link to="/profile" className="today-profile-link">
+                    Profile / 资料
+                  </Link>
+                  <Link to="/guide" className="today-guide-link">
+                    Guide / 说明
+                  </Link>
+                </div>
+              </details>
             </div>
           </>
         }
@@ -1045,30 +1052,36 @@ export function TodayPage() {
           </section>
         ) : (
           <>
-            {activeFeedSession ? (
-              <ActiveFeedTaskCard
-                session={activeFeedSession}
-                now={now}
-                onAddSegment={addFeedSegment}
-                onCloseSession={closeFeedSession}
-                onImportDuration={importFeedDuration}
-              />
-            ) : null}
-            <section className="timeline-card panel-stack today-now-panel" data-testid="today-now-panel">
-              <p className="paper-heading">Now</p>
-              <p className="ui-quiet" data-testid="feed-window-summary">{feedWindowSummary}</p>
-              <JournalRowSummary
-                row={rowViewModel}
-                onEditCell={(key, label, value) => {
-                  setPaperJournalReason('');
-                  setPaperJournalEditor(resolveCellEditorState(key, label, value));
-                }}
-              />
-              <button type="button" onClick={() => setDetailsOpen((value) => !value)} aria-expanded={detailsOpen}>
-                {detailsOpen ? 'Hide details' : 'Details'}
-              </button>
+            <section className="today-workbench" aria-label="Timeline and current workbench">
+              <div className="today-now-column">
+                {activeFeedSession ? (
+                  <ActiveFeedTaskCard
+                    session={activeFeedSession}
+                    now={now}
+                    onAddSegment={addFeedSegment}
+                    onCloseSession={closeFeedSession}
+                    onImportDuration={importFeedDuration}
+                  />
+                ) : null}
+                <section className="timeline-card panel-stack today-now-panel" data-testid="today-now-panel">
+                  <p className="paper-heading">Now</p>
+                  <p className="ui-quiet" data-testid="feed-window-summary">{feedWindowSummary}</p>
+                  <JournalRowSummary
+                    row={rowViewModel}
+                    onEditCell={(key, label, value) => {
+                      setPaperJournalReason('');
+                      setPaperJournalEditor(resolveCellEditorState(key, label, value));
+                    }}
+                  />
+                  <button type="button" onClick={() => setDetailsOpen((value) => !value)} aria-expanded={detailsOpen}>
+                    {detailsOpen ? 'Hide details' : 'Details'}
+                  </button>
+                </section>
+              </div>
+              <div className="today-timeline-column">
+                <LiveTimelineStream items={timelinePreviewItems} onSelect={(item) => setSelectedTimelineItem(item)} />
+              </div>
             </section>
-            <LiveTimelineStream items={timelinePreviewItems} onSelect={(item) => setSelectedTimelineItem(item)} />
             {correctionHistory.length > 0 && !detailsOpen ? (
               <CorrectionHistoryPanel items={correctionHistory} onRestoreItem={restoreCorrectionFromHistory} />
             ) : null}
