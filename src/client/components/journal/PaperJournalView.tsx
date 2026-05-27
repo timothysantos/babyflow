@@ -25,43 +25,37 @@ export function PaperJournalView({ rows, onEditCell }: Props) {
         <h2 className="today-title">Paper Journal View / 记录表</h2>
         <p className="today-subtitle">Matches the physical paper journal row model.</p>
       </div>
-      <div className="paper-journal-scroll" data-testid="paper-journal-scroll">
-        <table className="paper-journal-table">
-          <thead>
-            <tr>
-              {columns.map((column) => (
-                <th key={column.key} scope="col">
-                  {column.label}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.cycleId} data-testid="paper-journal-row">
-                {columns.map((column) => {
-                  const value = row[column.key as keyof PaperJournalRowViewModel] as {
-                    display: string;
-                    source: string;
-                    needsReview: boolean;
-                  };
-                  return (
-                    <td key={column.key} data-source={value.source} data-needs-review={value.needsReview ? 'true' : 'false'}>
-                      <button
-                        type="button"
-                        className="paper-journal-value paper-journal-value-button"
-                        data-testid={`paper-journal-cell-${column.key}`}
-                        onClick={() => onEditCell?.(column.key as keyof PaperJournalRowViewModel, column.label, value.display)}
-                      >
-                        {value.display}
-                      </button>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="paper-journal-list" data-testid="paper-journal-scroll">
+        {rows.map((row) => (
+          <article key={row.cycleId} className="paper-journal-row-card" data-testid="paper-journal-row">
+            <header className="paper-journal-row-header">
+              <p className="paper-heading">{row.rowStatus}</p>
+              <p className="paper-journal-row-id">{row.cycleId}</p>
+            </header>
+            <ol className="paper-journal-row-items">
+              {columns.map((column) => {
+                const value = row[column.key as keyof PaperJournalRowViewModel] as {
+                  display: string;
+                  source: string;
+                  needsReview: boolean;
+                };
+                return (
+                  <li key={column.key} className="paper-journal-row-item" data-source={value.source} data-needs-review={value.needsReview ? 'true' : 'false'}>
+                    <span className="paper-journal-row-label">{column.label}</span>
+                    <button
+                      type="button"
+                      className="paper-journal-value paper-journal-value-button"
+                      data-testid={`paper-journal-cell-${column.key}`}
+                      onClick={() => onEditCell?.(column.key as keyof PaperJournalRowViewModel, column.label, value.display)}
+                    >
+                      {value.display}
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </article>
+        ))}
       </div>
       <p className="paper-journal-legend">
         Blank cells are intentional when the row has not yet captured that journal column.

@@ -303,10 +303,10 @@ describe('TodayPage', () => {
     await waitFor(() => expect(screen.getByTestId('timeline-edit-sheet')).toBeTruthy());
     fireEvent.change(screen.getByTestId('timeline-edit-input'), { target: { value: '2026-05-16T01:00:00.000Z' } });
     fireEvent.click(screen.getByRole('button', { name: 'Save update' }));
-    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('2026-05-16T01:00:00.000Z'));
+    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('9:00 AM'));
     expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.update');
     fireEvent.click(screen.getByRole('button', { name: 'Undo last action' }));
-    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('2026-05-16T00:00:00.000Z'));
+    await waitFor(() => expect(screen.getByTestId('timeline-detail-sheet').textContent).toContain('8:00 AM'));
     expect(screen.getByTestId('correction-history-items').textContent).toContain('correction.undo');
   });
 

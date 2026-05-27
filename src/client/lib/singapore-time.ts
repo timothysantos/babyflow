@@ -9,7 +9,7 @@ function safeDate(value?: string) {
 export function formatSingaporeTime(value?: string) {
   const date = safeDate(value);
   if (!date) return value ?? '—';
-  return new Intl.DateTimeFormat('en-SG', {
+  return new Intl.DateTimeFormat('en-US', {
     timeZone: singaporeTimeZone,
     hour: 'numeric',
     minute: '2-digit'
@@ -19,9 +19,9 @@ export function formatSingaporeTime(value?: string) {
 export function formatSingaporeDateTime(value?: string) {
   const date = safeDate(value);
   if (!date) return value ?? '—';
-  return new Intl.DateTimeFormat('en-SG', {
+  return new Intl.DateTimeFormat('en-US', {
     timeZone: singaporeTimeZone,
-    dateStyle: 'medium',
-    timeStyle: 'short'
+    hour: 'numeric',
+    minute: '2-digit'
   }).format(date);
 }

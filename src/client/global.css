@@ -847,53 +847,67 @@ button[aria-pressed='true'],
   line-height: 1.35;
 }
 
-.paper-journal-scroll {
-  overflow-x: auto;
-}
-
-.paper-journal-table {
-  width: 100%;
-  min-width: 960px;
-  border-collapse: separate;
-  border-spacing: 0 10px;
-}
-
-.paper-journal-table th,
-.paper-journal-table td {
-  text-align: left;
-  vertical-align: top;
-  padding: 10px 12px;
-}
-
-.paper-journal-table th {
-  color: var(--text-soft);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.paper-journal-table td {
-  background: rgba(255, 255, 255, 0.78);
-  border-top: 1px solid rgba(156, 178, 206, 0.15);
-  border-bottom: 1px solid rgba(156, 178, 206, 0.15);
-}
-
-.paper-journal-table td:first-child {
-  border-left: 1px solid rgba(156, 178, 206, 0.15);
-  border-top-left-radius: 18px;
-  border-bottom-left-radius: 18px;
-}
-
-.paper-journal-table td:last-child {
-  border-right: 1px solid rgba(156, 178, 206, 0.15);
-  border-top-right-radius: 18px;
-  border-bottom-right-radius: 18px;
-}
-
 .paper-journal-value {
   display: inline-block;
   max-width: 100%;
   line-height: 1.35;
+}
+
+.paper-journal-list {
+  display: grid;
+  gap: 12px;
+}
+
+.paper-journal-row-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(156, 178, 206, 0.18);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.paper-journal-row-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.paper-journal-row-id {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.76rem;
+  letter-spacing: 0.02em;
+  word-break: break-all;
+  text-align: right;
+}
+
+.paper-journal-row-items {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.paper-journal-row-item {
+  display: grid;
+  gap: 4px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(156, 178, 206, 0.12);
+}
+
+.paper-journal-row-item:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.paper-journal-row-label {
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .paper-journal-legend {
