@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MobileShell } from '../layouts/MobileShell';
 import { PageShell } from '../layouts/PageShell';
 import { QuickActionDock } from '../components/actions/QuickActionDock';
+import { TodayPill } from '../components/actions/TodayPill';
 import { EventLog } from '../components/events/EventLog';
 import type { CycleEventDTO, CycleEventKind } from '../../domain/event/event.types';
 import { FeedSessionsPanel } from '../components/feed/FeedSessionsPanel';
@@ -1006,30 +1007,18 @@ export function TodayPage() {
         actions={
           <div className="today-toolbar">
             <div className="view-mode-switcher" role="group" aria-label="View mode switcher" data-testid="view-mode-switcher">
-              <button type="button" aria-pressed={viewMode === 'timeline'} onClick={() => setViewMode('timeline')}>
-                Timeline / 时间线
-              </button>
-              <button type="button" aria-pressed={viewMode === 'journal'} onClick={() => setViewMode('journal')}>
-                Journal / 记录表
-              </button>
-              <Link to="/review" className="today-review-link">
-                Review / 复盘
-              </Link>
+              <TodayPill kind="button" label="Timeline / 时间线" active={viewMode === 'timeline'} onClick={() => setViewMode('timeline')} />
+              <TodayPill kind="button" label="Journal / 记录表" active={viewMode === 'journal'} onClick={() => setViewMode('journal')} />
+              <TodayPill kind="link" label="Review / 复盘" to="/review" />
             </div>
             <details className="today-overflow-menu">
               <summary aria-label="More Today actions" data-testid="today-overflow-menu-toggle">
                 ⋮
               </summary>
               <div className="today-overflow-menu-panel" role="menu" aria-label="More Today actions">
-                <button type="button" aria-pressed={viewMode === 'compact'} onClick={() => setViewMode('compact')}>
-                  Compact / 简洁
-                </button>
-                <Link to="/profile" className="today-profile-link">
-                  Profile / 资料
-                </Link>
-                <Link to="/guide" className="today-guide-link">
-                  Guide / 说明
-                </Link>
+                <TodayPill kind="button" label="Compact / 简洁" active={viewMode === 'compact'} onClick={() => setViewMode('compact')} />
+                <TodayPill kind="link" label="Profile / 资料" to="/profile" />
+                <TodayPill kind="link" label="Guide / 说明" to="/guide" />
               </div>
             </details>
           </div>

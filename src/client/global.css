@@ -139,17 +139,14 @@ body {
   gap: 6px;
 }
 
-.view-mode-switcher a,
-.view-mode-switcher button,
+.today-pill,
 .today-overflow-menu summary,
-.today-overflow-menu-panel a,
-.today-overflow-menu-panel button,
 .help-anchor-nav a {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 10px;
+  padding: 8px 16px;
   border-radius: 999px;
   border: 1px solid rgba(125, 174, 240, 0.28);
   background: rgba(255, 255, 255, 0.72);
@@ -158,8 +155,8 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1;
-  font-size: 0.82rem;
-  font-weight: 650;
+  font-size: 0.92rem;
+  font-weight: 680;
   min-width: 0;
 }
 
@@ -217,8 +214,7 @@ body {
   box-shadow: var(--shadow);
 }
 
-.today-overflow-menu-panel a,
-.today-overflow-menu-panel button {
+.today-overflow-menu-panel .today-pill {
   width: 100%;
   justify-content: center;
 }
@@ -517,13 +513,12 @@ button[aria-pressed='true'],
     gap: 4px;
   }
 
-  .view-mode-switcher a,
-  .view-mode-switcher button {
+  .today-pill {
     min-height: 40px;
-    padding: 6px 2px;
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: -0.03em;
+    padding: 6px 12px;
+    font-size: 0.74rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
   }
 
   .today-overflow-menu {
@@ -660,10 +655,9 @@ button[aria-pressed='true'],
     max-width: min(196px, calc(100vw - 16px));
   }
 
-  .today-overflow-menu-panel a,
-  .today-overflow-menu-panel button {
-    font-size: 0.68rem;
-    padding-inline: 8px;
+  .today-overflow-menu-panel .today-pill {
+    font-size: 0.74rem;
+    padding-inline: 12px;
     letter-spacing: -0.01em;
   }
 
@@ -807,16 +801,11 @@ button[aria-pressed='true'],
   gap: 8px;
 }
 
-.view-mode-switcher button {
-  min-height: 44px;
-  font-size: 0.95rem;
-}
-
-.view-mode-switcher button {
+.view-mode-switcher .today-pill {
   position: relative;
 }
 
-.view-mode-switcher button .sr-only {
+.today-pill .sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -828,7 +817,7 @@ button[aria-pressed='true'],
   border: 0;
 }
 
-.view-mode-switcher button[aria-pressed='true'] {
+.today-pill.is-active {
   border-color: rgba(125, 174, 240, 0.48);
   background: linear-gradient(135deg, rgba(125, 174, 240, 0.18), rgba(236, 180, 205, 0.12));
 }
@@ -911,10 +900,6 @@ button[aria-pressed='true'],
   margin: 0;
   color: var(--text-soft);
   font-size: 0.85rem;
-}
-
-.today-profile-link {
-  align-self: start;
 }
 
 .page-row-header {
